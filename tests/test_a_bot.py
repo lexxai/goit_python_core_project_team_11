@@ -10,7 +10,7 @@ except ImportError :
 
 if __name__ == "__main__":
     session = "user-session-000001"
-    assistant = Assistant_bot(id=session, auto_restore=False, auto_backup=False)
+    assistant = Assistant_bot(id=session, auto_restore=True, auto_backup=True)
 
     if True:
         verbose = True

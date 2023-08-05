@@ -66,8 +66,8 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_book and self.a_book.backup_data:
                 self.a_book.backup_data()
-            if self.backup__callback is not None:
-                 self.backup__callback()
+            if self._callback is not None:
+                self._callback("backup_data")
             return result
         return wrapper
 
@@ -78,8 +78,8 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_notes and self.a_notes.backup_data:
                 self.a_notes.backup_data()
-            if self.backup__callback is not None:
-                 self.backup__callback()
+            if self._callback is not None:
+                 self._callback("backup_data")
             return result
         return wrapper       
 

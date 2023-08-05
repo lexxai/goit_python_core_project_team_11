@@ -228,54 +228,51 @@ Goodbye. We are looking forward to seeing you again.
 ### BACKUP / RESTORE
 
 1. Automatic mode on start/end.
-   Автоматичний режим може бути вимкнений при створенні об'єкту класу `Assistant_bot`, за замовчуванням він ввімкнутий
+   Автоматичний режим може бути вимкнений при створенні об'єкту класу `Assistant_bot`, за замовчуванням він ввімкнутий.
 
    ```
-   class Assistant_bot(Commands):
+      asistant = Assistant_bot(id=session, auto_restore=False, auto_backup=False)
 
-        def **init**(self,
-                id: str = None,
-                auto_backup: bool = True,
-                auto_restore: bool = True):
    ```
 
 2. Automatic backup mode після операцій що змінюють данні.
    Через декоратори: `@backup_data_address_book`, `@backup_data_note`
 
 3. Manual
-   через команду: `backup ('bak')` - збереження резервної копії
 
-```
-Enter your command >>> backup ?
-Backup all records. Optional parameter is the version. P.S. it done automatically after any changes on records
-Enter your command >>> backup 3
-Done
-```
+   - через команду: `backup ('bak')` - збереження резервної копії
 
-через команду: `restore ('res')` - відновлення резервної копії
+     ```
+     Enter your command >>> backup ?
+     Backup all records. Optional parameter is the version. P.S. it done automatically after any changes on records
+     Enter your command >>> backup 3
+     Done
+     ```
 
-```
-Enter your command >>> restore ?
-Restore all records. Optional parameter is the version.
-Enter your command >>> restore 3
-Done
-```
+   - через команду: `restore ('res')` - відновлення резервної копії
 
-через команду: `list versions ('l v')` - список версій резервних копій
+     ```
+     Enter your command >>> restore ?
+     Restore all records. Optional parameter is the version.
+     Enter your command >>> restore 3
+     Done
+     ```
 
-```
-Enter your command >>> list versions
-version: 1
-version: 2
-version: 3
-```
+   - через команду: `list versions ('l v')` - список версій резервних копій
 
-Локальні файли при цьому такі:
+     ```
+     Enter your command >>> list versions
+     version: 1
+     version: 2
+     version: 3
+     ```
 
-```
-(.venv) ..\tests> dir /B \*.bin
-user-session-000001_assistant_bot.bin
-user-session-000001_assistant_bot_1.bin
-user-session-000001_assistant_bot_2.bin
-user-session-000001_assistant_bot_3.bin
-```
+     Локальні файли при цьому такі:
+
+     ```
+     (.venv) ..\tests> dir /B \*.bin
+     user-session-000001_assistant_bot.bin
+     user-session-000001_assistant_bot_1.bin
+     user-session-000001_assistant_bot_2.bin
+     user-session-000001_assistant_bot_3.bin
+     ```

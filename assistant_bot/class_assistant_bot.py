@@ -29,6 +29,7 @@ class Assistant_bot(Commands):
                          )
 
     def _callback(self, method_str: str, *args, **kwargs):
+        #print(f"{__name__} [_callback] {method_str=}")
         method = self.__getattribute__(method_str)
         if method:
             return method(*args, **kwargs)
