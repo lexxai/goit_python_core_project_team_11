@@ -3,7 +3,7 @@ from pathlib import Path
 import uuid
 import shutil
 
-from normalize import normalize
+from assistant_bot.normalize import normalize
 
 
 CATEGORIES = {"Audio": [".mp3", ".aiff", ".amr", ".ogg", ".wav"],
