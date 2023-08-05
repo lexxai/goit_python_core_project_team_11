@@ -2,6 +2,7 @@ from .class_commands import Commands
 from .class_address_book import AddressBook
 from .class_notes import Notes
 import pickle
+from  pathlib import Path
 
 
 
@@ -20,12 +21,17 @@ class Assistant_bot(Commands):
         self.default_filename: str = "assistant_bot"
 
         self.restore_data()     
-        
-        super().__init__(a_book=self.a_book, 
-                         a_notes=self.a_notes, 
-                         backup_callback=self.backup_data,
-                         restore_callback=self.restore_data,
+
+        super().__init__(a_book = self.a_book, 
+                         a_notes = self.a_notes, 
+                         callback = self._callback,
+                         child = self
                          )
+
+    def _callback(self, method_str: str, *args, **kwargs):
+        method = self.__getattribute__(method_str)
+        if method:
+            return method(*args, **kwargs)
 
 
     def _gen_filename(self, filename: str) -> str:
@@ -60,6 +66,13 @@ class Assistant_bot(Commands):
             except Exception:
                 return False
 
+    def list_versions(self):
+        filename = f"{self.default_filename}_*.bin"
+        list_files = Path('.').glob(self._gen_filename(filename))
+        result_version = []
+        for found_file in list_files:
+            result_version.append("version: {}".format(found_file.stem.split("_")[-1]))
+        return "\n".join(result_version) if any(result_version) else True
 
     def main(self):
         
