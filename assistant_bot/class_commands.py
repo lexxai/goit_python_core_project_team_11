@@ -204,8 +204,8 @@ class Commands:
         return self.a_book.import_csv(filename)
 
 
-    #@output_operation_describe
-    #@input_error
+    @output_operation_describe
+    @input_error
     def handler_sorting(self, *args) -> str:
         path = args[0]
         return sorting(path)
