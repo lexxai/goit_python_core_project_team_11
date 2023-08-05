@@ -10,8 +10,8 @@ class AddressBook(UserDict):
     def __init__(self, records_per_page :int = 10, 
                  default_filename :str = "addresbook",
                  id: str = None,
-                 auto_backup: bool = True,
-                 auto_restore: bool = True,
+                 auto_backup: bool = False,
+                 auto_restore: bool = False,
                  *args, **kwargs):
         self.max_records_per_page = records_per_page
         self.default_filename = default_filename
@@ -143,29 +143,31 @@ class AddressBook(UserDict):
         return parts
 
 
-    def backup_data(self, version=None):
-        if version:
-            filename = f"{self.default_filename}_{version}.bin"
-        else:
-            filename = f"{self.default_filename}.bin"
-        with open(self._gen_filename(filename), "wb") as file:
-            pickle.dump(self, file)
-        return True
+    def backup_data(self, version=None, backup:bool = None) -> bool:
+        if self.auto_backup or backup:
+            if version:
+                filename = f"{self.default_filename}_{version}.bin"
+            else:
+                filename = f"{self.default_filename}.bin"
+            with open(self._gen_filename(filename), "wb") as file:
+                pickle.dump(self, file)
+            return True
 
 
-    def restore_data(self, version=None):
-        if version:
-            filename = f"{self.default_filename}_{version}.bin"
-        else:
-            filename = f"{self.default_filename}.bin"
-        try:    
-            with open(self._gen_filename(filename), "rb") as file:
-                content = pickle.load(file)
-                if type(content) == type(self):
-                    self.__dict__.update(content.__dict__)
-                    return True
-        except Exception:
-            return False
+    def restore_data(self, version=None, restore:bool = None) -> bool:
+        if self.auto_restore or restore:
+            if version:
+                filename = f"{self.default_filename}_{version}.bin"
+            else:
+                filename = f"{self.default_filename}.bin"
+            try:    
+                with open(self._gen_filename(filename), "rb") as file:
+                    content = pickle.load(file)
+                    if type(content) == type(self):
+                        self.__dict__.update(content.__dict__)
+                        return True
+            except Exception:
+                return False
 
         
     def list_versions(self):

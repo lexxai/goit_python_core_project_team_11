@@ -12,13 +12,13 @@ python -m venv .venv
 ### INSTALL PACKAGE
 
 ```
->pip list
+(.venv) > pip list
 Package    Version
 ---------- -------
 pip        23.2.1
 setuptools 65.5.0
 
->pip install .
+(.venv) > pip install .
 Processing ..\goit_python_core_project_team_11
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
@@ -39,7 +39,7 @@ assistant-bot 0.1.0
 pip           23.2.1
 setuptools    65.5.0
 
->assistant_bot
+(.venv) > assistant_bot
 Enter your command >>> ?
 List of commands: add address ('+a'), add address book ('+ab'), add birthday ('+b'), add email ('+e'), add note ('+an'), backup ('bak'), change phone ('=p'), delete address ('-a'), delete all records ('---'), delete birthday ('-b'), delete email ('-e'), delete phone ('-p'), delete user ('-'), export csv ('e csv'), good bye ('close','exit','q','quit'), hello, help ('?'), import csv ('i csv'), list csv ('l csv'), list versions ('l v'), restore ('res'), search address book ('?ab='), show address ('?a'), show address book ('list address book','lab'), show birthday ('?b'), show csv ('?csv'), show email ('?e'), show notes ('?n'), show page ('?p'), show phone ('?p'), to birthday ('2b')
 Enter your command >>> q
@@ -49,7 +49,7 @@ Goodbye. We are looking forward to seeing you again.
 Якщо треба оновити пакет:
 
 ```
->pip install --upgrade .
+(.venv) > pip install --upgrade .
 Processing ...\goit_python_core_project_team_11
   Installing build dependencies ... done
   Getting requirements to build wheel ... done
@@ -68,14 +68,67 @@ Installing collected packages: assistant-bot
 Successfully installed assistant-bot-0.1.0
 ```
 
+## EXPORT PACKAGE (.whl)
+
+```
+(.venv) > pip install build
+Collecting build
+  Using cached build-0.10.0-py3-none-any.whl (17 kB)
+Collecting packaging>=19.0 (from build)
+  Using cached packaging-23.1-py3-none-any.whl (48 kB)
+Collecting pyproject_hooks (from build)
+  Using cached pyproject_hooks-1.0.0-py3-none-any.whl (9.3 kB)
+Collecting colorama (from build)
+  Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Installing collected packages: pyproject_hooks, packaging, colorama, build
+Successfully installed build-0.10.0 colorama-0.4.6 packaging-23.1 pyproject_hooks-1.0.0
+
+(.venv) > pip list
+Package         Version
+--------------- -------
+build           0.10.0
+colorama        0.4.6
+packaging       23.1
+pip             23.2.1
+pyproject_hooks 1.0.0
+setuptools      65.5.0
+
+(.venv) > dir /B dist
+assistant_bot-0.1.0-py3-none-any.whl
+assistant_bot-0.1.0.tar.gz
+
+(.venv) >pip install dist\assistant_bot-0.1.0-py3-none-any.whl
+Processing .... goit_python_core_project_team_11\dist\assistant_bot-0.1.0-py3-none-any.whl
+Installing collected packages: assistant-bot
+Successfully installed assistant-bot-0.1.0
+
+(.venv) >pip list
+Package         Version
+--------------- -------
+assistant-bot   0.1.0
+build           0.10.0
+colorama        0.4.6
+packaging       23.1
+pip             23.2.1
+pyproject_hooks 1.0.0
+setuptools      65.5.0
+
+(.venv) >deactivate
+> assistant_bot
+Enter your command >>> ?
+List of commands: add address ('+a'), add address book ('+ab'), add birthday ('+b'), add email ('+e'), add note ('+n'), backup ('bak'), change phone ('=p'), delete address ('-a'), delete all records ('---'), delete birthday ('-b'), delete email ('-e'), delete phone ('-p'), delete user ('-'), export csv ('e csv'), good bye ('close','exit','q','quit'), hello, help ('?'), import csv ('i csv'), list csv ('l csv'), list versions ('l v'), restore ('res'), search address book ('?ab='), show address ('?a'), show address book ('list address book','lab'), show birthday ('?b'), show csv ('?csv'), show email ('?e'), show notes ('?n'), show page ('?pg'), show phone ('?p'), sort folder ('sorting'), to birthday ('2b')
+Enter your command >>>
+
+```
+
 ## TESTS
 
 Тестування:
 
 1. Використовується `tests\test_a_bot.py`
-   файл для підключення пакету *assistant_bot* та створення екземпляра класу *Assistant_bot*
-2. Тестуємо у теці *tests* тому що тут же будуть записуватися файли серіалізації та експорту.
-3. При створенні екземпляра класу *Assistant_bot* використана назва сесії (`session = "user-session-000001"`), тому всі файли будуть автоматично створені з префіксом назви сесії.
+   файл для підключення пакету _assistant_bot_ та створення екземпляра класу _Assistant_bot_
+2. Тестуємо у теці _tests_ тому що тут же будуть записуватися файли серіалізації та експорту.
+3. При створенні екземпляра класу _Assistant_bot_ використана назва сесії (`session = "user-session-000001"`), тому всі файли будуть автоматично створені з префіксом назви сесії.
 4. Щоб не додавати в ручну початкові значення для тестування. Команди виконуються через `api`, це емулює команди користувача: `assistant.api("add note", "Note 1", "#tag2", "#tag3")`
    (Вибачте я ледачий постійно вводити команди для тестування)
 5. Тестуючи видаліть пакет якщо він був встановлений
