@@ -199,8 +199,10 @@ class AddressBook(UserDict):
     def __next__(self) -> list[Record]:
         if self._page_pos < len(self.data.keys()):
             result = []
-            keys = list(self.data) \
-                    [ self._page_pos:self._page_pos + self.max_records_per_page ]
+            idx_min = self._page_pos
+            idx_max = self._page_pos + self.max_records_per_page
+            #print(f"__next__ {idx_min=}, {idx_max=}")
+            keys = list(self.data)[idx_min:idx_max]
             for key in keys:
                 result.append(self.data[key])
             self._page_pos += self.max_records_per_page

@@ -164,9 +164,9 @@ class Commands:
             return "No users found, maybe you want to add them first?"
 
 
-    @input_error
+    #@input_error
     def handler_show_page(self, *args) -> str:
-        if args[0]:
+        if len(args) and args[0]:
             self.a_book.max_records_per_page = int(args[0])
         try:
             page = next(self.a_book)
@@ -454,7 +454,7 @@ class Commands:
         handler_change_phone: ("change phone", "=p"),
         handler_delete_phone: ("delete phone","-p"),
         handler_show_phone: ("show phone","?p"),
-        handler_show_page: ("show page","?p"),
+        handler_show_page: ("show page","?pg"),
         handler_show_csv: ("show csv","?csv"),
         handler_export_csv: ("export csv", "e csv"),
         handler_import_csv: ("import csv", "i csv"),
@@ -478,7 +478,7 @@ class Commands:
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
         #notes
-        handler_add_note: ("add note", "+an"),
+        handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
 
     }
