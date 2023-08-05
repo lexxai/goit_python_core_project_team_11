@@ -160,5 +160,6 @@ cython_debug/
 #.idea/
 
 *.csv
-test_csv.py
+tests/*/
 *.bin
+

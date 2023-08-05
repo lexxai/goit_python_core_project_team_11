@@ -3,7 +3,7 @@ from pathlib import Path
 import uuid
 import shutil
 
-from assistant_bot.normalize import normalize
+from .normalize import normalize
 
 
 CATEGORIES = {"Audio": [".mp3", ".aiff", ".amr", ".ogg", ".wav"],
@@ -75,23 +75,25 @@ def list_folder(path: Path) -> None:
     return list_all
 
 
-def main():
+def main(path_str: str = None) -> str:
+    if path_str is None:
+        path_str = sys.argv[1]
     try:
-        path = Path(sys.argv[1])
+        path = Path(path_str)
     except IndexError:
         return "No path to folder"
-    
     if not path.exists():
-        return f"Folder with path {path} dos`n exists."
+        return f"Folder with path '{path}' dos`n exists."
     
     sort_folder(path)
     delete_emtpy_dirs(path)
     upack_archive(path)
-    print(list_folder(path))
-    print(f"\nFound known file extensions: {list_know_ext}")
-    print(f"\nFound not known file extensions: {list_not_know_ext}")
-    
-    return "\nFinish"
+    result = []
+    result.append(list_folder(path))
+    result.append(f"\nFound known file extensions: {list_know_ext}")
+    result.append(f"\nFound not known file extensions: {list_not_know_ext}")
+    result.append("\nFinish")
+    return "\n".join(result)
 
 
 if __name__ == "__main__":

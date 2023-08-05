@@ -6,6 +6,8 @@ from .class_notes import Notes
 
 from functools import wraps
 
+from .sorting import main as sorting
+
 
 class Commands:
 
@@ -164,7 +166,7 @@ class Commands:
             return "No users found, maybe you want to add them first?"
 
 
-    #@input_error
+    @input_error
     def handler_show_page(self, *args) -> str:
         if len(args) and args[0]:
             self.a_book.max_records_per_page = int(args[0])
@@ -201,6 +203,13 @@ class Commands:
             filename = None
         return self.a_book.import_csv(filename)
 
+
+    #@output_operation_describe
+    #@input_error
+    def handler_sorting(self, *args) -> str:
+        path = args[0]
+        return sorting(path)
+        
 
     def handler_hello(self, *args) -> str:
         return "How can I help you?"
@@ -481,6 +490,8 @@ class Commands:
         #notes
         handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
+        #sorting
+        handler_sorting: ("sort folder","sorting"),
 
     }
 
@@ -540,4 +551,5 @@ class Commands:
         handler_add_note: "Add a new note record in the format: "
                           "Some Note text #tag1 #tag2",
         handler_show_notes: "Show all user's records in Notes.",
+        handler_sorting: "Sorting files of folder. Required path to folder.",   
     }
