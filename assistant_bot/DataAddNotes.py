@@ -16,7 +16,7 @@ class Note(Field):
 class Tag(Field):
     ...
     
-class RecordNotes:
+class Note_Record:
     def __init__(self, note: Note, tag: Tag = None):
         self.note = note
         self.tags = []
@@ -30,17 +30,17 @@ class RecordNotes:
                 return f"Old phone {old_phone} change to {new_phone}"
         return f"{old_phone} absent for contact {self.note}"'''
     
-    def add_tag(self, tag: Tag):
+    '''def add_tag(self, tag: Tag):
         if tag not in [p.value for p in self.tags]:
             self.tags.append(tag)
             return f"tag {tag} add to notes {self.note}"
-        return f"tag {tag} already exists for notes {self.note}"
+        return f"tag {tag} already exists for notes {self.note}"'''
     
     def __str__(self) -> str:
         return f"{self.note}: {', '.join(str(p) for p in self.tags)}"
     
 class AddressNotes(UserDict):
-    def add_record(self, record: RecordNotes):
+    def add_record(self, record: Note_Record):
         self.data[str(record.note)] = record
         return 'Add success'
     def __str__(self) -> str:
@@ -52,31 +52,26 @@ dict_notes = AddressNotes()
 def no_command(*args):
     return 'unknown_command'
 
-def add_notes(notes_text,  tags_list):
-    notes_text1 = Note(notes_text)
-    tags_list1 = Tag(tags_list)
-    rec: RecordNotes = dict_notes.get(str(notes_text1))
-    if rec:
-        return rec.add_tag(tags_list1)
-    rec = RecordNotes(notes_text1, tags_list1)
-    return dict_notes.add_record(rec)
-
-def show_notes(notes_text,  tags_list):
-    return dict_notes
-
-'''def change_notes(notes_text,  tags_list):
-    name = Name(args[0])
-    old_phone = Phone(args[1])
-    new_phone = Phone(args[2])
-    rec: Record = users_contact.get(str(name))
-    if rec:
-        return rec.change_phone(old_phone, new_phone)
-    users_contact[name] = phone
-    return f"no contact {name} in address book"'''
+def handler_add_note(self, *args) -> str:
+        result = None
+        note_list: list = []
+        note_str:str = None
+        tags: list = []
+        for arg in args:
+            if arg.startswith('#'):
+                tag_str:str = str(arg[1:]).strip()
+                tags.append(Tag(tag_str))
+            else:
+                note_list.append(arg)
+        if note_list:
+            note_str = " ".join(note_list)
+        
+        note_rec = Note_Record( Note(note_str), tags )
+        result = self.a_notes.add_record(note_rec)
 
 
-dict_command = {'add notes': add_notes,
-                'show notes': show_notes}
+dict_command = {'add note': handler_add_note}
+ #               'show notes': show_notes}
  #               'change notes': change_notes}
 #                'change': change_number,
  #               'phone': phone,

@@ -3,7 +3,7 @@ from .class_record import Record
 from .class_note_record import Note_Record
 # from .class_address_book import AddressBook
 # from .class_notes import Notes
-
+import DataAddNotes
 from functools import wraps
 
 from .sorting import main as sorting
@@ -447,12 +447,9 @@ class Commands:
                 note_list.append(arg)
         if note_list:
             note_str = " ".join(note_list)
-       
-
+        
         note_rec = Note_Record( Note(note_str), tags )
         result = self.a_notes.add_record(note_rec)
-
-        return result        
 
 
     @output_operation_describe
