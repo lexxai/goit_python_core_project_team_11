@@ -8,6 +8,12 @@ from functools import wraps
 
 from .sorting import main as sorting
 
+import sys
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version
+else:
+    from importlib_metadata import version
+
 
 class Commands:
 
@@ -454,6 +460,13 @@ class Commands:
         else:
             return "No notes found, maybe you want to add them first?"
 
+    @output_operation_describe
+    def handler_show_app_version(self, *args) -> str:
+        try:
+            version_str = version(__package__)
+        except Exception:
+            version_str = "undefined"
+        return f"Version: '{ version_str }', package: {__package__}"
 
 
     @input_error
@@ -515,7 +528,7 @@ class Commands:
         handler_show_notes: ("show notes", "?n"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
-
+        handler_show_app_version: ("app version","version"),
     }
 
     """
@@ -575,4 +588,5 @@ class Commands:
                           "Some Note text #tag1 #tag2",
         handler_show_notes: "Show all user's records in Notes.",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
+        handler_show_app_version: "Show version of application",           
     }

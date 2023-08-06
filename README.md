@@ -276,3 +276,11 @@ Goodbye. We are looking forward to seeing you again.
      user-session-000001_assistant_bot_2.bin
      user-session-000001_assistant_bot_3.bin
      ```
+
+### VERSION OF APP
+
+```
+List of commands: app version ('version')
+Enter your command >>> version
+Version: '0.3.0', package: assistant_bot
+```
