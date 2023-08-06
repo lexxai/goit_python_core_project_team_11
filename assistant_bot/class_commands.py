@@ -3,6 +3,7 @@ from .class_record import Record
 from .class_note_record import Note_Record
 from .class_address_book import AddressBook
 from .class_notes import Notes
+from datetime import datetime
 
 from functools import wraps
 
@@ -335,6 +336,24 @@ class Commands:
             result = f"{result} days"
         return result
 
+    @output_operation_describe
+    @input_error
+    def handler_congrats_in_days(*args):
+        days = int(args[0])
+        congrats_birthdays = []
+        for record in AddressBook.values():
+            birthday = record.birthday
+            if birthday:
+                today = datetime.now().date()
+                next_birthday = datetime(
+                    today.year, birthday.date.month, birthday.date.day).date()
+                if next_birthday < today:
+                    next_birthday = datetime(
+                        today.year + 1, birthday.date.month, birthday.date.day).date()
+                days_until_birthday = (next_birthday - today).days
+                if days_until_birthday <= days:
+                    congrats_birthdays.append(record.name)
+        return congrats_birthdays
 
     @output_operation_describe
     @input_error
@@ -519,7 +538,8 @@ class Commands:
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
         handler_list_versions: ("list versions", "l v"),    
-        handler_list_csv: ("list csv", "l csv"),     
+        handler_list_csv: ("list csv", "l csv"),
+        handler_congrats_in_days: ("congrats in"),     
 
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
