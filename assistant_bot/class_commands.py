@@ -1,8 +1,8 @@
 from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
 from .class_record import Record
 from .class_note_record import Note_Record
-from .class_address_book import AddressBook
-from .class_notes import Notes
+# from .class_address_book import AddressBook
+# from .class_notes import Notes
 
 from functools import wraps
 
