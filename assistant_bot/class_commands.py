@@ -340,20 +340,9 @@ class Commands:
     @input_error
     def handler_congrats_in_days(self, *args):
         days = int(args[0])
-        congrats_birthdays = []
-        for user in self.a_book.values():
-            birthday = self.a_book.get_record(user).birthday
-            if birthday:
-                today = datetime.now().date()
-                next_birthday = datetime(
-                    today.year, birthday.date.month, birthday.date.day).date()
-                if next_birthday < today:
-                    next_birthday = datetime(
-                        today.year + 1, birthday.date.month, birthday.date.day).date()
-                days_to_birthday = (next_birthday - today).days
-                if days_to_birthday <= days:
-                    congrats_birthdays.append(user)
-        return congrats_birthdays
+        result = self.a_book.get_record(user).congrats_in_days()
+        return result
+        
 
     @output_operation_describe
     @input_error
@@ -539,7 +528,7 @@ class Commands:
         handler_restore: ("restore", "res"),
         handler_list_versions: ("list versions", "l v"),    
         handler_list_csv: ("list csv", "l csv"),
-        handler_congrats_in_days: ("congrats"),     
+        handler_congrats_in_days: ("congrats",),     
 
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
@@ -608,5 +597,6 @@ class Commands:
                           "Some Note text #tag1 #tag2",
         handler_show_notes: "Show all user's records in Notes.",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
-        handler_show_app_version: "Show version of application",           
+        handler_show_app_version: "Show version of application",
+        handler_congrats_in_days: "Add days to birthday"           
     }

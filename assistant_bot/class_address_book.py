@@ -3,6 +3,7 @@ from .class_record import Record
 import csv
 import pickle
 from  pathlib import Path
+from datetime import datetime
 
 
 class AddressBook(UserDict):
@@ -178,7 +179,7 @@ class AddressBook(UserDict):
             result_version.append("version: {}".format(found_file.stem.split("_")[-1]))
         return "\n".join(result_version) if any(result_version) else True
 
-    
+
     def list_csv(self):
         filename = "*.csv"
         list_files = Path('.').glob(self._gen_filename(filename))
@@ -212,6 +213,22 @@ class AddressBook(UserDict):
         self._page_pos = 0
         raise StopIteration
 
+    def congrats_in_days(self, *args):
+        days = int(args[0])
+        congrats_birthdays = []
+        for user in self.values():
+            birthday = self.get_record(user).birthday
+            if birthday:
+                today = datetime.now().date()
+                next_birthday = datetime(
+                    today.year, birthday.date.month, birthday.date.day).date()
+                if next_birthday < today:
+                    next_birthday = datetime(
+                        today.year + 1, birthday.date.month, birthday.date.day).date()
+                days_to_birthday = (next_birthday - today).days
+                if days_to_birthday <= days:
+                    congrats_birthdays.append(user)
+        return congrats_birthdays
 
 
 
