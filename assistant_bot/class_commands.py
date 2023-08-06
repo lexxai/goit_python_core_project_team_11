@@ -17,15 +17,15 @@ else:
 
 class Commands:
 
-    def __init__(self, a_book: AddressBook, 
-                 a_notes: Notes, 
-                 callback: object = None,
-                 child :object = None
-                 ):
-        self.a_book: AddressBook = a_book
-        self.a_notes: Notes = a_notes
-        self._callback = callback
-        self._child = child
+    # def __init__(self, a_book: AddressBook = None, 
+    #              a_notes: Notes = None, 
+    #              callback: object = None,
+    #              child :object = None
+    #              ):
+    #     #self.a_book: AddressBook = child.a_book
+    #     #self.a_notes: Notes = child.a_notes
+    #     # self._callback = child._callback
+    #     # self._child = child
 
 
     def split_line_by_space(self, line: str) -> list[str]:
@@ -72,8 +72,9 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_book and self.a_book.backup_data:
                 self.a_book.backup_data()
-            if self._callback is not None:
-                self._callback("backup_data")
+            self.backup_data()   
+            # if self._callback is not None:
+            #     self._callback("backup_data")
             return result
         return wrapper
 
@@ -84,8 +85,9 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_notes and self.a_notes.backup_data:
                 self.a_notes.backup_data()
-            if self._callback is not None:
-                 self._callback("backup_data")
+            self.backup_data()   
+            # if self._callback is not None:
+            #     self._callback("backup_data")
             return result
         return wrapper       
 
@@ -417,9 +419,9 @@ class Commands:
     #@output_operation_describe
     def handler_list_versions(self, *args) -> str:
         result = None
-        #result = self.a_book.list_versions()
-        if self._callback is not None:
-            result = self._callback("list_versions")
+        result = self.list_versions()
+        # if self._callback is not None:
+        #     result = self._callback("list_versions")
         return result
         
 
