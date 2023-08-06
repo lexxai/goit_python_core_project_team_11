@@ -341,8 +341,8 @@ class Commands:
     def handler_congrats_in_days(self, *args):
         days = int(args[0])
         congrats_birthdays = []
-        for record in self.a_book.values():
-            birthday = record.birthday
+        for user in self.a_book.values():
+            birthday = self.a_book.get_record(user).birthday
             if birthday:
                 today = datetime.now().date()
                 next_birthday = datetime(
@@ -350,9 +350,9 @@ class Commands:
                 if next_birthday < today:
                     next_birthday = datetime(
                         today.year + 1, birthday.date.month, birthday.date.day).date()
-                days_until_birthday = (next_birthday - today).days
-                if days_until_birthday <= days:
-                    congrats_birthdays.append(record.name)
+                days_to_birthday = (next_birthday - today).days
+                if days_to_birthday <= days:
+                    congrats_birthdays.append(user)
         return congrats_birthdays
 
     @output_operation_describe
