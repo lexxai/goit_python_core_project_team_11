@@ -338,10 +338,10 @@ class Commands:
 
     @output_operation_describe
     @input_error
-    def handler_congrats_in_days(*args):
+    def handler_congrats_in_days(self, *args):
         days = int(args[0])
         congrats_birthdays = []
-        for record in AddressBook.values():
+        for record in self.a_book.values():
             birthday = record.birthday
             if birthday:
                 today = datetime.now().date()
@@ -539,7 +539,7 @@ class Commands:
         handler_restore: ("restore", "res"),
         handler_list_versions: ("list versions", "l v"),    
         handler_list_csv: ("list csv", "l csv"),
-        handler_congrats_in_days: ("congrats in"),     
+        handler_congrats_in_days: ("congrats"),     
 
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
