@@ -396,9 +396,9 @@ class Commands:
         result = None
         if any(args):
             version = args[0]
-        #result = self.a_book.backup_data(version)
-        if self._callback is not None:
-            result = self._callback("backup_data",version = version, backup = True)
+        result = self.backup_data(version = version, backup = True)
+        # if self._callback is not None:
+        #     result = self._callback("backup_data",version = version, backup = True)
         return result
 
 
@@ -409,9 +409,9 @@ class Commands:
         result = None
         if any(args):
             version = args[0]
-        #result = self.a_book.restore_data(version)
-        if self._callback is not None:
-            result = self._callback("restore_data", version = version, restore = True)
+        result = self.restore_data(version = version, restore = True)
+        # if self._callback is not None:
+        #     result = self._callback("restore_data", version = version, restore = True)
         return result
         
 
