@@ -57,6 +57,7 @@ class Assistant_bot(Commands):
             else:
                 filename = f"{self.default_filename}.bin"
             try:    
+                #print(f"{filename=}")
                 with open(self._gen_filename(filename), "rb") as file:
                     content = pickle.load(file)
                     if type(content) == type(self):
