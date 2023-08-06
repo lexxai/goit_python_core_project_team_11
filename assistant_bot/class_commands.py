@@ -8,12 +8,25 @@ from functools import wraps
 
 from .sorting import main as sorting
 
+import sys
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version
+else:
+    from importlib_metadata import version
+
 
 class Commands:
 
-    def __init__(self, a_book: AddressBook, a_notes: Notes):
+    def __init__(self, a_book: AddressBook, 
+                 a_notes: Notes, 
+                 callback: object = None,
+                 child :object = None
+                 ):
         self.a_book: AddressBook = a_book
         self.a_notes: Notes = a_notes
+        self._callback = callback
+        self._child = child
+
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -53,11 +66,14 @@ class Commands:
         return Commands.handler_undefined, [line]
 
 
-    def backup_data(func):
+    def backup_data_address_book(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
-            self.a_book.backup_data()
+            if self.a_book and self.a_book.backup_data:
+                self.a_book.backup_data()
+            if self._callback is not None:
+                self._callback("backup_data")
             return result
         return wrapper
 
@@ -66,7 +82,10 @@ class Commands:
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
-            self.a_note.backup_data()
+            if self.a_notes and self.a_notes.backup_data:
+                self.a_notes.backup_data()
+            if self._callback is not None:
+                 self._callback("backup_data")
             return result
         return wrapper       
 
@@ -100,7 +119,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_add_address_book(self, *args) -> str:
         result = None
@@ -116,7 +135,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_change_phone(self, *args) -> str:
         user = args[0]
@@ -134,7 +153,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_phone(self, *args) -> str:
         user = args[0]
@@ -143,7 +162,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_record(self, *args) -> str:
         user = args[0]
@@ -151,7 +170,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_all_records(self, *args) -> str:
         if args[0] == "YES":
@@ -253,7 +272,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_add_birthday(self, *args) -> str:
         user = args[0]
@@ -262,7 +281,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_add_email(self, *args) -> str:
         user = args[0]
@@ -271,7 +290,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_add_address(self, *args) -> str:
         user = args[0]
@@ -280,7 +299,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_birthday(self, *args) -> str:
         user = args[0]
@@ -288,7 +307,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_email(self, *args) -> str:
         user = args[0]
@@ -296,7 +315,7 @@ class Commands:
 
 
     @output_operation_describe
-    @backup_data
+    @backup_data_address_book
     @input_error
     def handler_delete_address(self, *args) -> str:
         user = args[0]
@@ -372,9 +391,12 @@ class Commands:
     @input_error
     def handler_backup(self, *args) -> bool:
         version = None
+        result = None
         if any(args):
             version = args[0]
-        result = self.a_book.backup_data(version)
+        #result = self.a_book.backup_data(version)
+        if self._callback is not None:
+            result = self._callback("backup_data",version = version, backup = True)
         return result
 
 
@@ -382,15 +404,22 @@ class Commands:
     @input_error
     def handler_restore(self, *args) -> bool:
         version = None
+        result = None
         if any(args):
             version = args[0]
-        result = self.a_book.restore_data(version)
+        #result = self.a_book.restore_data(version)
+        if self._callback is not None:
+            result = self._callback("restore_data", version = version, restore = True)
         return result
+        
 
 
-    @output_operation_describe
+    #@output_operation_describe
     def handler_list_versions(self, *args) -> str:
-        result = self.a_book.list_versions()
+        result = None
+        #result = self.a_book.list_versions()
+        if self._callback is not None:
+            result = self._callback("list_versions")
         return result
         
 
@@ -431,6 +460,13 @@ class Commands:
         else:
             return "No notes found, maybe you want to add them first?"
 
+    @output_operation_describe
+    def handler_show_app_version(self, *args) -> str:
+        try:
+            version_str = version(__package__)
+        except Exception:
+            version_str = "undefined"
+        return f"Version: '{ version_str }', package: {__package__}"
 
 
     @input_error
@@ -492,7 +528,7 @@ class Commands:
         handler_show_notes: ("show notes", "?n"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
-
+        handler_show_app_version: ("app version","version"),
     }
 
     """
@@ -552,4 +588,5 @@ class Commands:
                           "Some Note text #tag1 #tag2",
         handler_show_notes: "Show all user's records in Notes.",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
+        handler_show_app_version: "Show version of application",           
     }
