@@ -216,18 +216,18 @@ class AddressBook(UserDict):
     def congrats_in_days(self, *args):
         days = int(args[0])
         congrats_birthdays = []
-        for user in self.values():
-            birthday = self.get_record(user).birthday
+        for user in self.data.values():
+            birthday = user.birthday  
             if birthday:
                 today = datetime.now().date()
                 next_birthday = datetime(
-                    today.year, birthday.date.month, birthday.date.day).date()
+                    today.year, birthday.value.month, birthday.value.day).date()
                 if next_birthday < today:
                     next_birthday = datetime(
-                        today.year + 1, birthday.date.month, birthday.date.day).date()
+                        today.year + 1, birthday.value.month, birthday.value.day).date()
                 days_to_birthday = (next_birthday - today).days
                 if days_to_birthday <= days:
-                    congrats_birthdays.append(user)
+                    congrats_birthdays.append(user.name)
         return congrats_birthdays
 
 

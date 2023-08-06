@@ -3,7 +3,6 @@ from .class_record import Record
 from .class_note_record import Note_Record
 from .class_address_book import AddressBook
 from .class_notes import Notes
-from datetime import datetime
 
 from functools import wraps
 
@@ -336,11 +335,11 @@ class Commands:
             result = f"{result} days"
         return result
 
-    @output_operation_describe
-    @input_error
-    def handler_congrats_in_days(self, *args):
+    # @output_operation_describe
+    # @input_error
+    def handler_congrats_in_days(self, *args) -> str:
         days = int(args[0])
-        result = self.a_book.get_record(user).congrats_in_days()
+        result = self.a_book.congrats_in_days(days)
         return result
         
 
@@ -528,7 +527,7 @@ class Commands:
         handler_restore: ("restore", "res"),
         handler_list_versions: ("list versions", "l v"),    
         handler_list_csv: ("list csv", "l csv"),
-        handler_congrats_in_days: ("congrats",),     
+        handler_congrats_in_days: ("congrats", "c+"),     
 
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
