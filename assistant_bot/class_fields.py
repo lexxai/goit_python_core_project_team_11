@@ -93,21 +93,20 @@ class Phone(Field):
         return length
 
 
-    # +380(67)777-7-777 або +380(67)777-77-77
     def is_phone(self, test_str: str) -> bool:
         #print(f"is_phone {test_str=}")
+        #Intonational format of phone ?
         if test_str.startswith("+"):
-            if self.phone_length(test_str) != 12:
+            phone_len = self.phone_length(test_str)
+            if  phone_len > 15 or phone_len < 10:
                 return False
-            regex = r"\+\d{1,3}\(?(?!0)\d{2,4}\)?\d{3}[- ]?(?:\d[- ]?\d{3}|\d{2}[- ]?\d{2})"
-            matches = re.search(regex, test_str)
-            return matches is not None 
         else:
             if self.phone_length(test_str) > 10:
                 return False
-            regex = r"\(?\d{2,4}\)?\d?"
-            matches = re.search(regex, test_str)
-            return matches is not None 
+        #allow only digit, space, ( , ) , -
+        regex = r"\+?[\d\s\-\(\)]+"
+        matches = re.search(regex, test_str)
+        return matches is not None 
 
     @property
     def value(self):
