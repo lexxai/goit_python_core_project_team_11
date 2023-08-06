@@ -228,7 +228,8 @@ class AddressBook(UserDict):
                 days_to_birthday = (next_birthday - today).days
                 if days_to_birthday <= days:
                     congrats_birthdays.append(user.name)
-        return congrats_birthdays
+                    #congrats_birthdays.append(user.birthday)
+        return f"{', '.join(str(p) for p in congrats_birthdays)}"
 
 
 

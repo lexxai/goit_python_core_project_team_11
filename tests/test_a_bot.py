@@ -25,7 +25,8 @@ if __name__ == "__main__":
         assistant.api("add address book", "Jon-02", "+38044333221", "4402",
                        verbose=verbose)               
         assistant.api("add address book", "Mike", "+38044333221", "4402",
-                       verbose=verbose)  
+                       verbose=verbose)
+        assistant.api("add birthday", "Mike", "1999-08-09", verbose=verbose)  
         assistant.api("add address book", "Mike Svarovsky", "+38044333101",
                        verbose=verbose)                                                     
         assistant.api("add note", "Note 1", "#tag1", "#tag2", verbose=verbose)
