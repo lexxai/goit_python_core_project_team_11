@@ -132,6 +132,10 @@ def main():
         result = command(notes_text,  tags_list)
         print(result)
         
+
+def api(*args):
+    print(f"DataAddNote.api : args = {args}")
+    return "DataAddNote API DONE"
         
         
         
