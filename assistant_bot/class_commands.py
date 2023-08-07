@@ -1,8 +1,8 @@
 from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
 from .class_record import Record
 from .class_note_record import Note_Record
-from .class_address_book import AddressBook
-from .class_notes import Notes
+# from .class_address_book import AddressBook
+# from .class_notes import Notes
 
 from functools import wraps
 
@@ -17,15 +17,15 @@ else:
 
 class Commands:
 
-    def __init__(self, a_book: AddressBook, 
-                 a_notes: Notes, 
-                 callback: object = None,
-                 child :object = None
-                 ):
-        self.a_book: AddressBook = a_book
-        self.a_notes: Notes = a_notes
-        self._callback = callback
-        self._child = child
+    # def __init__(self, a_book: AddressBook = None, 
+    #              a_notes: Notes = None, 
+    #              callback: object = None,
+    #              child :object = None
+    #              ):
+    #     #self.a_book: AddressBook = child.a_book
+    #     #self.a_notes: Notes = child.a_notes
+    #     # self._callback = child._callback
+    #     # self._child = child
 
 
     def split_line_by_space(self, line: str) -> list[str]:
@@ -72,8 +72,9 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_book and self.a_book.backup_data:
                 self.a_book.backup_data()
-            if self._callback is not None:
-                self._callback("backup_data")
+            self.backup_data()   
+            # if self._callback is not None:
+            #     self._callback("backup_data")
             return result
         return wrapper
 
@@ -84,8 +85,9 @@ class Commands:
             result = func(self, *args, **kwargs)
             if self.a_notes and self.a_notes.backup_data:
                 self.a_notes.backup_data()
-            if self._callback is not None:
-                 self._callback("backup_data")
+            self.backup_data()   
+            # if self._callback is not None:
+            #     self._callback("backup_data")
             return result
         return wrapper       
 
@@ -256,7 +258,7 @@ class Commands:
                 if any(c_alias):
                     c_str += f" ({c_alias_str})"
                 commands.append(c_str)
-            return "List of commands: " + ", ".join(sorted(commands))
+            return "\nThe full command syntax is available on request: command ? [Example: +a ?] \nList of commands: \n" + ", ".join(sorted(commands))
         else:
             if type(command) == str:
                 command = " ".join(args)
@@ -401,9 +403,9 @@ class Commands:
         result = None
         if any(args):
             version = args[0]
-        #result = self.a_book.backup_data(version)
-        if self._callback is not None:
-            result = self._callback("backup_data",version = version, backup = True)
+        result = self.backup_data(version = version, backup = True)
+        # if self._callback is not None:
+        #     result = self._callback("backup_data",version = version, backup = True)
         return result
 
 
@@ -414,9 +416,9 @@ class Commands:
         result = None
         if any(args):
             version = args[0]
-        #result = self.a_book.restore_data(version)
-        if self._callback is not None:
-            result = self._callback("restore_data", version = version, restore = True)
+        result = self.restore_data(version = version, restore = True)
+        # if self._callback is not None:
+        #     result = self._callback("restore_data", version = version, restore = True)
         return result
         
 
@@ -424,9 +426,9 @@ class Commands:
     #@output_operation_describe
     def handler_list_versions(self, *args) -> str:
         result = None
-        #result = self.a_book.list_versions()
-        if self._callback is not None:
-            result = self._callback("list_versions")
+        result = self.list_versions()
+        # if self._callback is not None:
+        #     result = self._callback("list_versions")
         return result
         
 

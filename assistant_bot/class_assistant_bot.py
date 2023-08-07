@@ -11,22 +11,20 @@ class Assistant_bot(Commands):
     def __init__(self, 
                  id: str = None,
                  auto_backup: bool = True,
-                 auto_restore: bool = True):
+                 auto_restore: bool = True,
+                 default_filename: str = "assistant_bot"
+                 ):
 
         self.id: str = id
-        self.auto_backup = auto_backup
-        self.auto_restore = auto_restore
+        self.auto_backup: bool = auto_backup
+        self.auto_restore: bool = auto_restore
         self.a_book: AddressBook = AddressBook(id=id)
         self.a_notes: Notes = Notes(id=id)
-        self.default_filename: str = "assistant_bot"
+        self.default_filename: str = default_filename
 
         self.restore_data()     
 
-        super().__init__(a_book = self.a_book, 
-                         a_notes = self.a_notes, 
-                         callback = self._callback,
-                         child = self
-                         )
+        #super().__init__(child = self)
 
     def _callback(self, method_str: str, *args, **kwargs):
         #print(f"{__name__} [_callback] {method_str=}")
@@ -59,6 +57,7 @@ class Assistant_bot(Commands):
             else:
                 filename = f"{self.default_filename}.bin"
             try:    
+                #print(f"{filename=}")
                 with open(self._gen_filename(filename), "rb") as file:
                     content = pickle.load(file)
                     if type(content) == type(self):

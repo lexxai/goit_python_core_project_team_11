@@ -1,4 +1,5 @@
 from datetime import date
+import re
 
 # Parent class
 class Field:
@@ -51,13 +52,19 @@ class Email(Field):
         self.value = value
         super().__init__(value)
 
+
+    def find_all_emails(self, text):
+        result = re.findall(r"[a-zA-Z][\w_.]+@\w{2,}\.\w{2,}", text)
+        return result
+
     @property
     def value(self):
         return self.__value
 
     @value.setter
     def value(self, __new_value):
-        if __new_value and '@' in __new_value:
+        result = self.find_all_emails(__new_value)
+        if result:
             self.__value = __new_value
         else:
             raise ValueError("wrong email format")  
@@ -70,15 +77,46 @@ class Phone(Field):
         self.value = value
         super().__init__(value)
 
+
+    def phone_length(self, test_str: str) -> int:
+        """Calculate length of string of digitals only chars
+
+        Args:
+            test_str (str): _description_
+
+        Returns:
+            int: _description_
+        """
+        regex = r"([^\d]?)"
+        subst = ""
+        length = len(re.sub(regex, subst, test_str, 0))
+        return length
+
+
+    def is_phone(self, test_str: str) -> bool:
+        #print(f"is_phone {test_str=}")
+        #Intonational format of phone ?
+        if test_str.startswith("+"):
+            phone_len = self.phone_length(test_str)
+            if  phone_len > 15 or phone_len < 10:
+                return False
+        else:
+            if self.phone_length(test_str) > 10:
+                return False
+        #allow only digit, space, ( , ) , -
+        regex = r"\+?[\d\s\-\(\)]+"
+        matches = re.search(regex, test_str)
+        return matches is not None 
+
     @property
     def value(self):
         return self.__value
 
     @value.setter
     def value(self, __new_value):
-        try:
-            self.__value = str(int(__new_value))
-        except ValueError:
+        if self.is_phone(__new_value):
+            self.__value = __new_value
+        else:
             raise ValueError("wrong phone format")
 
 
