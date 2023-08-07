@@ -599,5 +599,5 @@ class Commands:
         handler_show_notes: "Show all user's records in Notes.",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
         handler_show_app_version: "Show version of application",
-        handler_congrats_in_days: "Add days to see next birthdays"           
+        handler_congrats_in_days: "Show list of users with birthdays, which will be in certain days. Required days parameter"           
     }
