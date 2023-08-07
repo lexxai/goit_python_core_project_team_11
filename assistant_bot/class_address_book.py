@@ -227,10 +227,10 @@ class AddressBook(UserDict):
                         today.year + 1, birthday.value.month, birthday.value.day).date()
                 days_to_birthday = (next_birthday - today).days
                 if days_to_birthday <= days:
-                    congrats_birthdays.append(user.name)
+                    congrats_birthdays.append((user.name, next_birthday))
                     #congrats_birthdays.append(user.birthday.value.day)
         #return f"{', '.join(str(p) for p in congrats_birthdays)}"
-        return  "\n".join(str(name) for name in congrats_birthdays)
+        return  "\n".join(f"{name}: {date.strftime('%Y-%m-%d')}" for name, date in congrats_birthdays)
 
 
 
