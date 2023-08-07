@@ -7,6 +7,7 @@ from .class_note_record import Note_Record
 from functools import wraps
 
 from .sorting import main as sorting
+from .class_notes_ext import add_note, delete_note, change_note, search_notes, show_notes, sort_notes, clear_notes, parse_input
 
 import sys
 if sys.version_info >= (3, 8):
@@ -431,36 +432,39 @@ class Commands:
         return result   
 
 
-    @output_operation_describe
     @backup_data_note
     @input_error
-    def handler_add_note(self, *args) -> str:
-        result = None
-        note_list: list = []
-        note_str:str = None
-        tags: list = []
-        for arg in args:
-            if arg.startswith('#'):
-                tag_str:str = str(arg[1:]).strip()
-                tags.append(Tag(tag_str))
-            else:
-                note_list.append(arg)
-        if note_list:
-            note_str = " ".join(note_list)
-       
+    def handler_add_notes(self, *args) -> str:
+        print(add_note())
 
-        note_rec = Note_Record( Note(note_str), tags )
-        result = self.a_notes.add_record(note_rec)
+        
+    @backup_data_note
+    @input_error    
+    def handler_change_notes(self, *args):
+        index = args[0]
+        print(index)
+        print(change_note(index))
 
-        return result        
+    @backup_data_note
+    @input_error
+    def handler_delete_notes(self, *args):
+        index = args[0]
+        print(index)
+        print(delete_note(index))
+    
+    @backup_data_note
+    @input_error    
+    def handler_clear_notes(self, *args):
+        print(clear_notes())
+        
+    def handler_search_notes(self, *args):
+        print(search_notes())
+        
+    def handler_sort_notes(self, *args):
+        print(sort_notes())
 
-
-    @output_operation_describe
     def handler_show_notes(self, *args) -> str:
-        if len(self.a_notes):
-            return str(self.a_notes)
-        else:
-            return "No notes found, maybe you want to add them first?"
+        print(show_notes())
 
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
@@ -526,8 +530,13 @@ class Commands:
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
         #notes
-        handler_add_note: ("add note", "+n"),
+        handler_add_notes: ("add notes", "+n"),
         handler_show_notes: ("show notes", "?n"),
+        handler_change_notes: ("change notes", "=n"),
+        handler_delete_notes: ("delete notes", "-n"),
+        handler_clear_notes: ("clear notes", "---"),
+        handler_search_notes: ("search notes","?n="),
+        handler_sort_notes: ("sort notes", "sn"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
         handler_show_app_version: ("app version","version"),
@@ -586,9 +595,13 @@ class Commands:
         handler_list_csv: "List of saved cvs files",
         handler_undefined: "Help for this command is not yet available",
         #notes
-        handler_add_note: "Add a new note record in the format: "
-                          "Some Note text #tag1 #tag2",
+        handler_add_notes: "Add a new note record",
         handler_show_notes: "Show all user's records in Notes.",
+        handler_change_notes: "Change note by index",
+        handler_delete_notes: "Delete note by index",
+        handler_clear_notes: "Clear all notes",
+        handler_search_notes: "Search notes or tags by pattern",
+        handler_sort_notes: "Sort notes by type that user choose",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
         handler_show_app_version: "Show version of application",           
     }

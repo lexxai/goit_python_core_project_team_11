@@ -1,10 +1,9 @@
 from collections import UserDict
-from datetime import datetime
+from datetime import datetime 
 import re, pickle
 
 
-FILE_PATH = "./notes.bin"
-
+FILE_PATH = "./assistant_bot/notes.bin"
 
 class Date:
     def __init__(self):
@@ -87,13 +86,13 @@ class Notes(UserDict):
             results = sorted(notes.data.items(), key=lambda item: [tag.value for tag in item[1].tags])
         return results
         
-    def serialize(self, file_path):
-        with open(file_path, "wb") as file:
-            pickle.dump(self.data, file)
+    # def serialize(self, file_path):
+    #     with open(file_path, "wb") as file:
+    #         pickle.dump(self.data, file)
 
-    def deserialize(self, file_path):
-        with open(file_path, "rb") as file:
-            self.data = pickle.load(file)
+    # def deserialize(self, file_path):
+    #     with open(file_path, "rb") as file:
+    #         self.data = pickle.load(file)
 
 
 class Iterator:
@@ -185,17 +184,18 @@ def delete_note(index):
     return f'Note:\n{index}. {record.delete_note(index)}was removed'
 
 
-def clear_notes():
+def clear_notes(*args):
     if notes:
         while True:
-            choice = input('Press "y" to clear all records or "n" to discard')
+            choice = input('Press "y" to clear all records or "n" to discard: ')
             if choice in ['y', 'n']:
                 break
             print('Wrong choice')
-            if choice == 'y':
-                notes.clear()
-            elif choice == 'n': 
-                show_notes()
+        if choice == 'y':
+            notes.data.clear()
+            return f'Notes was cleared {notes.data}'
+        elif choice == 'n': 
+            return f'{notes.data}'
 
 
 def sort_notes(*args):
@@ -258,7 +258,7 @@ def parse_input(command_line: str) -> tuple[object, list]:
         return 'Wrong command'
 
 
-def main():
+def main_notes():
     try:
         notes.deserialize(FILE_PATH)
     except FileNotFoundError:
@@ -281,5 +281,5 @@ def main():
        
         
 if __name__ == '__main__':
-    main()
+    main_notes()
     
