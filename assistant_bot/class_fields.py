@@ -134,15 +134,21 @@ class Birthday(Field):
 
     @value.setter
     def value(self, __new_value):
-        d = date.fromisoformat(__new_value)
+        new_date = __new_value
+        pattern_str = r'^\d{2}.\d{2}.\d{4}$'
+        if re.match(pattern_str, __new_value):
+            new_date = __new_value[6:]+"/"+__new_value[3:5]+"/"+__new_value[0:2]
+        d = date.fromisoformat(new_date)
+        #print(f"date= {d}")
         if d:
             self.__value = d
         else:
             raise ValueError("wrong date format, not ISO 8601")
 
     def __str__(self):
-        value = self.__value.isoformat()
-        return value if value else ""
+        value = self.__value
+        result = value.isoformat() if value else ""
+        return result
 
 
 class Tag(Field):
