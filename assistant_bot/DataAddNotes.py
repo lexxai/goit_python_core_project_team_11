@@ -6,7 +6,6 @@ import re, pickle
 FILE_PATH = "./notes.bin"
 
 
-
 class Date:
     def __init__(self):
         self.current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -28,6 +27,7 @@ class Note():
     def __repr__(self):
         return str(self.value)
     
+    
 class Tag():
     def __init__(self, value=''):
         self.value = value
@@ -37,6 +37,7 @@ class Tag():
     
     def __repr__(self):
         return str(self.value)
+    
     
 class Note_Record:
     def __init__(self, index, note: Note, creation_date: Date, tag: Tag = None):
@@ -50,6 +51,7 @@ class Note_Record:
     
     def __repr__(self) -> str:
         return str(self)
+    
     
 class Notes(UserDict):
     def add_record(self, record: Note_Record):
@@ -93,6 +95,7 @@ class Notes(UserDict):
         with open(file_path, "rb") as file:
             self.data = pickle.load(file)
 
+
 class Iterator:
     def __init__(self, notes):
         self.notes = notes
@@ -109,11 +112,13 @@ class Iterator:
             return f"{index}. {record}"
         raise StopIteration("End")
     
+    
 notes = Notes()
 
 
 def no_command(*args):
     return 'unknown_command'
+
 
 def add_note(*args) -> str:
         if not notes:       
@@ -136,13 +141,17 @@ def show_notes(*args):
         return 'No notes in notebook'
     else:
         iterator = Iterator(notes)
+        i = 0
         for record in iterator:
             print(record)
-            try:
-                input("Press 'Enter' to continue\n")
-            except KeyboardInterrupt:
-                break
+            i += 1
+            if i%4 == 0:
+                try:
+                    input("Press 'Enter' to continue\n")
+                except KeyboardInterrupt:
+                    break
     return "End\n"
+        
         
 def change_note(index):
     index = int(index[0])
@@ -155,7 +164,7 @@ def change_note(index):
             category = input('Press "1" to edit notes, "2" - to edit Tags#: ')
             if category == '1' or category == '2':
                 break
-            print('Wrong choise')
+            print('Wrong choice')
         if category == '1':
             note = Note(input(f'Current record({record.note}): '))
         elif category == '2':
@@ -167,6 +176,7 @@ def change_note(index):
         return f'{index}. {record}'
     else:
         return f'No record with {index} index'
+
         
 def delete_note(index):
     index = int(index[0])
@@ -174,17 +184,40 @@ def delete_note(index):
         record = notes
     return f'Note:\n{index}. {record.delete_note(index)}was removed'
 
+
+def clear_notes():
+    if notes:
+        while True:
+            choice = input('Press "y" to clear all records or "n" to discard')
+            if choice in ['y', 'n']:
+                break
+            print('Wrong choice')
+            if choice == 'y':
+                notes.clear()
+            elif choice == 'n': 
+                show_notes()
+
+
 def sort_notes(*args):
     while True:
         category = input('Press "1" to sort by date, "2" - to sort by index, "3" - to sort by #Tags: ')
         if category in ['1', '2', '3']:
             break
-        print('Wrong choise')
+        print('Wrong choice')
     result = notes.sort(category)
-    # print(result)
-    for record in result:
-        print(record)
-    return f'Sorted {len(result)} records'
+    if not result:
+        return 'No notes in notebook'
+    else:
+        i = 0
+        for record in result:
+            print(f'{record}\n')
+            i += 1
+            if i%4 == 0:
+                try:
+                    input("Press 'Enter' to continue\n")
+                except KeyboardInterrupt:
+                    break
+    return "End\n"
   
 
 def search_notes(search_str):
@@ -192,7 +225,7 @@ def search_notes(search_str):
         category = input('Press "1" to search in notes, "2" - in #Tags: ')
         if category == '1' or category == '2':
             break
-        print('Wrong choise')
+        print('Wrong choice')
     search_str = input('Please enter string to search: ')
     if category == "1":
         search_results = notes.search(search_str, 1)
@@ -209,9 +242,11 @@ dict_command = {'add notes': add_note,
                'change notes': change_note,
                'delete notes': delete_note,
                'sort notes': sort_notes,
-               'search notes': search_notes}
+               'search notes': search_notes,
+               'clear notes': clear_notes}
                 
 list_end = ['good bye', 'close', 'exit']
+
 
 def parse_input(command_line: str) -> tuple[object, list]:
     line: str = command_line.lower().lstrip()
@@ -238,19 +273,13 @@ def main():
             print('Good bye!')
             break
         command, args = parse_input(user_input)
-        # try:
-        result = command(args)
-        print(result)
-        # except KeyError:
-            # print('Wrong command2')
-        
-
-# def api(*args):
-#     print(f"DataAddNote.api : args = {args}")
-#     result=parser_args(*args)
-#     return f"DataAddNote API DONE {result=}"
-        
-        
+        try:
+            result = command(args)
+            print(result)
+        except KeyError:
+            print('Wrong command')
+       
         
 if __name__ == '__main__':
     main()
+    
