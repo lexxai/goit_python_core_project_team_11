@@ -26,12 +26,12 @@ class RecordNotes:
             for i in tags_list:
                 self.tags.append(i)
     
-    def change_phone(self, old_phone, new_phone):
-        for k,v in enumerate(self.phones):
-            if old_phone.value == v.value:
-                self.phones[k] = new_phone
-                return f"Old phone {old_phone} change to {new_phone}"
-        return f"{old_phone} absent for contact {self.note}"
+#    def change_phone(self, old_phone, new_phone):
+#        for k,v in enumerate(self.phones):
+#            if old_phone.value == v.value:
+#                self.phones[k] = new_phone
+#                return f"Old phone {old_phone} change to {new_phone}"
+#        return f"{old_phone} absent for contact {self.note}"
     
     def add_tag(self, tags_list: Tag):
         for i in tags_list:
