@@ -1,5 +1,4 @@
 from collections import UserDict
-
 class Field:
     def __init__(self, value):
         self.value = value
@@ -8,8 +7,6 @@ class Field:
     def __repr__(self) -> str:
         return str(self)
         
-
-
 class Note(Field):
     ...
     
@@ -17,10 +14,11 @@ class Tag(Field):
     ...
     
 class RecordNotes:
-    def __init__(self, note: Note, tags_list: Tag = None, note_old = None, note_new = None):
+    def __init__(self, note: Note, tags_list: Tag = None, note_old = None, note_new = None,):
         #self.note_old = note_old
         #self. note_new = note_new
         self.note = note
+        self.id: str = id
         self.tags = []
         if tags_list:
             for i in tags_list:
@@ -32,35 +30,41 @@ class RecordNotes:
 #                self.phones[k] = new_phone
 #                return f"Old phone {old_phone} change to {new_phone}"
 #        return f"{old_phone} absent for contact {self.note}"
-    
+
     def add_tag(self, tags_list: Tag):
         for i in tags_list:
+            #if i not in [t.value for t in self.tags]:
             if i not in [t for t in self.tags]:
                 self.tags.append(i)
                 return f"tag {i} add to note {self.note}"
         return f"tag {i} already exists for note {self.note}"
     
-    def __str__(self) -> str:
-        return f"{self.note}: {', '.join(str(p) for p in self.tags)}"
-    
+    def __str__(self) -> str:                     
+        return f"note: {self.note}{', '.join(str(p) for p in self.tags)} "
+        #return f"note: {self.note}: {', '.join(str(p) for p in self.tags)} "
 class AddressNotes(UserDict):
     def add_record(self, record: RecordNotes):
         self.data[str(record.note)] = record
         return 'Add success'
-    def change_record(self, record: RecordNotes, old_note, new_note):
-        del self.data[old_note.value]
+    def change_record(self, record: RecordNotes, id_note, new_note):
+        #del self.data[old_note.value]
+        #print(elf.data)
         self.data[new_note.value] = record
         return 'Change success'
+    def get_next(self):
+        id=len(self.data)+1
+        return  id
+    def re_index():
+        ...
+        
     def __str__(self) -> str:
-        return "\n".join(str(r) for r in self.data.values())
-    
-
+        #for i in self.data.values:
+        return "\n".join(f"id:{r.id}, {r}" for r in self.data.values()) 
+        # "\n".join(f"{id:{r.id}, {r}}" for r in self.data.values())
+        # "\n".join(f'{str(v)}'  for v in self.data.values())
 dict_notes = AddressNotes()
-
-
 def no_command(*args):
     return 'unknown_command'
-
 def add_notes(note_tags_str):
     note: str = ''
     tags_list: list = []
@@ -74,8 +78,10 @@ def add_notes(note_tags_str):
     rec: RecordNotes = dict_notes.get(str(note))
     if rec:
         return rec.add_tag(tags_list)
-    rec = RecordNotes(note, tags_list)
+    id: str = dict_notes.get_next()
+    rec = RecordNotes(note, tags_list, str(id))
     return dict_notes.add_record(rec)
+
 
 def change_notes(text1: str):
     note_old: str = ''
@@ -95,11 +101,8 @@ def change_notes(text1: str):
     rec: RecordNotes = dict_notes.get(str(note_old))
     if rec:
         return dict_notes.change_record(rec, old_note, new_note)
-
 def show_notes(note_tags_str):
     return dict_notes
-
-
 dict_command = {'add note': add_notes,
                 'show note': show_notes,
                 'change note': change_notes}
@@ -108,9 +111,6 @@ dict_command = {'add note': add_notes,
   #              'show': show_all,
                 
 list_end = ['good bye', 'close', 'exit']
-
-
-
 def parser_notes(text: str):
     note_tags = text.split()
     command = ''
@@ -124,6 +124,7 @@ def parser_notes(text: str):
     if command in dict_command.keys():
         return dict_command.get(command), note_tags_str
     return no_command, text
+
 
 def main():
     while True:
