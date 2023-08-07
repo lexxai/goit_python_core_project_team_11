@@ -17,10 +17,11 @@ class Tag(Field):
     ...
     
 class RecordNotes:
-    def __init__(self, note: Note, tags_list: Tag = None, note_old = None, note_new = None):
+    def __init__(self, note: Note, tags_list: Tag = None, note_old = None, note_new = None,):
         #self.note_old = note_old
         #self. note_new = note_new
         self.note = note
+        self.id = id
         self.tags = []
         if tags_list:
             for i in tags_list:
@@ -47,12 +48,26 @@ class AddressNotes(UserDict):
     def add_record(self, record: RecordNotes):
         self.data[str(record.note)] = record
         return 'Add success'
-    def change_record(self, record: RecordNotes, old_note, new_note):
+    def change_record(self, record: RecordNotes, id_note, new_note):
+        
         del self.data[old_note.value]
+        print(elf.data)
         self.data[new_note.value] = record
+
         return 'Change success'
+
+    def get_next():
+        id=len(self.data)+1
+        return  id
+
+    def re_index():
+        ...
+        
+
     def __str__(self) -> str:
-        return "\n".join(str(r) for r in self.data.values())
+        for r in self.data.values:
+
+        return "\n".join(f{id: {}} for r in self.data.values())
     
 
 dict_notes = AddressNotes()
@@ -74,7 +89,8 @@ def add_notes(note_tags_str):
     rec: RecordNotes = dict_notes.get(str(note))
     if rec:
         return rec.add_tag(tags_list)
-    rec = RecordNotes(note, tags_list)
+    id = dict_notes.get_next()
+    rec = RecordNotes(note, tags_list, id)
     return dict_notes.add_record(rec)
 
 def change_notes(text1: str):
