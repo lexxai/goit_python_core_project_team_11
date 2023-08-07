@@ -110,24 +110,6 @@ dict_command = {'add note': add_notes,
 list_end = ['good bye', 'close', 'exit']
 
 
-def parser_args(*args) -> tuple[str, list]:
-    result = None
-    note_list: list = []
-    note_str:str = None
-    tags: list = []
-    for arg in args:
-        if arg.startswith('#'):
-            tag_str:str = str(arg[1:]).strip()
-            tags.append(Tag(tag_str))
-        else:
-            note_list.append(arg)
-    if note_list:
-        note_str = " ".join(note_list)
-
-    print(f"parser_args {__name__} : {note_str=}, {tags=}")
-    return note_str, tags
-
-
 
 def parser_notes(text: str):
     note_tags = text.split()
@@ -158,11 +140,6 @@ def main():
         result = command(note_tags_str)
         print(result)
         
-
-def api(*args):
-    print(f"DataAddNote.api : args = {args}")
-    result=parser_args(*args)
-    return f"DataAddNote API DONE {result=}"
         
         
         
