@@ -529,7 +529,7 @@ class Commands:
         handler_restore: ("restore", "res"),
         handler_list_versions: ("list versions", "l v"),    
         handler_list_csv: ("list csv", "l csv"),
-        handler_congrats_in_days: ("next birthdays", "nb+"),     
+        handler_congrats_in_days: ("next birthdays", "+nb"),     
 
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
