@@ -46,7 +46,7 @@ class Note_Record:
         self.tags = tag if tag is not None else []
         
     def __str__(self) -> str:
-        return f"{self.index}. {self.note}\nTags#: {self.tags}\n{self.creation_date}\n"
+        return f"{self.note}\nTags#: {self.tags}\n{self.creation_date}\n"
     
     def __repr__(self) -> str:
         return str(self)
@@ -54,16 +54,16 @@ class Note_Record:
 class Notes(UserDict):
     def add_record(self, record: Note_Record):
         self.data[record.index] = record
-        return 'Add success'
     
-    def change_note(self, index, record: Note_Record):
+    def change_note(self, record: Note_Record):
         self.data[self.index] = record
                 
     def delete_note(self, index):
-        self.data.pop(index)
+        removed_note = self.data.pop(index)
         for key in list(self.data.keys()):
             if int(key) > int(index):
                 self.data[str(int(key) - 1)] = self.data.pop(key)
+        return removed_note
     
     def sort_notes(self, type):
         ...
@@ -89,10 +89,10 @@ class Iterator:
     
     def __next__(self):
         if self.current_value < len(self.notes):
-            name = list(self.notes.data.keys())[self.current_value]
+            index = list(self.notes.data.keys())[self.current_value]
             record = list(self.notes.data.values())[self.current_value]
-            self.current_value += 3
-            return f"{record}"
+            self.current_value += 1
+            return f"{index}. {record}"
         raise StopIteration("End")
     
 notes = Notes()
@@ -114,7 +114,7 @@ def add_note(*args) -> str:
         record = Note_Record(index, note, date, tags)
         notes.add_record(record)
         notes.serialize(FILE_PATH)
-        return record
+        return f'{index}. {record}'
     
         
 def show_notes(*args):
@@ -130,16 +130,38 @@ def show_notes(*args):
                 break
     return "End\n"
         
-def change_note(self, index):
-    ...
-    
-def delete_note(self, index):
+def change_note(index):
+    index = int(index[0])
+    if notes.data[index]:
+        date = Date()
+        record = notes.data[index]
+        note = record.note
+        tags = record.tags
+        type =input('Press "1" to edit notes, "2" - to edit Tags#: ')
+        if type == '1':
+            note = Note(input(f'Current record({record.note}): '))
+        elif type == '2':
+            tags = input(f'Current #Tags({record.tags}): ')
+            tags = [Tag(tag) for tag in tags.split(' ')]
+        else:
+            print('Wrong choise')
+        record = Note_Record(index, note, date, tags)
+        notes.add_record(record)
+        notes.serialize(FILE_PATH)
+        return f'{index}. {record}'
+    else:
+        return f'No record with {index} index'
+        
+def delete_note(index):
+    index = int(index[0])
+    if notes.data[index]:
+        record = notes
+    return f'Note:\n{index}. {record.delete_note(index)}was removed'
+
+def sort_notes(type):
     ...
 
-def sort_notes(self, type):
-    ...
-
-def search_notes(self, search_str):
+def search_notes(search_str):
     ...
 
 
@@ -177,11 +199,11 @@ def main():
             print('Good bye!')
             break
         command, args = parse_input(user_input)
-        try:
-            result = command(args)
-            print(result)
-        except KeyError:
-            print('Wrong command')
+        # try:
+        result = command(args)
+        print(result)
+        # except KeyError:
+            # print('Wrong command2')
         
 
 # def api(*args):
@@ -193,5 +215,3 @@ def main():
         
 if __name__ == '__main__':
     main()
-    
-#wefwef
