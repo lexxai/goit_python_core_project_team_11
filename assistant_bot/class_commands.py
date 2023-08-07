@@ -3,10 +3,12 @@ from .class_record import Record
 from .class_note_record import Note_Record
 # from .class_address_book import AddressBook
 # from .class_notes import Notes
-import DataAddNotes
+
 from functools import wraps
 
 from .sorting import main as sorting
+
+import assistant_bot.DataAddNotes as DataAddNotes
 
 import sys
 if sys.version_info >= (3, 8):
@@ -431,25 +433,33 @@ class Commands:
         return result   
 
 
-    @output_operation_describe
-    @backup_data_note
-    @input_error
+
+    # @output_operation_describe
+    # @backup_data_note
+    # @input_error
     def handler_add_note(self, *args) -> str:
-        result = None
-        note_list: list = []
-        note_str:str = None
-        tags: list = []
-        for arg in args:
-            if arg.startswith('#'):
-                tag_str:str = str(arg[1:]).strip()
-                tags.append(Tag(tag_str))
-            else:
-                note_list.append(arg)
-        if note_list:
-            note_str = " ".join(note_list)
+        print(f"handler_add_note : args = {args}")
+        return DataAddNotes.api(*args)
+
+    # @output_operation_describe
+    # @backup_data_note
+    # @input_error
+    # def handler_add_note(self, *args) -> str:
+    #     result = None
+    #     note_list: list = []
+    #     note_str:str = None
+    #     tags: list = []
+    #     for arg in args:
+    #         if arg.startswith('#'):
+    #             tag_str:str = str(arg[1:]).strip()
+    #             tags.append(Tag(tag_str))
+    #         else:
+    #             note_list.append(arg)
+    #     if note_list:
+    #         note_str = " ".join(note_list)
         
-        note_rec = Note_Record( Note(note_str), tags )
-        result = self.a_notes.add_record(note_rec)
+    #     note_rec = Note_Record( Note(note_str), tags )
+    #     result = self.a_notes.add_record(note_rec)
 
 
     @output_operation_describe
