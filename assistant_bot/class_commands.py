@@ -1,8 +1,8 @@
 from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
 from .class_record import Record
 from .class_note_record import Note_Record
-# from .class_address_book import AddressBook
-# from .class_notes import Notes
+from .class_address_book import AddressBook
+from .class_notes import Notes
 
 from functools import wraps
 
@@ -27,6 +27,8 @@ class Commands:
     #     # self._callback = child._callback
     #     # self._child = child
 
+    a_book: AddressBook
+    a_notes: Notes
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -442,7 +444,9 @@ class Commands:
         for arg in args:
             if arg.startswith('#'):
                 tag_str:str = str(arg[1:]).strip()
-                tags.append(Tag(tag_str))
+                tag_id = self.a_notes.add_tag(Tag(tag_str))
+                #print(tag_id)
+                tags.append(tag_id)
             else:
                 note_list.append(arg)
         if note_list:
@@ -455,10 +459,19 @@ class Commands:
         return result        
 
 
-    @output_operation_describe
+    #@output_operation_describe
     def handler_show_notes(self, *args) -> str:
-        if len(self.a_notes):
-            return str(self.a_notes)
+        per_pages = None
+        if any(args):
+            per_pages = int(args[0])
+
+        if any(self.a_notes):
+            if per_pages:
+                self.a_notes._per_page = per_pages
+                for rec in next(self.a_notes):
+                    return str(rec)
+            else:
+                return str(self.a_notes)
         else:
             return "No notes found, maybe you want to add them first?"
 
@@ -527,7 +540,7 @@ class Commands:
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
         #notes
         handler_add_note: ("add note", "+n"),
-        handler_show_notes: ("show notes", "?n"),
+        handler_show_notes: ("show notes", "ln"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
         handler_show_app_version: ("app version","version"),
