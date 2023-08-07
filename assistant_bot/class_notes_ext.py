@@ -7,13 +7,13 @@ FILE_PATH = "./assistant_bot/notes.bin"
 
 class Date:
     def __init__(self):
-        self.current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
     def __str__(self):
         return f"Created at: {self.current_datetime}"
     
     def __repr__(self):
-        return self
+        return str(self)
     
 
 class Note():
@@ -115,8 +115,8 @@ class Iterator:
 notes = Notes()
 
 
-def no_command(*args):
-    return 'unknown_command'
+# def no_command(*args):
+#     return 'unknown_command'
 
 
 def add_note(*args) -> str:
@@ -131,7 +131,7 @@ def add_note(*args) -> str:
         date = Date()
         record = Note_Record(index, note, date, tags)
         notes.add_record(record)
-        notes.serialize(FILE_PATH)
+        # notes.serialize(FILE_PATH)
         return f'{index}. {record}'
     
         
@@ -220,7 +220,7 @@ def sort_notes(*args):
     return "End\n"
   
 
-def search_notes(search_str):
+def search_notes():
     while True:
         category = input('Press "1" to search in notes, "2" - in #Tags: ')
         if category == '1' or category == '2':
@@ -259,10 +259,10 @@ def parse_input(command_line: str) -> tuple[object, list]:
 
 
 def main_notes():
-    try:
-        notes.deserialize(FILE_PATH)
-    except FileNotFoundError:
-        print("No file found. New notebook was created.")
+    # try:
+    #     notes.deserialize(FILE_PATH)
+    # except FileNotFoundError:
+    #     print("No file found. New notebook was created.")
     
     
     while True:
