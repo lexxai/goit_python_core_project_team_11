@@ -35,7 +35,7 @@ class RecordNotes:
     
     def add_tag(self, tags_list: Tag):
         for i in tags_list:
-            if i not in [t.value for t in self.tags]:
+            if i not in [t for t in self.tags]:
                 self.tags.append(i)
                 return f"tag {i} add to note {self.note}"
         return f"tag {i} already exists for note {self.note}"
