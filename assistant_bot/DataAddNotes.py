@@ -23,7 +23,7 @@ class Note():
         self.value = value
         
     def __str__(self):
-        return self.value
+        return str(self.value)
     
     def __repr__(self):
         return str(self.value)
@@ -33,7 +33,7 @@ class Tag():
         self.value = value
         
     def __str__(self):
-        return self.value
+        return str(self.value)
     
     def __repr__(self):
         return str(self.value)
@@ -65,11 +65,25 @@ class Notes(UserDict):
                 self.data[str(int(key) - 1)] = self.data.pop(key)
         return removed_note
     
-    def sort_notes(self, type):
-        ...
+    def search(self, search_str, category):
+        results = {}
+        for key, record in self.data.items():
+            if category == 1:
+                if re.search(search_str, str(record.note)):
+                    results[key] = record
+            elif category == 2:
+                if any(search_str in str(tag) for tag in record.tags):
+                    results[key] = record
+        return results
     
-    def search_notes(self, search_str):
-        ...
+    def sort(self, category):
+        if category == '1': #Datetime
+            results = sorted(notes.data.items(), key=lambda item: str(item[1].creation_date))
+        elif category == '2': #Index
+            results = sorted(notes.data.items(), key=lambda item: item[1].index)
+        elif category == '3': #Tags
+            results = sorted(notes.data.items(), key=lambda item: [tag.value for tag in item[1].tags])
+        return results
         
     def serialize(self, file_path):
         with open(file_path, "wb") as file:
@@ -137,14 +151,16 @@ def change_note(index):
         record = notes.data[index]
         note = record.note
         tags = record.tags
-        type =input('Press "1" to edit notes, "2" - to edit Tags#: ')
-        if type == '1':
+        while True:
+            category = input('Press "1" to edit notes, "2" - to edit Tags#: ')
+            if category == '1' or category == '2':
+                break
+            print('Wrong choise')
+        if category == '1':
             note = Note(input(f'Current record({record.note}): '))
-        elif type == '2':
+        elif category == '2':
             tags = input(f'Current #Tags({record.tags}): ')
             tags = [Tag(tag) for tag in tags.split(' ')]
-        else:
-            print('Wrong choise')
         record = Note_Record(index, note, date, tags)
         notes.add_record(record)
         notes.serialize(FILE_PATH)
@@ -158,11 +174,34 @@ def delete_note(index):
         record = notes
     return f'Note:\n{index}. {record.delete_note(index)}was removed'
 
-def sort_notes(type):
-    ...
+def sort_notes(*args):
+    while True:
+        category = input('Press "1" to sort by date, "2" - to sort by index, "3" - to sort by #Tags: ')
+        if category in ['1', '2', '3']:
+            break
+        print('Wrong choise')
+    result = notes.sort(category)
+    # print(result)
+    for record in result:
+        print(record)
+    return f'Sorted {len(result)} records'
+  
 
 def search_notes(search_str):
-    ...
+    while True:
+        category = input('Press "1" to search in notes, "2" - in #Tags: ')
+        if category == '1' or category == '2':
+            break
+        print('Wrong choise')
+    search_str = input('Please enter string to search: ')
+    if category == "1":
+        search_results = notes.search(search_str, 1)
+    elif category == "2":
+        search_results = notes.search(search_str, 2)
+    if search_results:
+        return search_results
+    else:
+        print("No notes or Tags were found")
 
 
 dict_command = {'add notes': add_note,
