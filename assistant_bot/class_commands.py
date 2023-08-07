@@ -258,7 +258,7 @@ class Commands:
                 if any(c_alias):
                     c_str += f" ({c_alias_str})"
                 commands.append(c_str)
-            return "\nThe full command syntax is available on request: command ? [Example: +a ?] \nList of commands: \nList of commands: " + ", ".join(sorted(commands))
+            return "\nThe full command syntax is available on request: command ? [Example: +a ?] \nList of commands: \n" + ", ".join(sorted(commands))
         else:
             if type(command) == str:
                 command = " ".join(args)
