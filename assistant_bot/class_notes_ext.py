@@ -120,19 +120,34 @@ notes = Notes()
 
 
 def add_note(*args) -> str:
-        if not notes:       
-            index = 1
+    print(f"add_note {__name__} {args=}")
+    note_list: list = []
+    note_str:str = None
+    tags: list = []
+    for arg in args:
+        if arg.startswith('#'):
+            tag_str:str = str(arg[1:]).strip()
+            tags.append(Tag(tag_str))
         else:
-            max_key = max(notes.data.keys(), key=int)
-            index = int(max_key) + 1
-        note = Note(input('Enter note:\n'))
-        tags = input('Enter Tags#:\n')
-        tags = [Tag(tag) for tag in tags.split(' ')]
-        date = Date()
-        record = Note_Record(index, note, date, tags)
-        notes.add_record(record)
-        # notes.serialize(FILE_PATH)
-        return f'{index}. {record}'
+            note_list.append(arg)
+    if note_list:
+        note_str = " ".join(note_list)
+    
+    if not notes:       
+        index = 1
+    else:
+        max_key = max(notes.data.keys(), key=int)
+        index = int(max_key) + 1
+
+    # note = Note(input('Enter note:\n'))
+    # tags = input('Enter Tags#:\n')
+    # tags = [Tag(tag) for tag in tags.split(' ')]
+    
+    date = Date()
+    record = Note_Record(index, note_str, date, tags)
+    notes.add_record(record)
+    # notes.serialize(FILE_PATH)
+    return f'{index}. {record}'
     
         
 def show_notes(*args):
