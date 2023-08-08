@@ -8,7 +8,7 @@ from functools import wraps
 
 from .sorting import main as sorting
 from .class_notes_ext import add_note, delete_note, change_note, \
-        search_notes, show_notes, sort_notes, clear_notes, parse_input
+        search_notes, show_notes, sort_notes, clear_notes
 
 import sys
 if sys.version_info >= (3, 8):
@@ -442,15 +442,12 @@ class Commands:
     @backup_data_note
     @input_error    
     def handler_change_notes(self, *args):
-        index = args[0]
-        print(index)
-        return change_note(index)
+        return change_note(*args)
 
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
         index = args[0]
-        print(index)
         return delete_note(index)
     
     @backup_data_note
@@ -533,8 +530,8 @@ class Commands:
         #notes
         handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
-        handler_change_notes: ("change notes", "=n"),
-        handler_delete_notes: ("delete notes", "-n"),
+        handler_change_notes: ("change note", "=n"),
+        handler_delete_notes: ("delete note", "-n"),
         handler_clear_notes: ("clear notes", "---"),
         handler_search_notes: ("search notes","?n="),
         handler_sort_notes: ("sort notes", "sn"),

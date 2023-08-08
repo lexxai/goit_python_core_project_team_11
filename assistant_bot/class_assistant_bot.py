@@ -1,6 +1,6 @@
 from .class_commands import Commands
 from .class_address_book import AddressBook
-from .class_notes import Notes
+from .class_notes_ext import Notes
 import pickle
 from  pathlib import Path
 

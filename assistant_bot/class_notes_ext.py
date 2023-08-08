@@ -1,6 +1,6 @@
 from collections import UserDict
 from datetime import datetime 
-import re, pickle
+import re
 
 
 FILE_PATH = "./assistant_bot/notes.bin"
@@ -168,27 +168,40 @@ def show_notes(*args):
     return "End\n"
         
         
-def change_note(index):
-    index = int(index[0])
+def change_note(*args):
+    index = int(args[0])
+    note_list: list = []
+    note:str = None
+    tags: list = []
     if notes.data[index]:
+        print(f'Note before edit:\n{index}. {notes.data[index]}')
         date = Date()
         record = notes.data[index]
-        note = record.note
-        tags = record.tags
-        while True:
-            category = input('Press "1" to edit notes, "2" - to edit Tags#: ')
-            if category == '1' or category == '2':
-                break
-            print('Wrong choice')
-        if category == '1':
-            note = Note(input(f'Current record({record.note}): '))
-        elif category == '2':
-            tags = input(f'Current #Tags({record.tags}): ')
-            tags = [Tag(tag) for tag in tags.split(' ')]
+        for arg in args[1:]:
+            if arg.startswith('#'):
+                tag_str:str = str(arg[1:]).strip()
+                tags.append(Tag(tag_str))
+            else:
+                note_list.append(arg[0:])
+        if note_list:
+            note = " ".join(note_list)
+        
+            
+        # while True:
+        #     category = input('Press "1" to edit notes, "2" - to edit Tags#: ')
+        #     if category == '1' or category == '2':
+        #         break
+        #     print('Wrong choice')
+        # if category == '1':
+        #     note = Note(input(f'Current record({record.note}): '))
+        # elif category == '2':
+        #     tags = input(f'Current #Tags({record.tags}): ')
+        #     tags = [Tag(tag) for tag in tags.split(' ')]
+        
         record = Note_Record(index, note, date, tags)
         notes.add_record(record)
         # notes.serialize(FILE_PATH)
-        return f'{index}. {record}'
+        return f'Edited note:\n{index}. {record}'
     else:
         return f'No record with {index} index'
 
@@ -253,49 +266,49 @@ def search_notes():
         return "No notes or Tags were found"
 
 
-dict_command = {'add notes': add_note,
-               'show notes': show_notes,
-               'change notes': change_note,
-               'delete notes': delete_note,
-               'sort notes': sort_notes,
-               'search notes': search_notes,
-               'clear notes': clear_notes}
+# dict_command = {'add notes': add_note,
+#                'show notes': show_notes,
+#                'change notes': change_note,
+#                'delete notes': delete_note,
+#                'sort notes': sort_notes,
+#                'search notes': search_notes,
+#                'clear notes': clear_notes}
                 
-list_end = ['good bye', 'close', 'exit']
+# list_end = ['good bye', 'close', 'exit']
 
 
-def parse_input(command_line: str) -> tuple[object, list]:
-    line: str = command_line.lower().lstrip()
-    match = re.search(r'^(\w+\s+\w{5})\s*(.*)', line,)
-    user_command, args = match.group(1), match.group(2).split()
-    if user_command in dict_command.keys():
-        return dict_command[user_command], args
-    else:
-        return 'Wrong command'
+# def parse_input(command_line: str) -> tuple[object, list]:
+#     line: str = command_line.lower().lstrip()
+#     match = re.search(r'^(\w+\s+\w{5})\s*(.*)', line,)
+#     user_command, args = match.group(1), match.group(2).split()
+#     if user_command in dict_command.keys():
+#         return dict_command[user_command], args
+#     else:
+#         return 'Wrong command'
 
 
-def main_notes():
+# def main_notes():
     # try:
     #     notes.deserialize(FILE_PATH)
     # except FileNotFoundError:
     #     print("No file found. New notebook was created.")
     
     
-    while True:
-        user_input = input('>>>')
-        user_input = user_input.lower()
+    # while True:
+    #     user_input = input('>>>')
+    #     user_input = user_input.lower()
         
-        if user_input in list_end:
-            print('Good bye!')
-            break
-        command, args = parse_input(user_input)
-        try:
-            result = command(args)
-            print(result)
-        except KeyError:
-            print('Wrong command')
+    #     if user_input in list_end:
+    #         print('Good bye!')
+    #         break
+    #     command, args = parse_input(user_input)
+    #     try:
+    #         result = command(args)
+    #         print(result)
+    #     except KeyError:
+    #         print('Wrong command')
        
         
-if __name__ == '__main__':
-    main_notes()
+# if __name__ == '__main__':
+#     main_notes()
     
