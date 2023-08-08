@@ -130,7 +130,6 @@ class Notes_Storage:
         note_list: list = []
         note_str:str = None
         self.tags: list = []
-
         for arg in args:
             if arg.startswith('#'):
                 tag_str:str = str(arg[1:]).strip()
@@ -139,18 +138,14 @@ class Notes_Storage:
                 note_list.append(arg)
         if note_list:
             note_str = " ".join(note_list)
-        
         if not self.notes:       
             index = 1
         else:
             max_key = max(self.notes.data.keys(), key=int)
             index = int(max_key) + 1
-
         # note = Note(input('Enter note:\n'))
         # self.tags = input('Enter self.Tags#:\n')
         # self.tags = [Tag(tag) for tag in self.tags.split(' ')]
-
-
         date = Date()
         t = self.tags
         record = Note_Record(index, note_str, date, t)
@@ -179,8 +174,9 @@ class Notes_Storage:
     def change_note(self, *args):
         index = int(args[0])
         note_list: list = []
-        note:str = None
-        tags: list = []
+        record = self.notes.data[index]
+        note = record.note
+        tags = record.tags
         if self.notes.data[index]:
             print(f'Note before edit:\n{index}. {self.notes.data[index]}')
             date = Date()
@@ -188,13 +184,12 @@ class Notes_Storage:
             for arg in args[1:]:
                 if arg.startswith('#'):
                     tag_str:str = str(arg[1:]).strip()
+                    tags = []
                     tags.append(Tag(tag_str))
                 else:
                     note_list.append(arg[0:])
             if note_list:
                 note = " ".join(note_list)
-            
-                
             # while True:
             #     category = input('Press "1" to edit notes, "2" - to edit Tags#: ')
             #     if category == '1' or category == '2':
@@ -205,7 +200,6 @@ class Notes_Storage:
             # elif category == '2':
             #     tags = input(f'Current #Tags({record.tags}): ')
             #     tags = [Tag(tag) for tag in tags.split(' ')]
-            
             record = Note_Record(index, note, date, tags)
             self.notes.add_record(record)
             # notes.serialize(FILE_PATH)
