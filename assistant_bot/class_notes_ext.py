@@ -7,10 +7,11 @@ FILE_PATH = "./assistant_bot/notes.bin"
 
 class Date:
     def __init__(self):
-        self.current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.current_datetime = datetime.now()
         
     def __str__(self):
-        return f"Created at: {self.current_datetime}"
+        created  = self.current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        return f"Created at: {created}"
     
     def __repr__(self):
         return str(self)
