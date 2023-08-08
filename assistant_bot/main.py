@@ -13,6 +13,11 @@ def argument_parse():
                         required = False,
                         default=default_user, 
                         help='user name of the Assistant bot')
+    parser.add_argument('-sort', '--sorting',  type=str, 
+                        required = False,
+                        metavar='PATH',
+                        help="run sorting commands for selected folder. "
+                             "Use path to folder as argument ")
     parser.add_argument('-V', '--version', 
                         action='store_true',
                         help='show version')    
@@ -27,13 +32,18 @@ def argument_parse():
     if  args.username:
         bin_name = bytearray(args.username, encoding ='utf-8')
         args.username = hashlib.sha1(bin_name).hexdigest()
-    #print(args)
+    if args.sorting or args.version:
+        args.disable_auto_restore=True
+        args.disable_auto_backup=True
+    print(args)
     return args
 
 
 def arg_action(assistant, args):
     if args.version:
         print(assistant.api("version", verbose=False))
+    elif args.sorting:
+        print(assistant.api("sorting", args.sorting, verbose=False))
     else:
         return True
 
