@@ -3,12 +3,15 @@ from .class_record import Record
 # from .class_note_record import Note_Record
 # from .class_address_book import AddressBook
 # from .class_notes import Notes
+from .class_notes_ext import Notes_Storage
 
 from functools import wraps
 
 from .sorting import main as sorting
-from .class_notes_ext import add_note, delete_note, change_note, \
-        search_notes, show_notes, sort_notes, clear_notes, parse_input
+# from .class_notes_ext import add_note, delete_note, change_note, \
+#         search_notes, show_notes, sort_notes, clear_notes, parse_input
+
+
 
 import sys
 if sys.version_info >= (3, 8):
@@ -29,6 +32,7 @@ class Commands:
     #     # self._callback = child._callback
     #     # self._child = child
 
+    notes_storage: Notes_Storage
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -433,10 +437,10 @@ class Commands:
         return result   
 
 
-    @backup_data_note
+    #@backup_data_note
     @input_error
     def handler_add_note(self, *args) -> str:
-        return add_note(*args)
+        return self.notes_storage.add_note(*args)
 
         
     @backup_data_note
@@ -444,28 +448,28 @@ class Commands:
     def handler_change_notes(self, *args):
         index = args[0]
         print(index)
-        return change_note(index)
+        return self.notes_storage.change_note(index)
 
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
         index = args[0]
         print(index)
-        return delete_note(index)
+        return self.notes_storage.delete_note(index)
     
     @backup_data_note
     @input_error    
     def handler_clear_notes(self, *args):
-        return clear_notes()
+        return self.notes_storage.clear_notes()
         
     def handler_search_notes(self, *args):
-        return search_notes()
+        return self.notes_storage.search_notes()
         
     def handler_sort_notes(self, *args):
-        return sort_notes()
+        return self.notes_storage.sort_notes()
 
     def handler_show_notes(self, *args) -> str:
-        return show_notes()
+        return self.notes_storage.show_notes()
 
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
