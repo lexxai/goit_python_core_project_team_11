@@ -187,7 +187,7 @@ def change_note(index):
             tags = [Tag(tag) for tag in tags.split(' ')]
         record = Note_Record(index, note, date, tags)
         notes.add_record(record)
-        notes.serialize(FILE_PATH)
+        # notes.serialize(FILE_PATH)
         return f'{index}. {record}'
     else:
         return f'No record with {index} index'
@@ -250,7 +250,7 @@ def search_notes():
     if search_results:
         return search_results
     else:
-        print("No notes or Tags were found")
+        return "No notes or Tags were found"
 
 
 dict_command = {'add notes': add_note,
