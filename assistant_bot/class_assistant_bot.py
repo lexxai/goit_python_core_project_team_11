@@ -1,6 +1,7 @@
 from .class_commands import Commands
 from .class_address_book import AddressBook
-from .class_notes_ext import Notes
+#from .class_notes import Notes
+from .class_notes_ext import Notes_Storage
 import pickle
 from  pathlib import Path
 
@@ -19,7 +20,7 @@ class Assistant_bot(Commands):
         self.auto_backup: bool = auto_backup
         self.auto_restore: bool = auto_restore
         self.a_book: AddressBook = AddressBook(id=id)
-        self.a_notes: Notes = Notes(id=id)
+        self.notes_storage: Notes_Storage = Notes_Storage()
         self.default_filename: str = default_filename
 
         self.restore_data()     
