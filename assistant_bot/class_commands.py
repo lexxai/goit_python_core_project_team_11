@@ -244,8 +244,7 @@ class Commands:
             commands = []
             for cs in Commands.COMMANDS.values():
                 if help_filter and not any(
-                    filter(lambda x: x.startswith(help_filter), cs)
-                    ):
+                    filter(lambda x: str(x).find(help_filter) != -1, cs)):
                     continue
                 c_str = ""
                 c_alias = []
