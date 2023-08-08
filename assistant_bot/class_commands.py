@@ -444,28 +444,28 @@ class Commands:
     def handler_change_notes(self, *args):
         index = args[0]
         print(index)
-        print(change_note(index))
+        return change_note(index)
 
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
         index = args[0]
         print(index)
-        print(delete_note(index))
+        return delete_note(index)
     
     @backup_data_note
     @input_error    
     def handler_clear_notes(self, *args):
-        print(clear_notes())
+        return clear_notes()
         
     def handler_search_notes(self, *args):
-        print(search_notes())
+        return search_notes()
         
     def handler_sort_notes(self, *args):
-        print(sort_notes())
+        return sort_notes()
 
     def handler_show_notes(self, *args) -> str:
-        print(show_notes())
+        return show_notes()
 
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
