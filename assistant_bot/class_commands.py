@@ -1,13 +1,14 @@
-from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
+from .class_fields import Name, Phone, Birthday, Email, Address #, Note, Tag
 from .class_record import Record
-from .class_note_record import Note_Record
+# from .class_note_record import Note_Record
 # from .class_address_book import AddressBook
 # from .class_notes import Notes
 
 from functools import wraps
 
 from .sorting import main as sorting
-from .class_notes_ext import add_note, delete_note, change_note, search_notes, show_notes, sort_notes, clear_notes, parse_input
+from .class_notes_ext import add_note, delete_note, change_note, \
+        search_notes, show_notes, sort_notes, clear_notes, parse_input
 
 import sys
 if sys.version_info >= (3, 8):
@@ -434,8 +435,8 @@ class Commands:
 
     @backup_data_note
     @input_error
-    def handler_add_notes(self, *args) -> str:
-        print(add_note())
+    def handler_add_note(self, *args) -> str:
+        return add_note(*args)
 
         
     @backup_data_note
@@ -443,28 +444,28 @@ class Commands:
     def handler_change_notes(self, *args):
         index = args[0]
         print(index)
-        print(change_note(index))
+        return change_note(index)
 
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
         index = args[0]
         print(index)
-        print(delete_note(index))
+        return delete_note(index)
     
     @backup_data_note
     @input_error    
     def handler_clear_notes(self, *args):
-        print(clear_notes())
+        return clear_notes()
         
     def handler_search_notes(self, *args):
-        print(search_notes())
+        return search_notes()
         
     def handler_sort_notes(self, *args):
-        print(sort_notes())
+        return sort_notes()
 
     def handler_show_notes(self, *args) -> str:
-        print(show_notes())
+        return show_notes()
 
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
@@ -530,7 +531,7 @@ class Commands:
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
         #notes
-        handler_add_notes: ("add notes", "+n"),
+        handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
         handler_change_notes: ("change notes", "=n"),
         handler_delete_notes: ("delete notes", "-n"),
@@ -595,7 +596,7 @@ class Commands:
         handler_list_csv: "List of saved cvs files",
         handler_undefined: "Help for this command is not yet available",
         #notes
-        handler_add_notes: "Add a new note record",
+        handler_add_note: "Add a new note record",
         handler_show_notes: "Show all user's records in Notes.",
         handler_change_notes: "Change note by index",
         handler_delete_notes: "Delete note by index",
