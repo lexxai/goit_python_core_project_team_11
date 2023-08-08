@@ -19,10 +19,14 @@ help: ?
 hello: hello
 good bye: close | exit | q | quit
 list versions: l v
-search address borthday ('?b'), show csv ('?csv'), 
-    show emailok ('?ab='), show address ('?a'), 
-    show address book ('list address book','lab'), 
-    show birthday ('?b'), show csv ('?csv'), 
-    show email ('?e'), show notes ('?n'), 
-    show page ('?pg'), show phone ('?p'), 
-to birthday ('2b')
+search address birthday: ?b 
+show csv: ?csv 
+    show address: ?a 
+    show address book: list address book | lab 
+    show birthday: ?b 
+    show csv: ?csv 
+    show email: ?e 
+    show notes: ?n 
+    show page: ?pg 
+    show phone: ?p, 
+to birthday: 2b
