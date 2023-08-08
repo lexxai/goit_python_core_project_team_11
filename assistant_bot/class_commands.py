@@ -1,12 +1,17 @@
-from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
+from .class_fields import Name, Phone, Birthday, Email, Address #, Note, Tag
 from .class_record import Record
-from .class_note_record import Note_Record
+# from .class_note_record import Note_Record
 # from .class_address_book import AddressBook
 # from .class_notes import Notes
+from .class_notes_ext import Notes_Storage
 
 from functools import wraps
 
 from .sorting import main as sorting
+# from .class_notes_ext import add_note, delete_note, change_note, \
+#         search_notes, show_notes, sort_notes, clear_notes, parse_input
+
+
 
 import sys
 if sys.version_info >= (3, 8):
@@ -27,6 +32,7 @@ class Commands:
     #     # self._callback = child._callback
     #     # self._child = child
 
+    notes_storage: Notes_Storage
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -83,8 +89,8 @@ class Commands:
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
-            if self.a_notes and self.a_notes.backup_data:
-                self.a_notes.backup_data()
+            if self and self.backup_data:
+                self.backup_data()
             self.backup_data()   
             # if self._callback is not None:
             #     self._callback("backup_data")
@@ -437,36 +443,37 @@ class Commands:
         return result   
 
 
-    @output_operation_describe
-    @backup_data_note
+    #@backup_data_note
     @input_error
     def handler_add_note(self, *args) -> str:
-        result = None
-        note_list: list = []
-        note_str:str = None
-        tags: list = []
-        for arg in args:
-            if arg.startswith('#'):
-                tag_str:str = str(arg[1:]).strip()
-                tags.append(Tag(tag_str))
-            else:
-                note_list.append(arg)
-        if note_list:
-            note_str = " ".join(note_list)
-       
+        return self.notes_storage.add_note(*args)
 
-        note_rec = Note_Record( Note(note_str), tags )
-        result = self.a_notes.add_record(note_rec)
+        
+    @backup_data_note
+    @input_error    
+    def handler_change_notes(self, *args):
+        index = args[0]
+        return self.notes_storage.change_note(*args)
 
-        return result        
+    @backup_data_note
+    @input_error
+    def handler_delete_notes(self, *args):
+        index = args[0]
+        return self.notes_storage.delete_note(index)
+    
+    @backup_data_note
+    @input_error    
+    def handler_clear_notes(self, *args):
+        return self.notes_storage.clear_notes()
+        
+    def handler_search_notes(self, *args):
+        return self.notes_storage.search_notes()
+        
+    def handler_sort_notes(self, *args):
+        return self.notes_storage.sort_notes()
 
-
-    @output_operation_describe
     def handler_show_notes(self, *args) -> str:
-        if len(self.a_notes):
-            return str(self.a_notes)
-        else:
-            return "No notes found, maybe you want to add them first?"
+        return self.notes_storage.show_notes()
 
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
@@ -535,6 +542,11 @@ class Commands:
         #notes
         handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
+        handler_change_notes: ("change note", "=n"),
+        handler_delete_notes: ("delete note", "-n"),
+        handler_clear_notes: ("clear notes", "---"),
+        handler_search_notes: ("search notes","?n="),
+        handler_sort_notes: ("sort notes", "sn"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
         handler_show_app_version: ("app version","version"),
@@ -593,9 +605,13 @@ class Commands:
         handler_list_csv: "List of saved cvs files",
         handler_undefined: "Help for this command is not yet available",
         #notes
-        handler_add_note: "Add a new note record in the format: "
-                          "Some Note text #tag1 #tag2",
+        handler_add_note: "Add a new note record",
         handler_show_notes: "Show all user's records in Notes.",
+        handler_change_notes: "Change note by index",
+        handler_delete_notes: "Delete note by index",
+        handler_clear_notes: "Clear all notes",
+        handler_search_notes: "Search notes or tags by pattern",
+        handler_sort_notes: "Sort notes by type that user choose",
         handler_sorting: "Sorting files of folder. Required path to folder.",   
         handler_show_app_version: "Show version of application",
         handler_congrats_in_days: "Show list of users with birthdays, which will be in certain days. Required days parameter"           
