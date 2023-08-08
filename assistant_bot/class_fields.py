@@ -137,7 +137,7 @@ class Birthday(Field):
         new_date = __new_value
         pattern_str = r'^\d{2}.\d{2}.\d{4}$'
         if re.match(pattern_str, __new_value):
-            new_date = __new_value[6:]+"/"+__new_value[3:5]+"/"+__new_value[0:2]
+            new_date = __new_value[6:]+"-"+__new_value[3:5]+"-"+__new_value[0:2]
         d = date.fromisoformat(new_date)
         #print(f"date= {d}")
         if d:
