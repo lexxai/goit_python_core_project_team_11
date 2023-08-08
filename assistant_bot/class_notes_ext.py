@@ -71,10 +71,10 @@ class Notes(UserDict):
         results = {}
         for key, record in self.data.items():
             if category == 1:
-                if re.search(search_str, str(record.note)):
+                if re.search(search_str, str(self.note)):
                     results[key] = record
             elif category == 2:
-                if any(search_str in str(tag) for tag in record.tags):
+                if any(search_str in str(tag) for tag in self.tags):
                     results[key] = record
         return results
     

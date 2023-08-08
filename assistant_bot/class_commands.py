@@ -89,8 +89,8 @@ class Commands:
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
-            if self.a_notes and self.a_notes.backup_data:
-                self.a_notes.backup_data()
+            if self and self.backup_data:
+                self.backup_data()
             self.backup_data()   
             # if self._callback is not None:
             #     self._callback("backup_data")
