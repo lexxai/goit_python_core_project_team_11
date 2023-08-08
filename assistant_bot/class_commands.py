@@ -560,7 +560,7 @@ class Commands:
         handler_delete_birthday: "Delete user's birthday. Required username",
         handler_add_birthday: "Add or replace the user's birthday. "
                                    "Required username, birthday, "
-                            "please use ISO 8601 date format",
+                            "please use ISO 8601 or DD.MM.YYYY date format",
         handler_add_email: "Add or replace the user's email. "
                                 "Required username, email",
         handler_add_address: "Add or replace the user's address. "
