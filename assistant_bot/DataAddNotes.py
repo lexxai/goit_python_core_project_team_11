@@ -1,4 +1,5 @@
 from collections import UserDict
+
 class Field:
     def __init__(self, value):
         self.value = value
@@ -7,6 +8,8 @@ class Field:
     def __repr__(self) -> str:
         return str(self)
         
+
+
 class Note(Field):
     ...
     
@@ -14,60 +17,60 @@ class Tag(Field):
     ...
     
 class RecordNotes:
-    def __init__(self, note: Note, tags_list: Tag = None, note_old = None, note_new = None,):
+    def __init__(self, id, dict_notes_tags, tags_list: Tag = None, note_old = None, note_new = None):
         #self.note_old = note_old
         #self. note_new = note_new
-        self.note = note
-        self.id: str = id
-        self.tags = []
-        if tags_list:
-            for i in tags_list:
-                self.tags.append(i)
+        self.id = id
+        self.dict_notes_tags = dict_notes_tags
+        #self.tags_list = tags_list
+        #self.tags = {}
+        #if tags_list:
+        #    self.tags[self.id] = tags_list
     
-#    def change_phone(self, old_phone, new_phone):
-#        for k,v in enumerate(self.phones):
-#            if old_phone.value == v.value:
-#                self.phones[k] = new_phone
-#                return f"Old phone {old_phone} change to {new_phone}"
-#        return f"{old_phone} absent for contact {self.note}"
-
+    def rec_change_note_tag(self, old_phone, new_phone):
+        for k,v in enumerate(self.phones):
+            if old_phone.value == v.value:
+                self.phones[k] = new_phone
+                return f"Old phone {old_phone} change to {new_phone}"
+        return f"{old_phone} absent for contact {self.note}"
+    
     def add_tag(self, tags_list: Tag):
         for i in tags_list:
-            #if i not in [t.value for t in self.tags]:
             if i not in [t for t in self.tags]:
                 self.tags.append(i)
                 return f"tag {i} add to note {self.note}"
         return f"tag {i} already exists for note {self.note}"
     
-    def __str__(self) -> str:                     
-        return f"note: {self.note}{', '.join(str(p) for p in self.tags)} "
-        #return f"note: {self.note}: {', '.join(str(p) for p in self.tags)} "
+    def __str__(self) -> str:
+        return f"{self.id}: {', '.join(self.dict_notes_tags)} {', '.join(str (v) for v in self.dict_notes_tags.values())}"
+        #return f"{self.id}: {', '.join(str(v) for v in self.dict_notes_tags.values())}"
 class AddressNotes(UserDict):
     def add_record(self, record: RecordNotes):
-        self.data[str(record.note)] = record
-        return 'Add success'
-    def change_record(self, record: RecordNotes, id_note, new_note):
-        #del self.data[old_note.value]
-        #print(elf.data)
+        self.data[str(record.id)] = record
+        return 'Data accepted'
+    def change_record(self, record: RecordNotes, old_note, new_note):
+        del self.data[old_note.value]
         self.data[new_note.value] = record
         return 'Change success'
+    
     def get_next(self):
         id=len(self.data)+1
         return  id
-    def re_index():
-        ...
-        
+    
     def __str__(self) -> str:
-        #for i in self.data.values:
-        return "\n".join(f"id:{r.id}, {r}" for r in self.data.values()) 
-        # "\n".join(f"{id:{r.id}, {r}}" for r in self.data.values())
-        # "\n".join(f'{str(v)}'  for v in self.data.values())
+        return "\n".join(str(r) for r in self.data.values())
+    
+
 dict_notes = AddressNotes()
+tags = {}
+
 def no_command(*args):
     return 'unknown_command'
+
 def add_notes(note_tags_str):
     note: str = ''
     tags_list: list = []
+    dict_notes_tags: dict = {}
     text = note_tags_str.split()
     for i in text:
         if i.startswith('#'):
@@ -75,42 +78,58 @@ def add_notes(note_tags_str):
     for i in text:
         if not i.startswith('#'):
             note += i + ' '
-    rec: RecordNotes = dict_notes.get(str(note))
+    dict_notes_tags[note] = tags_list
+    id: str = dict_notes.get_next()
+    tags[id] = tags_list
+    rec: RecordNotes = dict_notes.get(str(id))
     if rec:
         return rec.add_tag(tags_list)
-    id: str = dict_notes.get_next()
-    rec = RecordNotes(note, tags_list, str(id))
+    rec = RecordNotes(id, dict_notes_tags)
     return dict_notes.add_record(rec)
 
-
-def change_notes(text1: str):
-    note_old: str = ''
-    note_new: str = ''
-    note_list = text1.split()
-    search = '@change'
-    index = note_list.index(search)
-    old_notes = note_list[:index]
-    new_notes = note_list[index:]
-    for i in old_notes:
-        note_old += i + ' '
-    new_notes.pop(0)
-    for i in new_notes:
-        note_new += i + ' '
-    old_note = Note(note_old)
-    new_note = Note(note_new)
-    rec: RecordNotes = dict_notes.get(str(note_old))
+def change_note_tag(text):
+    search = '#'
+    note_new = ''
+    tag_new = []
+    new_note_tags = {}
+    text_split = text.split()
+    key = text_split[0]
+    text_split.remove(key)
+    for i in text_split:
+        if i.startswith('#'):
+            tag_new.append(i)
+    for i in text_split:
+        if search not in i:
+            note_new += i + ' '
+    id: str = dict_notes.get_next()
+    id -= 1
+    if key == str(id):
+        for v in tags.values():
+            for tag in v:
+                tag_new.append(tag)
+    new_note_tags[note_new] = tag_new
+    rec: RecordNotes = dict_notes.get(str(key))
     if rec:
-        return dict_notes.change_record(rec, old_note, new_note)
+        id = key
+        rec = RecordNotes(id, new_note_tags)
+        return dict_notes.add_record(rec)
+    return 'Notes with this number do not exist'
+
 def show_notes(note_tags_str):
     return dict_notes
+
+
 dict_command = {'add note': add_notes,
                 'show note': show_notes,
-                'change note': change_notes}
+                'change note': change_note_tag}
 #                'change': change_number,
  #               'phone': phone,
   #              'show': show_all,
                 
 list_end = ['good bye', 'close', 'exit']
+
+
+
 def parser_notes(text: str):
     note_tags = text.split()
     command = ''
@@ -124,7 +143,6 @@ def parser_notes(text: str):
     if command in dict_command.keys():
         return dict_command.get(command), note_tags_str
     return no_command, text
-
 
 def main():
     while True:

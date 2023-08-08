@@ -437,10 +437,18 @@ class Commands:
     # @output_operation_describe
     # @backup_data_note
     # @input_error
+    #def handler_add_note(self, *args) -> str:
+    #    print(f"handler_add_note : args = {args}")
+    #    return DataAddNotes.api(*args)
+
+    @output_operation_describe
+    @backup_data_note
+    @input_error
     def handler_add_note(self, *args) -> str:
         print(f"handler_add_note : args = {args}")
-        return DataAddNotes.api(*args)
-
+        args_str = " ".join(args)
+        result = DataAddNotes.add_notes(args_str)
+        return result
     # @output_operation_describe
     # @backup_data_note
     # @input_error
@@ -462,13 +470,17 @@ class Commands:
     #     result = self.a_notes.add_record(note_rec)
 
 
+    #@output_operation_describe
+    #def handler_show_notes(self, *args) -> str:
+    #    if len(self.a_notes):
+    #        return str(self.a_notes)
+    #    else:
+    #        return "No notes found, maybe you want to add them first?"
     @output_operation_describe
     def handler_show_notes(self, *args) -> str:
-        if len(self.a_notes):
-            return str(self.a_notes)
-        else:
-            return "No notes found, maybe you want to add them first?"
-
+        result = DataAddNotes.show_notes("")
+        return result
+    
     @output_operation_describe
     def handler_show_app_version(self, *args) -> str:
         try:
