@@ -35,7 +35,7 @@ def argument_parse():
     if args.sorting or args.version:
         args.disable_auto_restore=True
         args.disable_auto_backup=True
-    print(args)
+    #print(args)
     return args
 
 
