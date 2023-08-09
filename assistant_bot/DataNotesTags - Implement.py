@@ -5,16 +5,12 @@ class WorkNotesTags:
         self.dict_notes = AddressNotes()
         self.notes = {}
         self.tags = {}
-        self.dict_command = {'add note': add_notes,
-                             'show note': show_notes,
-                             'change note': change_note_tag
-                            }
         self.list_end = ['good bye', 'close', 'exit']
     
     def no_command(*args):
         return 'unknown_command'
 
-    def add_notes(note_tags_str):
+    def add_notes(self, note_tags_str):
         note: str = ''
         tags_list: list = []
         dict_notes_tags: dict = {}
@@ -35,7 +31,7 @@ class WorkNotesTags:
         rec = RecordNotes(id, dict_notes_tags)
         return self.dict_notes.add_record(rec)
 
-    def change_note_tag(text):
+    def change_note_tag(self, text):
         search = '#'
         note_new = ''
         tag_new = []
@@ -84,10 +80,10 @@ class WorkNotesTags:
                 return self.dict_notes.add_record(rec)
         return 'Notes with this number do not exist'
 
-    def show_notes(note_tags_str):
+    def show_notes(self, note_tags_str):
         return self.dict_notes
 
-    def parser_notes(text: str):
+    def parser_notes(self, text: str):
         note_tags = text.split()
         command = ''
         note_tags_str: str = ''
@@ -101,7 +97,7 @@ class WorkNotesTags:
             return self.dict_command.get(command), note_tags_str
         return no_command, text
 
-    def main():
+    def main(self):
         while True:
             user_input = input('>>>')
             user_input = user_input.lower()
