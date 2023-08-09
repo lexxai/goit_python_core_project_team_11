@@ -270,11 +270,13 @@ class Notes_Storage:
         else:
             category = args[0]
             search_str = args[1]
+        search_results = None
         if category == "1":
             search_results = self.notes.search(search_str, 1)
         elif category == "2":
             search_results = self.notes.search(search_str, 2)
         if search_results:
+            print(f"{search_results}")
             return search_results
         else:
             return "No notes or #Tags were found"

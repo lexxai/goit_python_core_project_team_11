@@ -390,12 +390,14 @@ class Commands:
 
     # @output_operation_describe
 
+
     def handler_list_versions(self, *args) -> str:
         result = None
         result = self.list_versions()
         # if self._callback is not None:
         #     result = self._callback("list_versions")
         return result
+
 
     @output_operation_describe
     def handler_list_csv(self, *args) -> str:
@@ -404,15 +406,18 @@ class Commands:
 
     # @backup_data_note
 
+
     @input_error
     def handler_add_note(self, *args) -> str:
         return self.notes_storage.add_note(*args)
 
+
     @backup_data_note
     @input_error
     def handler_change_notes(self, *args):
-        index = args[0]
+        #index = args[0]
         return self.notes_storage.change_note(*args)
+
 
     @backup_data_note
     @input_error
@@ -420,21 +425,30 @@ class Commands:
         index = args[0]
         return self.notes_storage.delete_note(index)
 
+
     @backup_data_note
     @input_error
     def handler_clear_notes(self, *args):
         return self.notes_storage.clear_notes(*args)
-
+   
+    
+    @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
-
+    
+    
+    @input_error
     def handler_sort_notes(self, *args):
         return self.notes_storage.sort_notes(*args)
 
+    
+    @input_error
     def handler_show_notes(self, *args) -> str:
         return self.notes_storage.show_notes()
 
+
     @output_operation_describe
+    @input_error
     def handler_show_app_version(self, *args) -> str:
         try:
             version_str = version(__package__)
@@ -565,14 +579,19 @@ class Commands:
         # notes
         handler_add_note: "Add a new note record",
         handler_show_notes: "Show all user's records in Notes.",
-        handler_change_notes: "Change note by index",
+        handler_change_notes: "Change note by index.",
         handler_delete_notes: "Delete note by index",
         handler_clear_notes: "Clear all notes",
-        handler_search_notes: "Search notes or tags by pattern",
-        handler_sort_notes: "Sort notes by type that user choose",
+        handler_search_notes: "Search notes or tags by pattern. Optional parameters "
+                              "is A and B. A is '1' to search in notes, "
+                              "'2' - in #Tags. B is what to search.",
+        handler_sort_notes: "Sort notes by type that user choose. Optional parameter "
+                            " is '1' to sort by date, '2' - "
+                            "to sort by index, '3' - to sort by #Tags",
         handler_sorting: "Sorting files of folder. Required path to folder.",
         handler_show_app_version: "Show version of application",
-        handler_congrats_in_days: "Show list of users with birthdays, which will be in certain days. Required days parameter"
+        handler_congrats_in_days: "Show list of users with birthdays, which will "
+                                  "be in certain days. Required days parameter"
     }
 
     # COMMANDS_AUTOCOMPLETE = {
