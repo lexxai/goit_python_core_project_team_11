@@ -8,7 +8,7 @@ from functools import wraps
 
 from .sorting import main as sorting
 
-import assistant_bot.DataAddNotes as DataAddNotes
+import assistant_bot.DataNotesTags as DataNotesTags
 
 import sys
 if sys.version_info >= (3, 8):
@@ -447,7 +447,7 @@ class Commands:
     def handler_add_note(self, *args) -> str:
         print(f"handler_add_note : args = {args}")
         args_str = " ".join(args)
-        result = DataAddNotes.add_notes(args_str)
+        result = DataNotesTags.add_notes(args_str)
         return result
     # @output_operation_describe
     # @backup_data_note
@@ -478,7 +478,7 @@ class Commands:
     #        return "No notes found, maybe you want to add them first?"
     @output_operation_describe
     def handler_show_notes(self, *args) -> str:
-        result = DataAddNotes.show_notes("")
+        result = DataNotesTags.show_notes("")
         return result
     
     @output_operation_describe
