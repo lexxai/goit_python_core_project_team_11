@@ -7,7 +7,7 @@ class WorkNotesTags:
         self.tags = {}
         self.list_end = ['good bye', 'close', 'exit']
     
-    def no_command(*args):
+    def no_command(self, *args):
         return 'unknown_command'
 
     def add_notes(self, note_tags_str):
