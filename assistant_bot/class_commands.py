@@ -537,7 +537,7 @@ class Commands:
         handler_show_notes: ("show notes", "?n"),
         handler_change_notes: ("change note", "=n"),
         handler_delete_notes: ("delete note", "-n"),
-        handler_clear_notes: ("clear notes", "---"),
+        handler_clear_notes: ("clear notes", "---n"),
         handler_search_notes: ("search notes","?n="),
         handler_sort_notes: ("sort notes", "sn"),
         #sorting
