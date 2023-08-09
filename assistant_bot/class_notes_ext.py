@@ -1,10 +1,10 @@
 from collections import UserDict
 from datetime import datetime
 import re
-import pickle
+#import pickle
 
 
-FILE_PATH = "./assistant_bot/notes.bin"
+#FILE_PATH = "./assistant_bot/notes.bin"
 
 
 class Date:
