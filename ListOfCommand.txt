@@ -1,0 +1,32 @@
+Пропозиція щодо "Щоб хелп не кошмарив":
+    виводити список команд разом із синтиксисом команд приблизно в такому вигляді:
+
+add address: +a Name address 
+    add address book: +ab Name phone(, phone, phone) 
+    add birthday: +b Name YYYY-MM-DD 
+    add email: +e Name email 
+    add note: +n Note #tag(, #tag, #tag) 
+backup: bak, restore: res
+change phone: =p Name old_phone new_phone
+delete address: -a Name address
+    delete all records: --- YES 
+    delete birthday: -b Name 
+    delete email: -e Name email
+    delete phone: -p Name phone 
+    delete user: - Name 
+export csv: e csv filename; import csv: i csv filename; list csv: l csv 
+help: ? 
+hello: hello
+good bye: close | exit | q | quit
+list versions: l v
+search address birthday: ?b 
+show csv: ?csv 
+    show address: ?a 
+    show address book: list address book | lab 
+    show birthday: ?b 
+    show csv: ?csv 
+    show email: ?e 
+    show notes: ?n 
+    show page: ?pg 
+    show phone: ?p, 
+to birthday: 2b
