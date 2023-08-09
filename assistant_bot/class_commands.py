@@ -1,15 +1,12 @@
-from .class_fields import Name, Phone, Birthday, Email, Address  # , Note, Tag
+from .class_fields import Name, Phone, Birthday, Email, Address
 from .class_record import Record
-# from .class_note_record import Note_Record
-# from .class_address_book import AddressBook
-# from .class_notes import Notes
+from .class_address_book import AddressBook
 from .class_notes_ext import Notes_Storage
 
 from functools import wraps
 
 from .sorting import main as sorting
-# from .class_notes_ext import add_note, delete_note, change_note, \
-#         search_notes, show_notes, sort_notes, clear_notes, parse_input
+
 
 
 import sys
@@ -32,6 +29,7 @@ class Commands:
     #     # self._child = child
 
     notes_storage: Notes_Storage
+    a_book: AddressBook
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -333,14 +331,14 @@ class Commands:
     @input_error
     def handler_show_email(self, *args) -> str:
         user = args[0]
-        result = self.a_book.get_record(user).email
+        result = str(self.a_book.get_record(user).email)
         return result
 
     @output_operation_describe
     @input_error
     def handler_show_address(self, *args) -> str:
         user = args[0]
-        result = self.a_book.get_record(user).address
+        result = str(self.a_book.get_record(user).address)
         return result
 
     def handler_exit(self, *args) -> str:
