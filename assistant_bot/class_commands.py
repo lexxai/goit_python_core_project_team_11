@@ -1,3 +1,4 @@
+from .DataNotesTagsImplement import add_notes, change_note_tag, show_notes
 from .class_fields import Name, Phone, Birthday, Email, Address, Note, Tag
 from .class_record import Record
 from .class_note_record import Note_Record
@@ -545,8 +546,11 @@ class Commands:
         handler_search_address_book: ("search address book","?ab="),
         handler_exit: ("good bye", "close", "exit", "q", "quit"),
         #notes
-        handler_add_note: ("add note", "+n"),
-        handler_show_notes: ("show notes", "?n"),
+        add_notes: ("add note"),
+        #handler_add_note: ("add note", "+n"),
+        show_notes: ("show notes"),
+        #handler_show_notes: ("show notes", "?n"),
+        change_note_tag: ("change note"),
         #sorting
         handler_sorting: ("sort folder","sorting"),
         handler_show_app_version: ("app version","version"),

@@ -1,4 +1,4 @@
-from DataNotesTags import AddressNotes, RecordNotes
+from .DataNotesTags import AddressNotes, RecordNotes
 
 class WorkNotesTags:
     def __init__(self):
@@ -83,7 +83,7 @@ class WorkNotesTags:
     def show_notes(self, note_tags_str):
         return self.dict_notes
 
-    def parser_notes(self, text: str):
+    '''def parser_notes(self, text: str):
         note_tags = text.split()
         command = ''
         note_tags_str: str = ''
@@ -95,7 +95,7 @@ class WorkNotesTags:
             note_tags_str += i + ' '
         if command in self.dict_command.keys():
             return self.dict_command.get(command), note_tags_str
-        return no_command, text
+        return self.no_command, text
 
     def main(self):
         while True:
@@ -105,6 +105,6 @@ class WorkNotesTags:
             if user_input in self.list_end:
                 print('Good bye!')
                 break
-            command, note_tags_str= parser_notes(user_input)
+            command, note_tags_str= self.parser_notes(user_input)
             result = command(note_tags_str)
-            print(result)
+            print(result)'''

@@ -3,7 +3,7 @@ from .class_address_book import AddressBook
 from .class_notes import Notes
 import pickle
 from  pathlib import Path
-
+from .DataNotesTagsImplement import WorkNotesTags
 
 
 class Assistant_bot(Commands):
@@ -21,6 +21,7 @@ class Assistant_bot(Commands):
         self.a_book: AddressBook = AddressBook(id=id)
         self.a_notes: Notes = Notes(id=id)
         self.default_filename: str = default_filename
+        self.worknotestags: WorkNotesTags = WorkNotesTags
 
         self.restore_data()     
 
