@@ -421,7 +421,7 @@ class Commands:
     @backup_data_note
     @input_error
     def handler_clear_notes(self, *args):
-        return self.notes_storage.clear_notes()
+        return self.notes_storage.clear_notes(*args)
 
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)

@@ -216,17 +216,22 @@ class Notes_Storage:
 
     def clear_notes(self, *args):
         if self.notes:
-            while True:
-                choice = input(
-                    'Press "y" to clear all records or "n" to discard: ').lower()
-                if choice in ['y', 'n']:
-                    break
-                print('Wrong choice')
+            if not args:
+                while True:
+                    choice = input(
+                        'Press "y" to clear all records or "n" to discard: ').lower()
+                    if choice in ['y', 'n']:
+                        break
+                    print('Wrong choice')
+            else:
+                choice = args[0].lower()
             if choice == 'y':
                 self.notes.data.clear()
                 return f'Notes was cleared {self.notes.data}'
             elif choice == 'n':
                 return f'{self.notes.data}'
+        else:
+            return 'Notes are empty'
 
     def sort_notes(self, *args):
         if not args:
