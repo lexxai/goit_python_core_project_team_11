@@ -553,7 +553,7 @@ class Commands:
     COMMANDS_HELP = {
         handler_hello: "Just hello",
         handler_delete_record: "Delete ALL records of user. Required username.",
-        handler_delete_all_records: "Delete ALL records of ALL user. "
+        handler_delete_all_records: "Delete ALL records of ALL user."
                                           "Required parameter YES",
         handler_change_phone: "Change user's phone. "
                                    "Required username, old phone, new phone",
@@ -608,3 +608,58 @@ class Commands:
         handler_sorting: "Sorting files of folder. Required path to folder.",   
         handler_show_app_version: "Show version of application",           
     }
+    
+    # COMMANDS_AUTOCOMPLETE = {
+    #     "hello": "Just hello",
+    #     "delete user": "Delete ALL records of user. Required username",
+    #     "delete all records": "Delete ALL records of ALL user. Required parameter YES",  
+    #     "change phone": "Change user's phone. Required username, old phone, new phone",
+    #     "delete phone": "Delete user's phone. Required username, phone",
+    #     "show phone": "Show user's phones. Required username",
+    #     "show page": "Show all user's record per page. "
+    #                             "Optional parameter size of page [{per_page}]",
+    #     "show csv": "Show all user's record in csv format",
+    #     "export csv": "Export all user's record in csv format to file. "
+    #                              "Optional parameter filename",
+    #     "import csv": "Import all user's record in csv format to file. "
+    #                              "Optional parameter filename",
+    #     "help": "List of commands and their description. "
+    #                         "Also you can use '?' "
+    #                         "for any command as parameter. Session ID: {id_session}",
+    #     "add birthday": "Add or replace the user's birthday. "
+    #                                "Required username, birthday, "
+    #                         "please use ISO 8601 date format",
+    #     "delete birthday": "Delete user's birthday. Required username",
+    #     "add email": "Add or replace the user's email. "
+    #                             "Required username, email",
+    #     "delete email": "Delete user's email. Required username, email",
+    #     "add address book": "Add or replace the user's address. "
+    #                               "Required username, address",
+    #     "add address": "Add or replace the user's address. "
+    #                               "Required username, address",
+    #     "delete address": "Delete user's address. "
+    #                                  "Required username, address",
+    #     "to birthday": "Show days until the user's birthday. "
+    #                                    "Required username",
+    #     "show birthday": "Show user's birthday. Required username", 
+    #     "show email": "Show user's email. Required username",
+    #     "show address book": "Show all user records in the address book",
+    #     "show address": "Show user's address. Required username",
+    #     "backup": "Backup all records. Optional parameter is the version. "
+    #                     "P.S. it done automatically after any changes on records",
+    #     "restore": "Restore all records. Optional parameter is the version",
+    #     "list versions": "List of saved backup versions",
+    #     "list csv": "List of saved cvs files",
+    #     "search address book": "Search user by pattern in name or phone",
+    #     "exit": "Exit of bot.",
+    #     "add note": "Add a new note record in format Note body #Tag",
+    #     "show notes": "Show all user's records in Notes",
+    #     "change note": "Change note by index in format Note body #Tag",
+    #     "delete note": "Delete note by index",
+    #     "clear notes": "Clear all notes",
+    #     "search notes": "Search notes or tags by pattern",
+    #     "sort notes": "Sort notes by type that user choose",
+    #     "sort folder": "Sorting files of folder. Required path to folder",
+    #     "app version": "Show version of application",
+    # }
+    

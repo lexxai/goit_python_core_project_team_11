@@ -47,7 +47,7 @@ class Note_Record:
         self.tags = tag if tag is not None else []
         
     def __str__(self) -> str:
-        return f"{self.note}\nTags#: {self.tags}\n{self.creation_date}\n"
+        return f"Tags#: {self.tags}\n{self.note}\n{self.creation_date}\n"
     
     def __repr__(self) -> str:
         return str(self)
@@ -218,7 +218,7 @@ class Notes_Storage:
     def clear_notes(self, *args):
         if self.notes:
             while True:
-                choice = input('Press "y" to clear all records or "n" to discard: ')
+                choice = input('Press "y" to clear all records or "n" to discard: ').lower()
                 if choice in ['y', 'n']:
                     break
                 print('Wrong choice')
