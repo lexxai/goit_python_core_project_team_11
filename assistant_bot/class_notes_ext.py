@@ -66,7 +66,7 @@ class Notes(UserDict):
         removed_note = self.data.pop(index)
         for key in list(self.data.keys()):
             if int(key) > int(index):
-                self.data[str(int(key) - 1)] = self.data.pop(key)
+                self.data[int(key) - 1] = self.data.pop(key)
         return removed_note
 
     def search(self, search_str, category):
@@ -276,7 +276,6 @@ class Notes_Storage:
         elif category == "2":
             search_results = self.notes.search(search_str, 2)
         if search_results:
-            print(f"{search_results}")
             return search_results
         else:
             return "No notes or #Tags were found"
