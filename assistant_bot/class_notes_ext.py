@@ -208,8 +208,8 @@ class Notes_Storage:
         else:
             return f'No record with {index} index'
 
-    def delete_note(self, index):
-        index = int(index[0])
+    def delete_note(self, *args):
+        index = int(args[0])
         if self.notes.data[index]:
             record = self.notes
         return f'Note:\n{index}. {record.delete_note(index)}was removed'

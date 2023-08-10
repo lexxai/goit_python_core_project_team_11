@@ -404,54 +404,42 @@ class Commands:
         result = self.a_book.list_csv()
         return result
 
-    # @backup_data_note
-
-
+    @backup_data_note
     @input_error
     def handler_add_note(self, *args) -> str:
         return self.notes_storage.add_note(*args)
 
-
     @backup_data_note
     @input_error
     def handler_change_notes(self, *args):
-        #index = args[0]
         return self.notes_storage.change_note(*args)
-
 
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
-        index = args[0]
-        return self.notes_storage.delete_note(index)
-
+        return self.notes_storage.delete_note(*args)
 
     @backup_data_note
     @input_error
     def handler_clear_notes(self, *args):
         return self.notes_storage.clear_notes(*args)
 
-      
     @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
   
-    
     @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
 
-      
     @input_error
     def handler_sort_notes(self, *args):
         return self.notes_storage.sort_notes(*args)
 
-      
     @input_error
     def handler_show_notes(self, *args) -> str:
         return self.notes_storage.show_notes()
-
-
+    
     @output_operation_describe
     @input_error
     def handler_show_app_version(self, *args) -> str:
