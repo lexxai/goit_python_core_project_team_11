@@ -430,18 +430,23 @@ class Commands:
     @input_error
     def handler_clear_notes(self, *args):
         return self.notes_storage.clear_notes(*args)
-   
+
+      
+    @input_error
+    def handler_search_notes(self, *args):
+        return self.notes_storage.search_notes(*args)
+  
     
     @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
-    
-    
+
+      
     @input_error
     def handler_sort_notes(self, *args):
         return self.notes_storage.sort_notes(*args)
 
-    
+      
     @input_error
     def handler_show_notes(self, *args) -> str:
         return self.notes_storage.show_notes()
