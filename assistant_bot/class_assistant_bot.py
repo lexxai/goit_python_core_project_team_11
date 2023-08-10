@@ -125,16 +125,21 @@ class Assistant_bot(Commands):
                 break
 
             command, args = self.parse_input(user_input)
+            try:
+                if len(args) == 1 and args[0] == "?":
+                    result = self.handler_help(command)
+                else:
+                    result = command(self, *args)
 
-            if len(args) == 1 and args[0] == "?":
-                result = self.handler_help(command)
-            else:
-                result = command(self, *args)
+                if result:
+                    print(result)
 
-            if result:
-                print(result)
+                if command == Commands.handler_exit:
+                    break
+            except Exception as e:
+                print(f"COMMANDS ERROR:{e}")
 
-            if command == Commands.handler_exit:
-                break
 
         self.backup_data()
+
+

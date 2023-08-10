@@ -1,10 +1,10 @@
 from collections import UserDict
 from datetime import datetime
 import re
-import pickle
+#import pickle
 
 
-FILE_PATH = "./assistant_bot/notes.bin"
+#FILE_PATH = "./assistant_bot/notes.bin"
 
 
 class Date:
@@ -270,6 +270,7 @@ class Notes_Storage:
         else:
             category = args[0]
             search_str = args[1]
+        search_results = None
         if category == "1":
             search_results = self.notes.search(search_str, 1)
         elif category == "2":
