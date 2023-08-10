@@ -2,7 +2,7 @@ from .class_commands import Commands
 from .class_address_book import AddressBook
 # from .class_notes import Notes
 from .class_notes_ext import Notes_Storage
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
 import pickle
 from pathlib import Path
@@ -107,6 +107,7 @@ class Assistant_bot(Commands):
         return "\n".join(result_version) if any(result_version) else True
 
     def main(self):
+        history = PromptSession()
         while True:
             category = input(
                 'Use interactive help "y" or "n" (default "y"): ').lower() or 'y'
@@ -115,7 +116,7 @@ class Assistant_bot(Commands):
         while True:
             try:
                 if category == "y":
-                    user_input = prompt(
+                    user_input = history.prompt(
                         "Enter your command >>> ", completer=CommandCompleter(parent=self))
                 elif category == "n":
                     user_input = input("Enter your command >>> ")
