@@ -66,7 +66,7 @@ class Notes(UserDict):
         removed_note = self.data.pop(index)
         for key in list(self.data.keys()):
             if int(key) > int(index):
-                self.data[str(int(key) - 1)] = self.data.pop(key)
+                self.data[int(key) - 1] = self.data.pop(key)
         return removed_note
 
     def search(self, search_str, category):
