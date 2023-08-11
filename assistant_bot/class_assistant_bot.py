@@ -6,7 +6,8 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
 import pickle
 from pathlib import Path
-from rich import print
+from rich.console import Console
+
 
 
 class CommandCompleter(Completer, Commands):
@@ -58,6 +59,7 @@ class Assistant_bot(Commands):
         self.default_filename: str = default_filename
 
         self.restore_data()
+        self.console = Console()
 
         # super().__init__(child = self)
 
@@ -133,7 +135,7 @@ class Assistant_bot(Commands):
                     result = command(self, *args)
 
                 if result:
-                    print(result)
+                    self.console.print(result)
 
                 if command == Commands.handler_exit:
                     break
