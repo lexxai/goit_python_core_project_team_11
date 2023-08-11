@@ -4,6 +4,7 @@ from .class_address_book import AddressBook
 from .class_notes_ext import Notes_Storage
 
 from functools import wraps
+from rich import print
 
 from .sorting import main as sorting
 

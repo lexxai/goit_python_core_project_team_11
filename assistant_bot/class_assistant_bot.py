@@ -6,6 +6,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
 import pickle
 from pathlib import Path
+from rich import print
 
 
 class CommandCompleter(Completer, Commands):
