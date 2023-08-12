@@ -246,7 +246,8 @@ class Commands:
                 if any(c_alias):
                     c_str += f" ({c_alias_str})"
                 commands.append(c_str)
-                command_str = "\n[i]The full command syntax is available on request: command ?"\
+                
+            command_str = "\n[i]The full command syntax is available on request: command ?"\
                 " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
             return command_str
         else:
