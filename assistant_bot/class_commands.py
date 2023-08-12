@@ -276,7 +276,12 @@ class Commands:
                 rows.append(row)
             
             rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
+            prev_cat = rows_category[0][2]
             for row in  rows_category:
+                cat = row[2]
+                if prev_cat != cat:
+                    table.add_section()
+                    prev_cat = cat
                 table.add_row(*row)
 
             return table
