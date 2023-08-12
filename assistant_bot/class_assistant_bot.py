@@ -66,7 +66,7 @@ class Assistant_bot(Commands):
         self.notes_storage: Notes_Storage = Notes_Storage()
         self.default_filename: str = default_filename
         self.restore_data()
-        self._console = Console(no_color=False, force_interactive=False, force_terminal=False)
+        self._console = Console(no_color=False, force_terminal=True)
 
 
         # super().__init__(child = self)

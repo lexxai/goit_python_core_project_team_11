@@ -9,9 +9,6 @@ from rich.table import Table
 
 from .sorting import main as sorting
 
-
-
-
 import sys
 if sys.version_info >= (3, 8):
     from importlib.metadata import version
@@ -21,19 +18,10 @@ else:
 
 class Commands:
 
-    # def __init__(self, a_book: AddressBook = None,
-    #              a_notes: Notes = None,
-    #              callback: object = None,
-    #              child :object = None
-    #              ):
-    #     #self.a_book: AddressBook = child.a_book
-    #     #self.a_notes: Notes = child.a_notes
-    #     # self._callback = child._callback
-    #     # self._child = child
-
     notes_storage: Notes_Storage
     a_book: AddressBook
     _console : Console
+
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -58,6 +46,7 @@ class Commands:
         parts.append(current_part.strip())
         return list(filter(lambda x: x, parts))
 
+
     def parse_input(self, command_line: str) -> tuple[object, list]:
         line: str = command_line.lower().lstrip()
         for command, commands in self.COMMANDS.items():
@@ -71,6 +60,7 @@ class Commands:
                     return command, args
         return Commands.handler_undefined, [line]
 
+
     def backup_data_address_book(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -83,6 +73,7 @@ class Commands:
             return result
         return wrapper
 
+
     def backup_data_note(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -94,6 +85,7 @@ class Commands:
             #     self._callback("backup_data")
             return result
         return wrapper
+
 
     def input_error(func):
         @wraps(func)
@@ -111,6 +103,7 @@ class Commands:
                 return f"[/red]**** Exception other: {e} [/red]"
         return wrapper
 
+
     def output_operation_describe(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -122,6 +115,7 @@ class Commands:
                     if result else "[yellow]The operation "\
                                     "was not successful[/yellow]"
         return wrapper
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -138,6 +132,7 @@ class Commands:
             result = self.a_book.add_record(rec)
         return result
 
+
     @output_operation_describe
     @backup_data_address_book
     @input_error
@@ -148,11 +143,13 @@ class Commands:
         return self.a_book.get_record(user)\
             .change_phone(Phone(old_phone), Phone(new_phone))
 
+
     @output_operation_describe
     @input_error
     def handler_show_phone(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).get_phones()
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -162,12 +159,14 @@ class Commands:
         phone = args[1]
         return self.a_book.get_record(user).remove_phone(Phone(phone))
 
+
     @output_operation_describe
     @backup_data_address_book
     @input_error
     def handler_delete_record(self, *args) -> str:
         user = args[0]
         return self.a_book.remove_record(user)
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -176,12 +175,14 @@ class Commands:
         if args[0] == "YES":
             return self.a_book.clear()
 
+
     @output_operation_describe
     def handler_show_address_book(self, *args) -> str:
         if self.a_book.len():
             return str(self.a_book)
         else:
             return "No users found, maybe you want to add them first?"
+
 
     @input_error
     def handler_show_page(self, *args) -> str:
@@ -193,11 +194,13 @@ class Commands:
         except StopIteration:
             return "End list"
 
+
     def handler_show_csv(self, *args) -> str:
         if any(self.a_book.keys()):
             return self.a_book.get_csv()
         else:
             return "No users found, maybe you want to add them first?"
+
 
     @output_operation_describe
     @input_error
@@ -208,6 +211,7 @@ class Commands:
             filename = None
         return (self.a_book.export_csv(filename))
 
+
     @output_operation_describe
     @input_error
     def handler_import_csv(self, *args) -> str:
@@ -217,11 +221,13 @@ class Commands:
             filename = None
         return self.a_book.import_csv(filename)
 
+
     @output_operation_describe
     @input_error
     def handler_sorting(self, *args) -> str:
         path = args[0]
         return sorting(path)
+
 
     def handler_hello(self, *args) -> str:
         return "How can I help you?"
@@ -251,6 +257,37 @@ class Commands:
         return command_str
 
 
+    def get_list_commands_rich(self, help_filter:str=None) -> str:
+        table = Table(title="List of commands", row_styles=["green",""])
+        table.add_column("Command",min_width=18)
+        table.add_column("Alias",no_wrap=True)
+        table.add_column("Category")
+        table.add_column("help",no_wrap=True)
+        rows = []
+        for hand, cs in Commands.COMMANDS.items():
+            if help_filter and not any(
+                filter(lambda x: str(x).find(help_filter) != -1, cs)):
+                continue
+            row = [ cs[0], 
+                    ",".join(cs[1:]), 
+                    Commands.COMMANDS_HELP[hand][1],
+                    Commands.COMMANDS_HELP[hand][0][:80]
+                ]
+            rows.append(row)
+        #sorting
+        rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
+        prev_cat = rows_category[0][2]
+        #generate table
+        for row in  rows_category:
+            cat = row[2]
+            if prev_cat != cat:
+                table.add_section()
+                prev_cat = cat
+            table.add_row(*row)
+
+        return  table
+
+
     def handler_help(self, *args, help_filter=None) -> str:
         #print(f"{self._console.is_terminal=}")
         command = None
@@ -260,43 +297,10 @@ class Commands:
             if self._console.is_terminal is False:
                 # TERMINAL MODE OFF
                 command_str = self.get_list_commands(help_filter)
-
             else:
                 # TERMINAL MODE ON
-                table = Table(title="List of commands", row_styles=["green",""])
-                
-                table.add_column("Command",min_width=18)
-                table.add_column("Alias",no_wrap=True)
-                table.add_column("Category")
-                table.add_column("help",no_wrap=True)
-                # for command in sorted(commands):
-                #     table.add_row(command, "alias", "help")
-                
-    
-                rows = []
-                for hand, cs in Commands.COMMANDS.items():
-                    if help_filter and not any(
-                        filter(lambda x: str(x).find(help_filter) != -1, cs)):
-                        continue
-                    row = [ cs[0], 
-                            ",".join(cs[1:]), 
-                            Commands.COMMANDS_HELP[hand][1],
-                            Commands.COMMANDS_HELP[hand][0][:80]
-                        ]
-                    rows.append(row)
-                
-                rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
-                prev_cat = rows_category[0][2]
-                for row in  rows_category:
-                    cat = row[2]
-                    if prev_cat != cat:
-                        table.add_section()
-                        prev_cat = cat
-                    table.add_row(*row)
-                command_str = table
-
+                command_str = self.get_list_commands_rich(help_filter)
             return command_str
-
         else:
             if type(command) == str:
                 command = " ".join(args)
@@ -311,9 +315,9 @@ class Commands:
                 command_str = f"[i]{command_str}[/i]"
             else:
                 command_str: str = "[yellow]Help for this command is not yet available[/yellow]"
-
             
             return command_str
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -323,6 +327,7 @@ class Commands:
         birthday = args[1]
         return self.a_book.get_record(user).add(Birthday(birthday))
 
+
     @output_operation_describe
     @backup_data_address_book
     @input_error
@@ -330,6 +335,7 @@ class Commands:
         user = args[0]
         email = args[1]
         return self.a_book.get_record(user).add(Email(email))
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -339,12 +345,14 @@ class Commands:
         address = " ".join(args[1:])
         return self.a_book.get_record(user).add(Address(address))
 
+
     @output_operation_describe
     @backup_data_address_book
     @input_error
     def handler_delete_birthday(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_birthday()
+
 
     @output_operation_describe
     @backup_data_address_book
@@ -353,12 +361,14 @@ class Commands:
         user = args[0]
         return self.a_book.get_record(user).delete_email()
 
+
     @output_operation_describe
     @backup_data_address_book
     @input_error
     def handler_delete_address(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_address()
+
 
     @output_operation_describe
     @input_error
@@ -373,12 +383,14 @@ class Commands:
             result = f"{result} days"
         return result
 
+
     @output_operation_describe
     @input_error
     def handler_congrats_in_days(self, *args) -> str:
         days = int(args[0])
         result = self.a_book.congrats_in_days(days)
         return result
+
 
     @output_operation_describe
     @input_error
@@ -387,12 +399,14 @@ class Commands:
         result = str(self.a_book.get_record(user).birthday)
         return result
 
+
     @output_operation_describe
     @input_error
     def handler_show_email(self, *args) -> str:
         user = args[0]
         result = str(self.a_book.get_record(user).email)
         return result
+
 
     @output_operation_describe
     @input_error
@@ -401,14 +415,17 @@ class Commands:
         result = str(self.a_book.get_record(user).address)
         return result
 
+
     def handler_exit(self, *args) -> str:
         return "[i]Goodbye. We are looking forward to seeing you again.[/i]"
+
 
     def handler_undefined(self, *args) -> str:
         command = None
         if any(args):
             command = args[0]
         return self.handler_help(help_filter=command)
+
 
     def get_command_handler(self, command: str) -> object:
         for ch in Commands.COMMANDS:
@@ -417,12 +434,14 @@ class Commands:
                     return ch
         return Commands.handler_undefined
 
+
     @output_operation_describe
     @input_error
     def handler_search_address_book(self, *args) -> str:
         pattern = args[0]
         result = self.a_book.search(pattern)
         return result
+
 
     @output_operation_describe
     @input_error
@@ -435,6 +454,7 @@ class Commands:
         # if self._callback is not None:
         #     result = self._callback("backup_data",version = version, backup = True)
         return result
+
 
     @output_operation_describe
     @input_error
@@ -464,42 +484,51 @@ class Commands:
         result = self.a_book.list_csv()
         return result
 
+
     @backup_data_note
     @input_error
     def handler_add_note(self, *args) -> str:
         return self.notes_storage.add_note(*args)
+
 
     @backup_data_note
     @input_error
     def handler_change_notes(self, *args):
         return self.notes_storage.change_note(*args)
 
+
     @backup_data_note
     @input_error
     def handler_delete_notes(self, *args):
         return self.notes_storage.delete_note(*args)
+
 
     @backup_data_note
     @input_error
     def handler_clear_notes(self, *args):
         return self.notes_storage.clear_notes(*args)
 
+
     @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
-  
+
+
     @input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
+
 
     @input_error
     def handler_sort_notes(self, *args):
         return self.notes_storage.sort_notes(*args)
 
+
     @input_error
     def handler_show_notes(self, *args) -> str:
         return self.notes_storage.show_notes()
-    
+
+
     @output_operation_describe
     @input_error
     def handler_show_app_version(self, *args) -> str:
@@ -508,6 +537,7 @@ class Commands:
         except Exception:
             version_str = "undefined"
         return f"Version: '{ version_str }', package: {__package__}"
+
 
     @input_error
     def api(self, command: str, *args: list[str], verbose: bool = True) -> None:
