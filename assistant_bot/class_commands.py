@@ -357,8 +357,6 @@ class Commands:
         return self.handler_help(*args, help_filter=help_filter, full=True)
 
     def handler_help_table_title(self,table, title: str = None):
-        title = "\nList of commands. The full command syntax "\
-                "is available on request: command ? [Example: +a ?] \n"
         yield title
         yield table
 
@@ -377,7 +375,9 @@ class Commands:
             else:
                 # TERMINAL MODE ON
                 command_str = self.get_list_commands_rich(help_filter, full=full)
-                command_str = self.handler_help_table_title(command_str)
+                title = "\nList of commands. The full command syntax "\
+                        "is available on request: command ? [Example: +a ?]"
+                command_str = self.handler_help_table_title(command_str,title)
             
         else:
             if type(command) == str:
