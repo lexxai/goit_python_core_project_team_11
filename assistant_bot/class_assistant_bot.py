@@ -154,7 +154,7 @@ class Assistant_bot(Commands):
 
                 if command == Commands.handler_exit:
                     break
-            except ValueError as e:
+            except Exception as e:
                 self._console.print(f"[red]COMMANDS ERROR:{e}[/red]")
 
 
