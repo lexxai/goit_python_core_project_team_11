@@ -258,7 +258,8 @@ class Commands:
 
 
     def get_list_commands_rich(self, help_filter:str=None) -> str:
-        table = Table(title="List of commands", row_styles=["green",""])
+        table = Table(title="\nList of commands. The full command syntax "
+                "is available on request: command ? [Example: +a ?]",  row_styles=["green",""])
         table.add_column("Command",min_width=18)
         table.add_column("Alias",no_wrap=True)
         table.add_column("Category")
