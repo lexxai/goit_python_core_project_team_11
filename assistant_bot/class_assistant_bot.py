@@ -6,6 +6,8 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
 import pickle
 from pathlib import Path
+from rich.console import Console
+
 
 
 class CommandCompleter(Completer, Commands):
@@ -55,8 +57,9 @@ class Assistant_bot(Commands):
         self.a_book: AddressBook = AddressBook(id=id)
         self.notes_storage: Notes_Storage = Notes_Storage()
         self.default_filename: str = default_filename
-
         self.restore_data()
+        self._console = Console(no_color=False)
+
 
         # super().__init__(child = self)
 
@@ -119,9 +122,9 @@ class Assistant_bot(Commands):
                     user_input = history.prompt(
                         "Enter your command >>> ", completer=CommandCompleter(parent=self))
                 elif category == "n":
-                    user_input = input("Enter your command >>> ")
+                    user_input = self._console.input("\n[bold]Enter your command >>> [/bold]")
             except KeyboardInterrupt:
-                print("\r")
+                self._console.print("\r")
                 break
 
             command, args = self.parse_input(user_input)
@@ -132,14 +135,22 @@ class Assistant_bot(Commands):
                     result = command(self, *args)
 
                 if result:
-                    print(result)
+                    self._console.print(result)
 
                 if command == Commands.handler_exit:
                     break
             except Exception as e:
-                print(f"COMMANDS ERROR:{e}")
+                self._console.print(f"[red]COMMANDS ERROR:{e}[/red]")
 
 
         self.backup_data()
+
+
+    # skip save state for rich.consol object
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        del state['_console']
+        return state
 
 
