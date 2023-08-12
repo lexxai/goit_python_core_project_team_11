@@ -547,7 +547,7 @@ class Commands:
         handler_delete_phone: ("Delete user's phone. Required [u]username[/u], [u]phone[/u]", "A_BOOK"),
         handler_delete_email: ("Delete user's email. Required [u]username[/u], [u]email[/u]", "A_BOOK"),
         handler_delete_address: ("Delete user's address. "
-        "Required [u]username[/u], address", "A_BOOK"),
+        "Required [u]username[/u], [u]address[/u]", "A_BOOK"),
         handler_delete_birthday: ("Delete user's birthday. Required [u]username[/u]", "A_BOOK"),
         handler_add_birthday: ("Add or replace the user's birthday. "
         "Required [u]username[/u], [u]birthday[/u], "
