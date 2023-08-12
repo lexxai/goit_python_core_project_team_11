@@ -137,7 +137,7 @@ class Assistant_bot(Commands):
                 self._console.print("\r")
                 break
 
-            command, args = self.parse_input(user_input)
+            command, args, command_str = self.parse_input(user_input)
             try:
                 if len(args) == 1 and args[0] == "?":
                     result = self.handler_help(command)

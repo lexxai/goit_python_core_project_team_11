@@ -47,7 +47,7 @@ class Commands:
         return list(filter(lambda x: x, parts))
 
 
-    def parse_input(self, command_line: str) -> tuple[object, list]:
+    def parse_input(self, command_line: str) -> tuple[object, list, str]:
         line: str = command_line.lower().lstrip()
         for command, commands in self.COMMANDS.items():
             for command_str in commands:
@@ -57,8 +57,8 @@ class Commands:
                     # args = command_line[len(command_str):].strip().split()
                     args = self.split_line_by_space(
                         command_line[len(command_str):].strip())
-                    return command, args
-        return Commands.handler_undefined, [line]
+                    return command, args, command_str
+        return Commands.handler_undefined, [line], None
 
 
     def backup_data_address_book(func):
@@ -259,11 +259,12 @@ class Commands:
 
     def get_list_commands_rich(self, help_filter:str=None) -> str:
         table = Table(title="\nList of commands. The full command syntax "
-                "is available on request: command ? [Example: +a ?]",  row_styles=["green",""])
-        table.add_column("Command",min_width=18)
-        table.add_column("Alias",no_wrap=True)
-        table.add_column("Category")
-        table.add_column("help",no_wrap=True)
+                "is available on request: command ? [Example: +a ?]",
+                row_styles=["green",""], expand=True)
+        table.add_column("Command",no_wrap=True,min_width=19)
+        table.add_column("Alias",no_wrap=True, min_width=7)
+        table.add_column("Category",no_wrap=True, min_width=10)
+        table.add_column("help",no_wrap=False)
         rows = []
         for hand, cs in Commands.COMMANDS.items():
             if help_filter and not any(
@@ -272,7 +273,7 @@ class Commands:
             row = [ cs[0], 
                     ",".join(cs[1:]), 
                     Commands.COMMANDS_HELP[hand][1],
-                    Commands.COMMANDS_HELP[hand][0][:80]
+                    Commands.COMMANDS_HELP[hand][0][:120]
                 ]
             rows.append(row)
         #sorting
@@ -301,7 +302,6 @@ class Commands:
             else:
                 # TERMINAL MODE ON
                 command_str = self.get_list_commands_rich(help_filter)
-            return command_str
         else:
             if type(command) == str:
                 command = " ".join(args)
@@ -317,7 +317,7 @@ class Commands:
             else:
                 command_str: str = "[yellow]Help for this command is not yet available[/yellow]"
             
-            return command_str
+        return command_str
 
 
     @output_operation_describe
@@ -574,7 +574,7 @@ class Commands:
         handler_show_csv: ("show csv", "?csv"),
         handler_export_csv: ("export csv", "e csv"),
         handler_import_csv: ("import csv", "i csv"),
-        handler_help: ("help", "?"),
+        handler_help: ("help", "?", "??"),
         handler_add_birthday: ("add birthday", "+b"),
         handler_delete_birthday: ("delete birthday", "-b"),
         handler_add_email: ("add email", "+e"),
