@@ -547,7 +547,7 @@ class Commands:
         handler_congrats_in_days: ("next birthdays", "+nb"),
 
         handler_search_address_book: ("search address book", "?ab="),
-        handler_exit: ("quit", "good bye", "close", "exit", "q"),
+        handler_exit: ("quit", "exit", "q"),
         # notes
         handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
