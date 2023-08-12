@@ -4,41 +4,49 @@ from .class_address_book import AddressBook
 from .class_notes_ext import Notes_Storage
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import pickle
 from pathlib import Path
 from rich.console import Console
+import re
 
 
 
 class CommandCompleter(Completer, Commands):
 
     def __init__(self, parent: object = None):
-        self.parent = parent
-        super().__init__()
-
-    def get_completions(self, document, complete_event):
-        word = document.get_word_before_cursor()
-        COMMANDS_AUTOCOMPLETE = {}
-        # generate COMMANDS_AUTOCOMPLETE
+        #self.parent = parent
+        # generate COMMANDS_AUTOCOMPLETE 
+        self.COMMANDS_AUTOCOMPLETE = {}
         for handler, commands in self.COMMANDS.items():
             command = commands[0]
-            command_help = self.COMMANDS_HELP.get(handler, "undefined")
+            command_help = self.COMMANDS_HELP.get(handler, ("undefined"))[0]
+            command_help = self.clear_rich(command_help)
             # prepare data for help variables
-            if self.parent and "{" in command_help:
+            if parent and "{" in command_help:
                 command_help = command_help.format(
-                    per_page=self.parent.a_book.max_records_per_page,
-                    id_session=self.parent.a_book.id
+                    per_page=parent.a_book.max_records_per_page,
+                    id_session=parent.a_book.id
                 )
-            COMMANDS_AUTOCOMPLETE[command] = command_help
+            self.COMMANDS_AUTOCOMPLETE[command] = command_help
+        #super().__init__()
+    
+    def clear_rich(self, test_str: str) -> str:
+        regex = r"\[/?\w+\]"
+        return re.sub(regex, "", test_str, 0, re.MULTILINE)
 
-        for command in COMMANDS_AUTOCOMPLETE.keys():
+    def get_completions(self, document, complete_event):
+        #word = document.get_word_before_cursor()
+        word = document.current_line
+        #print(word)
+        for command in self.COMMANDS_AUTOCOMPLETE.keys():
             if command.startswith(word):
                 display = command
                 yield Completion(
                     command,
                     start_position=-len(word),
                     display=display,
-                    display_meta=COMMANDS_AUTOCOMPLETE.get(command),
+                    display_meta=self.COMMANDS_AUTOCOMPLETE.get(command),
                 )
 
 
@@ -120,7 +128,9 @@ class Assistant_bot(Commands):
             try:
                 if category == "y":
                     user_input = history.prompt(
-                        "Enter your command >>> ", completer=CommandCompleter(parent=self))
+                        "\nEnter your command >>> ", 
+                         completer=CommandCompleter(parent=self), 
+                         auto_suggest=AutoSuggestFromHistory() )
                 elif category == "n":
                     user_input = self._console.input("\n[bold]Enter your command >>> [/bold]")
             except KeyboardInterrupt:
