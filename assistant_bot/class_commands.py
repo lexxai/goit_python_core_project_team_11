@@ -5,6 +5,7 @@ from .class_notes_ext import Notes_Storage
 
 from functools import wraps
 from rich.console import Console
+from rich.table import Table
 
 from .sorting import main as sorting
 
@@ -247,9 +248,39 @@ class Commands:
                     c_str += f" ({c_alias_str})"
                 commands.append(c_str)
 
-            command_str = "\n[i]The full command syntax is available on request: command ?"\
-                " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
-            return command_str
+            # command_str = "\n[i]The full command syntax is available on request: command ?"\
+            #     " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
+
+
+
+            table = Table(title="List of commands", row_styles=["green",""])
+            
+            table.add_column("Command",min_width=18)
+            table.add_column("Alias",no_wrap=True)
+            table.add_column("Category")
+            table.add_column("help",no_wrap=True)
+            # for command in sorted(commands):
+            #     table.add_row(command, "alias", "help")
+            
+  
+            rows = []
+            for hand, cs in Commands.COMMANDS.items():
+                if help_filter and not any(
+                    filter(lambda x: str(x).find(help_filter) != -1, cs)):
+                    continue
+                row = [ cs[0], 
+                        ",".join(cs[1:]), 
+                        Commands.COMMANDS_HELP[hand][1],
+                        Commands.COMMANDS_HELP[hand][0][:80]
+                      ]
+                rows.append(row)
+            
+            rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
+            for row in  rows_category:
+                table.add_row(*row)
+
+            return table
+
         else:
             if type(command) == str:
                 command = " ".join(args)
@@ -511,7 +542,7 @@ class Commands:
         handler_show_address: ("show address", "?a"),
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
-        handler_list_versions: ("list versions", "l v"),
+        handler_list_versions: ("show versions", "?v"),
         handler_list_csv: ("list csv", "l csv"),
         handler_congrats_in_days: ("next birthdays", "+nb"),
 
@@ -530,7 +561,7 @@ class Commands:
         handler_show_app_version: ("app version", "version"),
     }
 
-    COMMANDS_CATEGORY = ("SYS", "A_BOOK", "NOTES")
+    COMMANDS_CATEGORY = ("SYS", "A_BOOK", "NOTES", "SYS_STORE")
 
     """
     CONSTANT DICT OF COMMANDS HELP 
@@ -563,11 +594,11 @@ class Commands:
         handler_show_address_book: ("Show all user records in the address book.", "A_BOOK"),
         handler_show_page: ("Show all user's record per page. "
                                 "Optional parameter size of page [{per_page}]", "A_BOOK"),
-        handler_show_csv: ("Show all user's record in csv format", "A_BOOK"),
+        handler_show_csv: ("Show all user's record in csv format", "A_BOOK_CSV"),
         handler_export_csv: ("Export all user's record in csv format to file. "
-                                 "Optional parameter filename", "A_BOOK"),
+                                 "Optional parameter filename", "A_BOOK_CSV"),
         handler_import_csv: ("Import all user's record in csv format to file. "
-                                 "Optional parameter filename", "A_BOOK"),
+                                 "Optional parameter filename", "A_BOOK_CSV"),
         handler_days_to_birthday: ("Show days until the user's birthday. "
                                  "Required [u]username[/u].", "A_BOOK"),
         handler_add_address_book: ("Add user's phone or "
@@ -579,10 +610,10 @@ class Commands:
         handler_exit: ("Exit of bot.", "SYS"),
         handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
         handler_backup: ("Backup all records. Optional parameter is the version. "
-                        "P.S. it done automatically after any changes on records", "SYS"),
-        handler_restore: ("Restore all records. Optional parameter is the version.", "SYS"),
-        handler_list_versions: ("List of saved backup versions", "SYS"),
-        handler_list_csv: ("List of saved cvs files", "SYS"),
+                        "P.S. it done automatically after any changes on records", "SYS_STORE"),
+        handler_restore: ("Restore all records. Optional parameter is the version.", "SYS_STORE"),
+        handler_list_versions: ("List of saved backup versions", "SYS_STORE"),
+        handler_list_csv: ("List of saved cvs files", "A_BOOK_CSV"),
         handler_undefined: ("Help for this command is not yet available", "SYS"),
         # notes
         handler_add_note: ("Add a new note record", "NOTES"),
