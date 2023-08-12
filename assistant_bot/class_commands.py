@@ -257,37 +257,57 @@ class Commands:
         return command_str
 
 
+    def add_help_parameters(self, command_str: str) -> str:
+        if command_str:
+            if "{" in command_str:
+                command_str = command_str.format(
+                    per_page=self.a_book.max_records_per_page,
+                    id_session=self.a_book.id
+                )
+        return command_str
+
+
     def get_list_commands_rich(self, help_filter:str=None) -> str:
         table = Table(title="\nList of commands. The full command syntax "
                 "is available on request: command ? [Example: +a ?]",
                 row_styles=["green",""], expand=True)
         table.add_column("Command",no_wrap=True,min_width=19)
         table.add_column("Alias",no_wrap=True, min_width=7)
-        table.add_column("Category",no_wrap=True, min_width=10)
-        table.add_column("help",no_wrap=False)
+        #table.add_column("Category",no_wrap=True, min_width=10)
+        table.add_column("Help",no_wrap=True)
         rows = []
         for hand, cs in Commands.COMMANDS.items():
             if help_filter and not any(
                 filter(lambda x: str(x).find(help_filter) != -1, cs)):
                 continue
-            row = [ cs[0], 
-                    ",".join(cs[1:]), 
-                    Commands.COMMANDS_HELP[hand][1],
-                    Commands.COMMANDS_HELP[hand][0][:120]
+
+            aliases = ",".join(cs[1:])
+            command = cs[0]
+            help_str = Commands.COMMANDS_HELP[hand][0][:180]
+            help_str = self.add_help_parameters(help_str)
+            category = Commands.COMMANDS_HELP[hand][1]
+            row = [ command, 
+                    aliases, 
+                    help_str,
+                    category
                 ]
             rows.append(row)
         #sorting
-        rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
-        prev_cat = rows_category[0][2]
+        rows_category = sorted(rows, key=lambda r: (r[3], r[0]) )
+        prev_cat = rows_category[0][3]
         #generate table
         for row in  rows_category:
-            cat = row[2]
+            cat = row[3]
             if prev_cat != cat:
                 table.add_section()
                 prev_cat = cat
-            table.add_row(*row)
+            table.add_row(*row[:3])
 
         return  table
+
+
+    def handler_help_full(self, *args, help_filter=None) -> str:
+        return self.handler_help(*args, help_filter=help_filter)
 
 
     def handler_help(self, *args, help_filter=None) -> str:
@@ -574,7 +594,8 @@ class Commands:
         handler_show_csv: ("show csv", "?csv"),
         handler_export_csv: ("export csv", "e csv"),
         handler_import_csv: ("import csv", "i csv"),
-        handler_help: ("help", "?", "??"),
+        handler_help: ("help", "?"),
+        handler_help_full: ("help full", "??"),
         handler_add_birthday: ("add birthday", "+b"),
         handler_delete_birthday: ("delete birthday", "-b"),
         handler_add_email: ("add email", "+e"),
@@ -651,9 +672,12 @@ class Commands:
         handler_add_address_book: ("Add user's phone or "
                                   "multiple phones separated by space. "
                                 "Required [u]username[/u] and [u]phone[/u].", "A_BOOK"),
-        handler_help: ("List of commands and their description. "
+        handler_help: ("Short List of commands. "
                             "Also you can use '?' "
-                            "for any command as parameter. Session ID: {id_session}", "SYS"),
+                            "for any command as parameter", "SYS"),
+        handler_help_full: ("Full List of commands and their description. "
+                            "Also you can use '?' "
+                            "for any command as parameter. Session ID: {id_session}", "SYS"),    # noqa: E501
         handler_exit: ("Exit of bot.", "SYS"),
         handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
         handler_backup: ("Backup all records. Optional parameter is the version. "
