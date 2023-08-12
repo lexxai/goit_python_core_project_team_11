@@ -7,6 +7,7 @@ from prompt_toolkit.completion import Completion, Completer
 import pickle
 from pathlib import Path
 from rich.console import Console
+import re
 
 
 
@@ -15,6 +16,10 @@ class CommandCompleter(Completer, Commands):
     def __init__(self, parent: object = None):
         self.parent = parent
         super().__init__()
+    
+    def clear_rich(self, test_str: str) -> str:
+        regex = r"\[/?\w+\]"
+        return re.sub(regex, "", test_str, 0, re.MULTILINE)
 
     def get_completions(self, document, complete_event):
         word = document.get_word_before_cursor()
@@ -22,7 +27,8 @@ class CommandCompleter(Completer, Commands):
         # generate COMMANDS_AUTOCOMPLETE
         for handler, commands in self.COMMANDS.items():
             command = commands[0]
-            command_help = self.COMMANDS_HELP.get(handler, "undefined")
+            command_help = self.COMMANDS_HELP.get(handler, ("undefined"))[0]
+            command_help = self.clear_rich(command_help)
             # prepare data for help variables
             if self.parent and "{" in command_help:
                 command_help = command_help.format(
