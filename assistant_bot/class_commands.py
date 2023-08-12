@@ -226,65 +226,76 @@ class Commands:
     def handler_hello(self, *args) -> str:
         return "How can I help you?"
 
+
+    def get_list_commands(self, help_filter:str=None) -> str:
+        commands = []
+        for cs in Commands.COMMANDS.values():
+            if help_filter and not any(
+                    filter(lambda x: str(x).find(help_filter) != -1, cs)):
+                continue
+            c_str = ""
+            c_alias = []
+            for c in list(cs):
+                if len(c_str) == 0:
+                    c_str = c
+                else:
+                    c_alias.append(f"'{c}'")
+            c_alias_str = ",".join(c_alias)
+            if any(c_alias):
+                c_str += f" ({c_alias_str})"
+            commands.append(c_str)
+
+        command_str = "\n[i]The full command syntax is available on request: command ?"\
+            " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
+        
+        return command_str
+
+
     def handler_help(self, *args, help_filter=None) -> str:
+        #print(f"{self._console.is_terminal=}")
         command = None
         if len(args):
             command = args[0]
         if not command:
-            commands = []
-            for cs in Commands.COMMANDS.values():
-                if help_filter and not any(
+            if self._console.is_terminal is False:
+                # TERMINAL MODE OFF
+                command_str = self.get_list_commands(help_filter)
+
+            else:
+                # TERMINAL MODE ON
+                table = Table(title="List of commands", row_styles=["green",""])
+                
+                table.add_column("Command",min_width=18)
+                table.add_column("Alias",no_wrap=True)
+                table.add_column("Category")
+                table.add_column("help",no_wrap=True)
+                # for command in sorted(commands):
+                #     table.add_row(command, "alias", "help")
+                
+    
+                rows = []
+                for hand, cs in Commands.COMMANDS.items():
+                    if help_filter and not any(
                         filter(lambda x: str(x).find(help_filter) != -1, cs)):
-                    continue
-                c_str = ""
-                c_alias = []
-                for c in list(cs):
-                    if len(c_str) == 0:
-                        c_str = c
-                    else:
-                        c_alias.append(f"'{c}'")
-                c_alias_str = ",".join(c_alias)
-                if any(c_alias):
-                    c_str += f" ({c_alias_str})"
-                commands.append(c_str)
+                        continue
+                    row = [ cs[0], 
+                            ",".join(cs[1:]), 
+                            Commands.COMMANDS_HELP[hand][1],
+                            Commands.COMMANDS_HELP[hand][0][:80]
+                        ]
+                    rows.append(row)
+                
+                rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
+                prev_cat = rows_category[0][2]
+                for row in  rows_category:
+                    cat = row[2]
+                    if prev_cat != cat:
+                        table.add_section()
+                        prev_cat = cat
+                    table.add_row(*row)
+                command_str = table
 
-            # command_str = "\n[i]The full command syntax is available on request: command ?"\
-            #     " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
-
-
-
-            table = Table(title="List of commands", row_styles=["green",""])
-            
-            table.add_column("Command",min_width=18)
-            table.add_column("Alias",no_wrap=True)
-            table.add_column("Category")
-            table.add_column("help",no_wrap=True)
-            # for command in sorted(commands):
-            #     table.add_row(command, "alias", "help")
-            
-  
-            rows = []
-            for hand, cs in Commands.COMMANDS.items():
-                if help_filter and not any(
-                    filter(lambda x: str(x).find(help_filter) != -1, cs)):
-                    continue
-                row = [ cs[0], 
-                        ",".join(cs[1:]), 
-                        Commands.COMMANDS_HELP[hand][1],
-                        Commands.COMMANDS_HELP[hand][0][:80]
-                      ]
-                rows.append(row)
-            
-            rows_category = sorted(rows, key=lambda r: (r[2], r[0]) )
-            prev_cat = rows_category[0][2]
-            for row in  rows_category:
-                cat = row[2]
-                if prev_cat != cat:
-                    table.add_section()
-                    prev_cat = cat
-                table.add_row(*row)
-
-            return table
+            return command_str
 
         else:
             if type(command) == str:
