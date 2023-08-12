@@ -4,9 +4,10 @@ from .class_address_book import AddressBook
 from .class_notes_ext import Notes_Storage
 
 from functools import wraps
-from rich import print
+from rich.console import Console
 
 from .sorting import main as sorting
+
 
 
 
@@ -31,6 +32,7 @@ class Commands:
 
     notes_storage: Notes_Storage
     a_book: AddressBook
+    _console : Console
 
     def split_line_by_space(self, line: str) -> list[str]:
         """ split_line_by_space with quotes
@@ -99,13 +101,13 @@ class Commands:
                 return func(self, *args, **kwargs)
             except (KeyError, ValueError, IndexError) as e:
                 error = str(e)
-                return "Sorry, there are not enough parameters "\
+                return "[red]Sorry, there are not enough parameters "\
                     f"or their value may be incorrect {error}. "\
-                    "Please use the help for more information. "
+                    "Please use the help for more information. [/red]"
             except (FileNotFoundError):
-                return "Sorry, there operation with file is incorrect."
+                return "[red]Sorry, there operation with file is incorrect.[/red]"
             except Exception as e:
-                return "**** Exception other: " + str(e)
+                return f"[/red]**** Exception other: {e} [/red]"
         return wrapper
 
     def output_operation_describe(func):
@@ -115,7 +117,9 @@ class Commands:
             if type(result) == str:
                 return result
             else:
-                return "Done" if result else "The operation was not successful"
+                return "[green]Done[green]" \
+                    if result else "[yellow]The operation "\
+                                    "was not successful[/yellow]"
         return wrapper
 
     @output_operation_describe
@@ -242,13 +246,15 @@ class Commands:
                 if any(c_alias):
                     c_str += f" ({c_alias_str})"
                 commands.append(c_str)
-            return "\nThe full command syntax is available on request: command ? [Example: +a ?] \nList of commands: \n" + ", ".join(sorted(commands))
+                command_str = "\n[i]The full command syntax is available on request: command ?"\
+                " [Example: +a ?][/i] \n[b]List of commands:[/b] \n" + ", ".join(sorted(commands))  # noqa: E501
+            return command_str
         else:
             if type(command) == str:
                 command = " ".join(args)
                 command = self.get_command_handler(command)
             command_str: str = Commands.COMMANDS_HELP.get(command,
-                                                          "Help for this command is not yet available")
+                                    "[yellow]Help for this command is not yet available[/yellow]")  # noqa: E501
             if "{" in command_str:
                 command_str = command_str.format(
                     per_page=self.a_book.max_records_per_page,
@@ -343,7 +349,7 @@ class Commands:
         return result
 
     def handler_exit(self, *args) -> str:
-        return "Goodbye. We are looking forward to seeing you again."
+        return "[i]Goodbye. We are looking forward to seeing you again.[/i]"
 
     def handler_undefined(self, *args) -> str:
         command = None
@@ -464,7 +470,7 @@ class Commands:
         """
         result = self.get_command_handler(command)(self, *args)
         if verbose:
-            print(f"api command '{command}': {result}")
+            self._console.print(f"[green]api command '{command}'[/green]: [yellow]{result}[/yellow]")
         else:
             return result
 
@@ -495,7 +501,7 @@ class Commands:
         handler_days_to_birthday:  ("to birthday", "2b"),
         handler_show_birthday: ("show birthday", "?b"),
         handler_show_email: ("show email", "?e"),
-        handler_show_address_book: ("show address book", "list address book", "lab"),
+        handler_show_address_book: ("show address book", "lab"),
         handler_show_address: ("show address", "?a"),
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
@@ -588,56 +594,4 @@ class Commands:
                                   "be in certain days. Required days parameter"
     }
 
-    # COMMANDS_AUTOCOMPLETE = {
-    #     "hello": "Just hello",
-    #     "delete user": "Delete ALL records of user. Required username",
-    #     "delete all records": "Delete ALL records of ALL user. Required parameter YES",
-    #     "change phone": "Change user's phone. Required username, old phone, new phone",
-    #     "delete phone": "Delete user's phone. Required username, phone",
-    #     "show phone": "Show user's phones. Required username",
-    #     "show page": "Show all user's record per page. "
-    #                             "Optional parameter size of page [{per_page}]",
-    #     "show csv": "Show all user's record in csv format",
-    #     "export csv": "Export all user's record in csv format to file. "
-    #                              "Optional parameter filename",
-    #     "import csv": "Import all user's record in csv format to file. "
-    #                              "Optional parameter filename",
-    #     "help": "List of commands and their description. "
-    #                         "Also you can use '?' "
-    #                         "for any command as parameter. Session ID: {id_session}",
-    #     "add birthday": "Add or replace the user's birthday. "
-    #                                "Required username, birthday, "
-    #                         "please use ISO 8601 date format",
-    #     "delete birthday": "Delete user's birthday. Required username",
-    #     "add email": "Add or replace the user's email. "
-    #                             "Required username, email",
-    #     "delete email": "Delete user's email. Required username, email",
-    #     "add address book": "Add or replace the user's address. "
-    #                               "Required username, address",
-    #     "add address": "Add or replace the user's address. "
-    #                               "Required username, address",
-    #     "delete address": "Delete user's address. "
-    #                                  "Required username, address",
-    #     "to birthday": "Show days until the user's birthday. "
-    #                                    "Required username",
-    #     "show birthday": "Show user's birthday. Required username",
-    #     "show email": "Show user's email. Required username",
-    #     "show address book": "Show all user records in the address book",
-    #     "show address": "Show user's address. Required username",
-    #     "backup": "Backup all records. Optional parameter is the version. "
-    #                     "P.S. it done automatically after any changes on records",
-    #     "restore": "Restore all records. Optional parameter is the version",
-    #     "list versions": "List of saved backup versions",
-    #     "list csv": "List of saved cvs files",
-    #     "search address book": "Search user by pattern in name or phone",
-    #     "exit": "Exit of bot.",
-    #     "add note": "Add a new note record in format Note body #Tag",
-    #     "show notes": "Show all user's records in Notes",
-    #     "change note": "Change note by index in format Note body #Tag",
-    #     "delete note": "Delete note by index",
-    #     "clear notes": "Clear all notes",
-    #     "search notes": "Search notes or tags by pattern",
-    #     "sort notes": "Sort notes by type that user choose",
-    #     "sort folder": "Sorting files of folder. Required path to folder",
-    #     "app version": "Show version of application",
-    # }
+
