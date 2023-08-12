@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .sorting import main as sorting
+import math
 
 import sys
 if sys.version_info >= (3, 8):
@@ -268,47 +269,50 @@ class Commands:
 
 
     def help_table_rich(self, rows_cat, column:int, columns: int = 4 ):
-        len_t = round( len(rows_cat) / columns )
+        len_t = math.ceil( len(rows_cat) / columns )
         min_t = (column)*len_t
         max_t = (column+1)*len_t
         #print(f"{len_t=}, {min_t=}, {max_t=}")
         rows_category = rows_cat[min_t:max_t]
-        table = Table(row_styles=["green",""], expand=True)
-        table.add_column("Command",no_wrap=True, max_width=12)
-        table.add_column("Alias",no_wrap=True, max_width=6)
-        #table.add_column("Category",no_wrap=True, min_width=10)
-        #table.add_column("Help",no_wrap=True, max_width=40)
-        prev_cat = rows_category[0][3]
-        #generate table
-        for row in  rows_category:
-            cat = row[3]
-            if prev_cat != cat:
-                table.add_section()
-                prev_cat = cat
-            table.add_row(*row[:2])  
-        return table
+        if rows_category:        
+            table = Table(row_styles=["green",""], expand=True)
+            table.add_column("Command",no_wrap=True, max_width=12)
+            table.add_column("Alias",no_wrap=True, max_width=6)
+            #table.add_column("Category",no_wrap=True, min_width=10)
+            #table.add_column("Help",no_wrap=True, max_width=40)
+
+            prev_cat = rows_category[0][3]
+            #generate table
+            for row in  rows_category:
+                cat = row[3]
+                if prev_cat != cat:
+                    table.add_section()
+                    prev_cat = cat
+                table.add_row(*row[:2])  
+            return table
 
 
     def help_full_table_rich(self, rows_cat, column:int, columns: int = 2 ):
-        len_t = round( len(rows_cat) / columns )
+        len_t = math.ceil( len(rows_cat) / columns )
         min_t = (column)*len_t
         max_t = (column+1)*len_t
         #print(f"{len_t=}, {min_t=}, {max_t=}")
         rows_category = rows_cat[min_t:max_t]
-        table = Table(row_styles=["green",""], expand=True)
-        table.add_column("Command",no_wrap=True,max_width=12)
-        table.add_column("Alias",no_wrap=True, max_width=4)
-        #table.add_column("Category",no_wrap=True, min_width=10)
-        table.add_column("Help",no_wrap=True, max_width=40)
-        prev_cat = rows_category[0][3]
-        #generate table
-        for row in  rows_category:
-            cat = row[3]
-            if prev_cat != cat:
-                table.add_section()
-                prev_cat = cat
-            table.add_row(*row[:3])  
-        return table
+        if rows_category:
+            table = Table(row_styles=["green",""], expand=True)
+            table.add_column("Command",no_wrap=True,max_width=12)
+            table.add_column("Alias",no_wrap=True, max_width=4)
+            #table.add_column("Category",no_wrap=True, min_width=10)
+            table.add_column("Help",no_wrap=True, max_width=40)
+            prev_cat = rows_category[0][3]
+            #generate table
+            for row in  rows_category:
+                cat = row[3]
+                if prev_cat != cat:
+                    table.add_section()
+                    prev_cat = cat
+                table.add_row(*row[:3])  
+            return table
 
 
 
@@ -319,10 +323,11 @@ class Commands:
         #        "is available on request: command ? [Example: +a ?]"
         rows = []
         for hand, cs in Commands.COMMANDS.items():
-            if help_filter and not any(
-                filter(lambda x: str(x).find(help_filter) != -1, cs)):
+            # if help_filter and not any(
+            #     filter(lambda x: str(x).find(help_filter) != -1, cs)):
+            #     continue
+            if help_filter and cs[0].find(help_filter) == -1:
                 continue
-
             aliases = ",".join(cs[1:])
             command = cs[0]
             help_str = Commands.COMMANDS_HELP[hand][0][:100]
@@ -356,11 +361,11 @@ class Commands:
     def handler_help_full(self, *args, help_filter=None) -> str:
         return self.handler_help(*args, help_filter=help_filter, full=True)
 
-    def handler_help_table_title(self,table, title: str = None):
+
+
+    def handler_help_table_title(self, table , title: str = None):
         yield title
         yield table
-
-
 
 
     def handler_help(self, *args, help_filter=None, full:bool = False) -> str:
