@@ -267,14 +267,37 @@ class Commands:
         return command_str
 
 
-    def help_table_rich(self, rows_cat, column:int, columns: int = 2 ):
-        len_t = int( len(rows_cat) / columns )
-        min_t = (column-1)*len_t
-        max_t = (column)*len_t
+    def help_table_rich(self, rows_cat, column:int, columns: int = 4 ):
+        len_t = round( len(rows_cat) / columns )
+        min_t = (column)*len_t
+        max_t = (column+1)*len_t
+        #print(f"{len_t=}, {min_t=}, {max_t=}")
         rows_category = rows_cat[min_t:max_t]
         table = Table(row_styles=["green",""], expand=True)
-        table.add_column("Command",no_wrap=True,min_width=19)
-        table.add_column("Alias",no_wrap=True, min_width=7)
+        table.add_column("Command",no_wrap=True, max_width=12)
+        table.add_column("Alias",no_wrap=True, max_width=6)
+        #table.add_column("Category",no_wrap=True, min_width=10)
+        #table.add_column("Help",no_wrap=True, max_width=40)
+        prev_cat = rows_category[0][3]
+        #generate table
+        for row in  rows_category:
+            cat = row[3]
+            if prev_cat != cat:
+                table.add_section()
+                prev_cat = cat
+            table.add_row(*row[:2])  
+        return table
+
+
+    def help_full_table_rich(self, rows_cat, column:int, columns: int = 2 ):
+        len_t = round( len(rows_cat) / columns )
+        min_t = (column)*len_t
+        max_t = (column+1)*len_t
+        #print(f"{len_t=}, {min_t=}, {max_t=}")
+        rows_category = rows_cat[min_t:max_t]
+        table = Table(row_styles=["green",""], expand=True)
+        table.add_column("Command",no_wrap=True,max_width=12)
+        table.add_column("Alias",no_wrap=True, max_width=4)
         #table.add_column("Category",no_wrap=True, min_width=10)
         table.add_column("Help",no_wrap=True, max_width=40)
         prev_cat = rows_category[0][3]
@@ -289,7 +312,9 @@ class Commands:
 
 
 
-    def get_list_commands_rich(self, help_filter:str=None) -> str:
+
+
+    def get_list_commands_rich(self, help_filter:str=None, full:bool = True) -> str:
         #title="\nList of commands. The full command syntax "
         #        "is available on request: command ? [Example: +a ?]"
         rows = []
@@ -312,19 +337,35 @@ class Commands:
         #sorting
         rows_category = sorted(rows, key=lambda r: (r[3], r[0]) )
 
+        cols = 2 if full else 6
         table_main = Table.grid(expand=True)
-        table_main.add_column()
-        table_main.add_column()
-        table_main.add_row(self.help_table_rich(rows_category,1),
-                           self.help_table_rich(rows_category,2),)
+        for _ in range(cols):
+            table_main.add_column()
+
+        cols_data = []
+        for i in range(cols):
+            if full:
+                cols_data.append(self.help_full_table_rich(rows_category,i,cols))
+            else:
+                cols_data.append(self.help_table_rich(rows_category,i,cols))
+        table_main.add_row(*cols_data),
+                           
         return table_main
 
 
     def handler_help_full(self, *args, help_filter=None) -> str:
-        return self.handler_help(*args, help_filter=help_filter)
+        return self.handler_help(*args, help_filter=help_filter, full=True)
+
+    def handler_help_table_title(self,table, title: str = None):
+        title = "\nList of commands. The full command syntax "\
+                "is available on request: command ? [Example: +a ?] \n"
+        yield title
+        yield table
 
 
-    def handler_help(self, *args, help_filter=None) -> str:
+
+
+    def handler_help(self, *args, help_filter=None, full:bool = False) -> str:
         #print(f"{self._console.is_terminal=}")
         command = None
         if len(args):
@@ -335,7 +376,9 @@ class Commands:
                 command_str = self.get_list_commands(help_filter)
             else:
                 # TERMINAL MODE ON
-                command_str = self.get_list_commands_rich(help_filter)
+                command_str = self.get_list_commands_rich(help_filter, full=full)
+                command_str = self.handler_help_table_title(command_str)
+            
         else:
             if type(command) == str:
                 command = " ".join(args)

@@ -9,6 +9,7 @@ import pickle
 from pathlib import Path
 from rich.console import Console
 import re
+import types
 
 
 
@@ -145,7 +146,11 @@ class Assistant_bot(Commands):
                     result = command(self, *args)
 
                 if result:
-                    self._console.print(result)
+                    if isinstance(result, types.GeneratorType):
+                        for r in result:
+                            self._console.print(r)
+                    else:
+                        self._console.print(result)
 
                 if command == Commands.handler_exit:
                     break
