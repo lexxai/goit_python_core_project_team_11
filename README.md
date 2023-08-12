@@ -16,6 +16,8 @@
 * [Підтримка користувачів](https://github.com/lexxai/goit_python_core_project_team_11/issues)
 
 ![image](https://github.com/lexxai/goit_python_core_project_team_11/assets/3278842/2bf37685-e950-4be4-838d-08d36b309cec)
+![image](https://github.com/lexxai/goit_python_core_project_team_11/assets/3278842/20602bf7-fb33-476e-86e5-a4ee7388a7dc)
+
 
 * YouTube video: https://youtu.be/oPinojZh5rg
 
