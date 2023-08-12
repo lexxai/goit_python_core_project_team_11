@@ -4,6 +4,7 @@ from .class_address_book import AddressBook
 from .class_notes_ext import Notes_Storage
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completion, Completer
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import pickle
 from pathlib import Path
 from rich.console import Console
@@ -23,8 +24,9 @@ class CommandCompleter(Completer, Commands):
 
     def get_completions(self, document, complete_event):
         word = document.get_word_before_cursor()
+
+        # generate COMMANDS_AUTOCOMPLETE 
         COMMANDS_AUTOCOMPLETE = {}
-        # generate COMMANDS_AUTOCOMPLETE
         for handler, commands in self.COMMANDS.items():
             command = commands[0]
             command_help = self.COMMANDS_HELP.get(handler, ("undefined"))[0]
@@ -126,7 +128,9 @@ class Assistant_bot(Commands):
             try:
                 if category == "y":
                     user_input = history.prompt(
-                        "Enter your command >>> ", completer=CommandCompleter(parent=self))
+                        "\nEnter your command >>> ", 
+                         completer=CommandCompleter(parent=self), 
+                         auto_suggest=AutoSuggestFromHistory() )
                 elif category == "n":
                     user_input = self._console.input("\n[bold]Enter your command >>> [/bold]")
             except KeyboardInterrupt:
