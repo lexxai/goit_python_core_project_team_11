@@ -267,14 +267,56 @@ class Commands:
         return command_str
 
 
-    def get_list_commands_rich(self, help_filter:str=None) -> str:
-        table = Table(title="\nList of commands. The full command syntax "
-                "is available on request: command ? [Example: +a ?]",
-                row_styles=["green",""], expand=True)
-        table.add_column("Command",no_wrap=True,min_width=19)
-        table.add_column("Alias",no_wrap=True, min_width=7)
+    def help_table_rich(self, rows_cat, column:int, columns: int = 4 ):
+        len_t = round( len(rows_cat) / columns )
+        min_t = (column)*len_t
+        max_t = (column+1)*len_t
+        #print(f"{len_t=}, {min_t=}, {max_t=}")
+        rows_category = rows_cat[min_t:max_t]
+        table = Table(row_styles=["green",""], expand=True)
+        table.add_column("Command",no_wrap=True, max_width=12)
+        table.add_column("Alias",no_wrap=True, max_width=6)
         #table.add_column("Category",no_wrap=True, min_width=10)
-        table.add_column("Help",no_wrap=True)
+        #table.add_column("Help",no_wrap=True, max_width=40)
+        prev_cat = rows_category[0][3]
+        #generate table
+        for row in  rows_category:
+            cat = row[3]
+            if prev_cat != cat:
+                table.add_section()
+                prev_cat = cat
+            table.add_row(*row[:2])  
+        return table
+
+
+    def help_full_table_rich(self, rows_cat, column:int, columns: int = 2 ):
+        len_t = round( len(rows_cat) / columns )
+        min_t = (column)*len_t
+        max_t = (column+1)*len_t
+        #print(f"{len_t=}, {min_t=}, {max_t=}")
+        rows_category = rows_cat[min_t:max_t]
+        table = Table(row_styles=["green",""], expand=True)
+        table.add_column("Command",no_wrap=True,max_width=12)
+        table.add_column("Alias",no_wrap=True, max_width=4)
+        #table.add_column("Category",no_wrap=True, min_width=10)
+        table.add_column("Help",no_wrap=True, max_width=40)
+        prev_cat = rows_category[0][3]
+        #generate table
+        for row in  rows_category:
+            cat = row[3]
+            if prev_cat != cat:
+                table.add_section()
+                prev_cat = cat
+            table.add_row(*row[:3])  
+        return table
+
+
+
+
+
+    def get_list_commands_rich(self, help_filter:str=None, full:bool = True) -> str:
+        #title="\nList of commands. The full command syntax "
+        #        "is available on request: command ? [Example: +a ?]"
         rows = []
         for hand, cs in Commands.COMMANDS.items():
             if help_filter and not any(
@@ -283,7 +325,7 @@ class Commands:
 
             aliases = ",".join(cs[1:])
             command = cs[0]
-            help_str = Commands.COMMANDS_HELP[hand][0][:180]
+            help_str = Commands.COMMANDS_HELP[hand][0][:100]
             help_str = self.add_help_parameters(help_str)
             category = Commands.COMMANDS_HELP[hand][1]
             row = [ command, 
@@ -294,23 +336,34 @@ class Commands:
             rows.append(row)
         #sorting
         rows_category = sorted(rows, key=lambda r: (r[3], r[0]) )
-        prev_cat = rows_category[0][3]
-        #generate table
-        for row in  rows_category:
-            cat = row[3]
-            if prev_cat != cat:
-                table.add_section()
-                prev_cat = cat
-            table.add_row(*row[:3])
 
-        return  table
+        cols = 2 if full else 6
+        table_main = Table.grid(expand=True)
+        for _ in range(cols):
+            table_main.add_column()
+
+        cols_data = []
+        for i in range(cols):
+            if full:
+                cols_data.append(self.help_full_table_rich(rows_category,i,cols))
+            else:
+                cols_data.append(self.help_table_rich(rows_category,i,cols))
+        table_main.add_row(*cols_data),
+                           
+        return table_main
 
 
     def handler_help_full(self, *args, help_filter=None) -> str:
-        return self.handler_help(*args, help_filter=help_filter)
+        return self.handler_help(*args, help_filter=help_filter, full=True)
+
+    def handler_help_table_title(self,table, title: str = None):
+        yield title
+        yield table
 
 
-    def handler_help(self, *args, help_filter=None) -> str:
+
+
+    def handler_help(self, *args, help_filter=None, full:bool = False) -> str:
         #print(f"{self._console.is_terminal=}")
         command = None
         if len(args):
@@ -321,7 +374,11 @@ class Commands:
                 command_str = self.get_list_commands(help_filter)
             else:
                 # TERMINAL MODE ON
-                command_str = self.get_list_commands_rich(help_filter)
+                command_str = self.get_list_commands_rich(help_filter, full=full)
+                title = "\nList of commands. The full command syntax "\
+                        "is available on request: command ? [Example: +a ?]"
+                command_str = self.handler_help_table_title(command_str,title)
+            
         else:
             if type(command) == str:
                 command = " ".join(args)
@@ -674,10 +731,10 @@ class Commands:
                                 "Required [u]username[/u] and [u]phone[/u].", "A_BOOK"),
         handler_help: ("Short List of commands. "
                             "Also you can use '?' "
-                            "for any command as parameter", "SYS"),
+                            "for any command as parameter.", "SYS"),
         handler_help_full: ("Full List of commands and their description. "
                             "Also you can use '?' "
-                            "for any command as parameter. Session ID: {id_session}", "SYS"),    # noqa: E501
+                            "for any command as parameter.", "SYS"),    # noqa: E501
         handler_exit: ("Exit of bot.", "SYS"),
         handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
         handler_backup: ("Backup all records. Optional parameter is the version. "
@@ -685,7 +742,7 @@ class Commands:
         handler_restore: ("Restore all records. Optional parameter is the version.", "SYS_STORE"),
         handler_list_versions: ("List of saved backup versions", "SYS_STORE"),
         handler_list_csv: ("List of saved cvs files", "A_BOOK_CSV"),
-        handler_undefined: ("Help for this command is not yet available", "SYS"),
+        handler_undefined: ("[yellow]Help for this command is not yet available[/yellow]", "SYS"),
         # notes
         handler_add_note: ("Add a new note record", "NOTES"),
         handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
@@ -699,7 +756,7 @@ class Commands:
                             " is '1' to sort by date, '2' - "
                             "to sort by index, '3' - to sort by #Tags", "NOTES"),
         handler_sorting: ("Sorting files of folder. Required path to folder.", "NOTES"),
-        handler_show_app_version: ("Show version of application", "SYS"),
+        handler_show_app_version: ("Show version of application. ID: {id_session}", "SYS"),
         handler_congrats_in_days: ("Show list of users with birthdays, which will "
                                   "be in certain days. Required days parameter", "A_BOOK")
     }
