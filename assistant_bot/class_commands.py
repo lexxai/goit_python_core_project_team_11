@@ -516,7 +516,7 @@ class Commands:
         handler_congrats_in_days: ("next birthdays", "+nb"),
 
         handler_search_address_book: ("search address book", "?ab="),
-        handler_exit: ("good bye", "close", "exit", "q", "quit"),
+        handler_exit: ("quit", "good bye", "close", "exit", "q"),
         # notes
         handler_add_note: ("add note", "+n"),
         handler_show_notes: ("show notes", "?n"),
@@ -550,8 +550,8 @@ class Commands:
         "Required [u]username[/u], address", "A_BOOK"),
         handler_delete_birthday: ("Delete user's birthday. Required [u]username[/u]", "A_BOOK"),
         handler_add_birthday: ("Add or replace the user's birthday. "
-        "Required [u]username[/u], birthday, "
-        "please use ISO 8601 or DD.MM.YYYY date format", "A_BOOK"),
+        "Required [u]username[/u], [u]birthday[/u], "
+        "[white]please use ISO 8601 or DD.MM.YYYY date format[/white]", "A_BOOK"),
         handler_add_email: ("Add or replace the user's email. "
                                 "Required [u]username[/u], [u]email[/u]", "A_BOOK"),
         handler_add_address: ("Add or replace the user's address. "
