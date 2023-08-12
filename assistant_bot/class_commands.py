@@ -254,13 +254,18 @@ class Commands:
             if type(command) == str:
                 command = " ".join(args)
                 command = self.get_command_handler(command)
-            command_str: str = Commands.COMMANDS_HELP.get(command,
-                                    "[yellow]Help for this command is not yet available[/yellow]")  # noqa: E501
-            if "{" in command_str:
-                command_str = command_str.format(
-                    per_page=self.a_book.max_records_per_page,
-                    id_session=self.a_book.id
-                )
+            command_str: str = Commands.COMMANDS_HELP.get(command,(None,None))[0]  # noqa: E501
+            if command_str:
+                if "{" in command_str:
+                    command_str = command_str.format(
+                        per_page=self.a_book.max_records_per_page,
+                        id_session=self.a_book.id
+                    )
+                command_str = f"[i]{command_str}[/i]"
+            else:
+                command_str: str = "[yellow]Help for this command is not yet available[/yellow]"
+
+            
             return command_str
 
     @output_operation_describe
@@ -525,74 +530,76 @@ class Commands:
         handler_show_app_version: ("app version", "version"),
     }
 
+    COMMANDS_CATEGORY = ("SYS", "A_BOOK", "NOTES")
+
     """
     CONSTANT DICT OF COMMANDS HELP 
     - key is pointer to handler function 
     - value is help text for commands
     """
     COMMANDS_HELP = {
-        handler_hello: "Just hello",
-        handler_delete_record: "Delete ALL records of user. Required username.",
-        handler_delete_all_records: "Delete ALL records of ALL user."
-        "Required parameter YES",
-        handler_change_phone: "Change user's phone. "
-        "Required username, old phone, new phone",
-        handler_delete_phone: "Delete user's phone. Required username, phone",
-        handler_delete_email: "Delete user's email. Required username, email",
-        handler_delete_address: "Delete user's address. "
-        "Required username, address",
-        handler_delete_birthday: "Delete user's birthday. Required username",
-        handler_add_birthday: "Add or replace the user's birthday. "
-        "Required username, birthday, "
-        "please use ISO 8601 or DD.MM.YYYY date format",
-        handler_add_email: "Add or replace the user's email. "
-                                "Required username, email",
-        handler_add_address: "Add or replace the user's address. "
-        "Required username, address",
-        handler_show_phone: "Show user's phones. Required username.",
-        handler_show_birthday: "Show user's birthday. Required username.",
-        handler_show_email: "Show user's email. Required username.",
-        handler_show_address: "Show user's address. Required username.",
-        handler_show_address_book: "Show all user records in the address book.",
-        handler_show_page: "Show all user's record per page. "
-                                "Optional parameter size of page [{per_page}]",
-        handler_show_csv: "Show all user's record in csv format",
-        handler_export_csv: "Export all user's record in csv format to file. "
-                                 "Optional parameter filename",
-        handler_import_csv: "Import all user's record in csv format to file. "
-                                 "Optional parameter filename",
-        handler_days_to_birthday: "Show days until the user's birthday. "
-        "Required username,",
-        handler_add_address_book: "Add user's phone or "
+        handler_hello: ("Just hello", "SYS"),
+        handler_delete_record: ("Delete ALL records of user. Required [u]username[/u].", "A_BOOK"),
+        handler_delete_all_records: ("Delete ALL records of ALL user."
+        "Required parameter [u]YES[/u]", "A_BOOK"),
+        handler_change_phone: ("Change user's phone. "
+        "Required [u]username[/u], old phone, new phone", "A_BOOK"),
+        handler_delete_phone: ("Delete user's phone. Required [u]username[/u], [u]phone[/u]", "A_BOOK"),
+        handler_delete_email: ("Delete user's email. Required [u]username[/u], [u]email[/u]", "A_BOOK"),
+        handler_delete_address: ("Delete user's address. "
+        "Required [u]username[/u], address", "A_BOOK"),
+        handler_delete_birthday: ("Delete user's birthday. Required [u]username[/u]", "A_BOOK"),
+        handler_add_birthday: ("Add or replace the user's birthday. "
+        "Required [u]username[/u], birthday, "
+        "please use ISO 8601 or DD.MM.YYYY date format", "A_BOOK"),
+        handler_add_email: ("Add or replace the user's email. "
+                                "Required [u]username[/u], [u]email[/u]", "A_BOOK"),
+        handler_add_address: ("Add or replace the user's address. "
+        "Required [u]username[/u], [u]address[/u]", "A_BOOK"),
+        handler_show_phone: ("Show user's phones. Required [u]username[/u].","A_BOOK"),
+        handler_show_birthday: ("Show user's birthday. Required [u]username[/u].", "A_BOOK"),
+        handler_show_email: ("Show user's email. Required [u]username[/u].", "A_BOOK"),
+        handler_show_address: ("Show user's address. Required [u]username[/u].", "A_BOOK"),
+        handler_show_address_book: ("Show all user records in the address book.", "A_BOOK"),
+        handler_show_page: ("Show all user's record per page. "
+                                "Optional parameter size of page [{per_page}]", "A_BOOK"),
+        handler_show_csv: ("Show all user's record in csv format", "A_BOOK"),
+        handler_export_csv: ("Export all user's record in csv format to file. "
+                                 "Optional parameter filename", "A_BOOK"),
+        handler_import_csv: ("Import all user's record in csv format to file. "
+                                 "Optional parameter filename", "A_BOOK"),
+        handler_days_to_birthday: ("Show days until the user's birthday. "
+                                 "Required [u]username[/u].", "A_BOOK"),
+        handler_add_address_book: ("Add user's phone or "
                                   "multiple phones separated by space. "
-        "Required username and phone.",
-        handler_help: "List of commands and their description. "
+                                "Required [u]username[/u] and [u]phone[/u].", "A_BOOK"),
+        handler_help: ("List of commands and their description. "
                             "Also you can use '?' "
-                            "for any command as parameter. Session ID: {id_session}",
-        handler_exit: "Exit of bot.",
-        handler_search_address_book: "Search user by pattern in name or phone",
-        handler_backup: "Backup all records. Optional parameter is the version. "
-                        "P.S. it done automatically after any changes on records",
-        handler_restore: "Restore all records. Optional parameter is the version.",
-        handler_list_versions: "List of saved backup versions",
-        handler_list_csv: "List of saved cvs files",
-        handler_undefined: "Help for this command is not yet available",
+                            "for any command as parameter. Session ID: {id_session}", "SYS"),
+        handler_exit: ("Exit of bot.", "SYS"),
+        handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
+        handler_backup: ("Backup all records. Optional parameter is the version. "
+                        "P.S. it done automatically after any changes on records", "SYS"),
+        handler_restore: ("Restore all records. Optional parameter is the version.", "SYS"),
+        handler_list_versions: ("List of saved backup versions", "SYS"),
+        handler_list_csv: ("List of saved cvs files", "SYS"),
+        handler_undefined: ("Help for this command is not yet available", "SYS"),
         # notes
-        handler_add_note: "Add a new note record",
-        handler_show_notes: "Show all user's records in Notes.",
-        handler_change_notes: "Change note by index.",
-        handler_delete_notes: "Delete note by index",
-        handler_clear_notes: "Clear all notes",
-        handler_search_notes: "Search notes or tags by pattern. Optional parameters "
+        handler_add_note: ("Add a new note record", "NOTES"),
+        handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
+        handler_change_notes: ("Change note by index.", "NOTES"),
+        handler_delete_notes: ("Delete note by index", "NOTES"),
+        handler_clear_notes: ("Clear all notes", "NOTES"),
+        handler_search_notes: ("Search notes or tags by pattern. Optional parameters "
                               "is A and B. A is '1' to search in notes, "
-                              "'2' - in #Tags. B is what to search.",
-        handler_sort_notes: "Sort notes by type that user choose. Optional parameter "
+                              "'2' - in #Tags. B is what to search.", "NOTES"),
+        handler_sort_notes: ("Sort notes by type that user choose. Optional parameter "
                             " is '1' to sort by date, '2' - "
-                            "to sort by index, '3' - to sort by #Tags",
-        handler_sorting: "Sorting files of folder. Required path to folder.",
-        handler_show_app_version: "Show version of application",
-        handler_congrats_in_days: "Show list of users with birthdays, which will "
-                                  "be in certain days. Required days parameter"
+                            "to sort by index, '3' - to sort by #Tags", "NOTES"),
+        handler_sorting: ("Sorting files of folder. Required path to folder.", "NOTES"),
+        handler_show_app_version: ("Show version of application", "SYS"),
+        handler_congrats_in_days: ("Show list of users with birthdays, which will "
+                                  "be in certain days. Required days parameter", "A_BOOK")
     }
 
 
