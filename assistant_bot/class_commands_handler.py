@@ -1,6 +1,9 @@
 from functools import wraps
+from rich.console import Console
 
 class Commands_Handler:
+
+    _console : Console
     
     #decorator
     def output_operation_describe(func):
