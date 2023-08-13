@@ -19,7 +19,7 @@ else:
     from importlib_metadata import version
 
 
-class Commands(Commands_Handler_Notes, Commands_Handler):
+class Commands(Commands_Handler_Notes):
 
     a_book: AddressBook
     _console : Console
