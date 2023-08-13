@@ -4,6 +4,8 @@ from .class_notes_ext import Notes_Storage
 from functools import wraps
 
 class Commands_Handler_Notes(Commands_Handler):
+    
+    #for declare only, instance created on class Assistant_bot 
     notes_storage: Notes_Storage
 
 
@@ -11,11 +13,8 @@ class Commands_Handler_Notes(Commands_Handler):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
-            if self and self.backup_data:
-                self.backup_data()
+            #class_assistant_bot.py - backup_data
             self.backup_data()
-            # if self._callback is not None:
-            #     self._callback("backup_data")
             return result
         return wrapper
 
