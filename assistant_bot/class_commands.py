@@ -76,17 +76,7 @@ class Commands(Commands_Handler_Notes, Commands_Handler):
         return wrapper
 
 
-    def backup_data_note(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if self and self.backup_data:
-                self.backup_data()
-            self.backup_data()
-            # if self._callback is not None:
-            #     self._callback("backup_data")
-            return result
-        return wrapper
+
 
 
 
@@ -544,48 +534,6 @@ class Commands(Commands_Handler_Notes, Commands_Handler):
         return result
 
 
-    @backup_data_note
-    @Commands_Handler.input_error
-    def handler_add_note(self, *args) -> str:
-        return self.notes_storage.add_note(*args)
-
-
-    @backup_data_note
-    @Commands_Handler.input_error
-    def handler_change_notes(self, *args):
-        return self.notes_storage.change_note(*args)
-
-
-    @backup_data_note
-    @Commands_Handler.input_error
-    def handler_delete_notes(self, *args):
-        return self.notes_storage.delete_note(*args)
-
-
-    @backup_data_note
-    @Commands_Handler.input_error
-    def handler_clear_notes(self, *args):
-        return self.notes_storage.clear_notes(*args)
-
-
-    @Commands_Handler.input_error
-    def handler_search_notes(self, *args):
-        return self.notes_storage.search_notes(*args)
-
-
-    @Commands_Handler.input_error
-    def handler_search_notes(self, *args):
-        return self.notes_storage.search_notes(*args)
-
-
-    @Commands_Handler.input_error
-    def handler_sort_notes(self, *args):
-        return self.notes_storage.sort_notes(*args)
-
-
-    @Commands_Handler.input_error
-    def handler_show_notes(self, *args) -> str:
-        return self.notes_storage.show_notes()
 
 
     @Commands_Handler.output_operation_describe
@@ -655,13 +603,13 @@ class Commands(Commands_Handler_Notes, Commands_Handler):
         handler_search_address_book: ("search address book", "?ab="),
         handler_exit: ("quit", "exit", "q"),
         # notes
-        handler_add_note: ("add note", "+n"),
-        handler_show_notes: ("show notes", "?n"),
-        handler_change_notes: ("change note", "=n"),
-        handler_delete_notes: ("delete note", "-n"),
-        handler_clear_notes: ("clear notes", "---n"),
-        handler_search_notes: ("search notes", "?n="),
-        handler_sort_notes: ("sort notes", "sn"),
+        Commands_Handler_Notes.handler_add_note: ("add note", "+n"),
+        Commands_Handler_Notes.handler_show_notes: ("show notes", "?n"),
+        Commands_Handler_Notes.handler_change_notes: ("change note", "=n"),
+        Commands_Handler_Notes.handler_delete_notes: ("delete note", "-n"),
+        Commands_Handler_Notes.handler_clear_notes: ("clear notes", "---n"),
+        Commands_Handler_Notes.handler_search_notes: ("search notes", "?n="),
+        Commands_Handler_Notes.handler_sort_notes: ("sort notes", "sn"),
         # sorting
         handler_sorting: ("sort folder", "sorting"),
         handler_show_app_version: ("app version", "version"),
@@ -725,15 +673,15 @@ class Commands(Commands_Handler_Notes, Commands_Handler):
         handler_list_csv: ("List of saved cvs files", "A_BOOK_CSV"),
         handler_undefined: ("[yellow]Help for this command is not yet available[/yellow]", "SYS"),
         # notes
-        handler_add_note: ("Add a new note record", "NOTES"),
-        handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
-        handler_change_notes: ("Change note by index.", "NOTES"),
-        handler_delete_notes: ("Delete note by index", "NOTES"),
-        handler_clear_notes: ("Clear all notes", "NOTES"),
-        handler_search_notes: ("Search notes or tags by pattern. Optional parameters "
+        Commands_Handler_Notes.handler_add_note: ("Add a new note record", "NOTES"),
+        Commands_Handler_Notes.handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
+        Commands_Handler_Notes.handler_change_notes: ("Change note by index.", "NOTES"),
+        Commands_Handler_Notes.handler_delete_notes: ("Delete note by index", "NOTES"),
+        Commands_Handler_Notes.handler_clear_notes: ("Clear all notes", "NOTES"),
+        Commands_Handler_Notes.handler_search_notes: ("Search notes or tags by pattern. Optional parameters "
                               "is A and B. A is '1' to search in notes, "
                               "'2' - in #Tags. B is what to search.", "NOTES"),
-        handler_sort_notes: ("Sort notes by type that user choose. Optional parameter "
+        Commands_Handler_Notes.handler_sort_notes: ("Sort notes by type that user choose. Optional parameter "
                             " is '1' to sort by date, '2' - "
                             "to sort by index, '3' - to sort by #Tags", "NOTES"),
         handler_sorting: ("Sorting files of folder. Required path to folder.", "NOTES"),
