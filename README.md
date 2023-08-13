@@ -20,7 +20,9 @@
 
 
 
-* YouTube video: https://youtu.be/oPinojZh5rg
+* YouTube video: 
+  - Презентація проєкту: https://youtu.be/ZYg62JWlqEw
+  - Встановлленя додатку в середовищі Linux та приклад роботи додатку для презентації (v.0.6.0): https://youtu.be/oPinojZh5rg
 
 
 * [README розробнику ](https://github.com/lexxai/goit_python_core_project_team_11/wiki/README-%D1%80%D0%BE%D0%B7%D1%80%D0%BE%D0%B1%D0%BD%D0%B8%D0%BA%D1%83)
