@@ -592,7 +592,7 @@ class Commands(Commands_Handler_Notes, Commands_Handler):
         handler_days_to_birthday:  ("to birthday", "2b"),
         handler_show_birthday: ("show birthday", "?b"),
         handler_show_email: ("show email", "?e"),
-        handler_show_address_book: ("show address book", "lab"),
+        handler_show_address_book: ("show address book", "?ab"),
         handler_show_address: ("show address", "?a"),
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
