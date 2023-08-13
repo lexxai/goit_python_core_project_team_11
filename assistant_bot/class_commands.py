@@ -1,14 +1,16 @@
 from .class_fields import Name, Phone, Birthday, Email, Address
 from .class_record import Record
 from .class_address_book import AddressBook
-from .class_notes_ext import Notes_Storage
 
-from functools import wraps
+from .class_commands_handler import Commands_Handler
+from .class_commands_handler_notes import Commands_Handler_Notes
+
 from rich.console import Console
 from rich.table import Table
 
 from .sorting import main as sorting
 import math
+from functools import wraps
 
 import sys
 if sys.version_info >= (3, 8):
@@ -17,9 +19,8 @@ else:
     from importlib_metadata import version
 
 
-class Commands:
+class Commands(Commands_Handler_Notes, Commands_Handler):
 
-    notes_storage: Notes_Storage
     a_book: AddressBook
     _console : Console
 
@@ -88,39 +89,14 @@ class Commands:
         return wrapper
 
 
-    def input_error(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            try:
-                return func(self, *args, **kwargs)
-            except (KeyError, ValueError, IndexError) as e:
-                error = str(e)
-                return "[red]Sorry, there are not enough parameters "\
-                    f"or their value may be incorrect {error}. "\
-                    "Please use the help for more information. [/red]"
-            except (FileNotFoundError):
-                return "[red]Sorry, there operation with file is incorrect.[/red]"
-            except Exception as e:
-                return f"[/red]**** Exception other: {e} [/red]"
-        return wrapper
 
 
-    def output_operation_describe(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if type(result) == str:
-                return result
-            else:
-                return "[green]Done[green]" \
-                    if result else "[yellow]The operation "\
-                                    "was not successful[/yellow]"
-        return wrapper
 
 
-    @output_operation_describe
+
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_add_address_book(self, *args) -> str:
         result = None
         user = args[0]
@@ -134,9 +110,9 @@ class Commands:
         return result
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_change_phone(self, *args) -> str:
         user = args[0]
         old_phone = args[1]
@@ -145,39 +121,39 @@ class Commands:
             .change_phone(Phone(old_phone), Phone(new_phone))
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_phone(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).get_phones()
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_phone(self, *args) -> str:
         user = args[0]
         phone = args[1]
         return self.a_book.get_record(user).remove_phone(Phone(phone))
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_record(self, *args) -> str:
         user = args[0]
         return self.a_book.remove_record(user)
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_all_records(self, *args) -> str:
         if args[0] == "YES":
             return self.a_book.clear()
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     def handler_show_address_book(self, *args) -> str:
         if self.a_book.len():
             return str(self.a_book)
@@ -185,7 +161,7 @@ class Commands:
             return "No users found, maybe you want to add them first?"
 
 
-    @input_error
+    @Commands_Handler.input_error
     def handler_show_page(self, *args) -> str:
         if len(args) and args[0]:
             self.a_book.max_records_per_page = int(args[0])
@@ -203,8 +179,8 @@ class Commands:
             return "No users found, maybe you want to add them first?"
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_export_csv(self, *args) -> str:
         if len(args):
             filename = args[0]
@@ -213,8 +189,8 @@ class Commands:
         return (self.a_book.export_csv(filename))
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_import_csv(self, *args) -> str:
         if len(args):
             filename = args[0]
@@ -223,8 +199,8 @@ class Commands:
         return self.a_book.import_csv(filename)
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_sorting(self, *args) -> str:
         path = args[0]
         return sorting(path)
@@ -402,59 +378,59 @@ class Commands:
         return command_str
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_add_birthday(self, *args) -> str:
         user = args[0]
         birthday = args[1]
         return self.a_book.get_record(user).add(Birthday(birthday))
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_add_email(self, *args) -> str:
         user = args[0]
         email = args[1]
         return self.a_book.get_record(user).add(Email(email))
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_add_address(self, *args) -> str:
         user = args[0]
         address = " ".join(args[1:])
         return self.a_book.get_record(user).add(Address(address))
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_birthday(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_birthday()
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_email(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_email()
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     @backup_data_address_book
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_address(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_address()
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_days_to_birthday(self, *args) -> str:
         user = args[0]
         result = self.a_book.get_record(user).days_to_birthday()
@@ -467,32 +443,32 @@ class Commands:
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_congrats_in_days(self, *args) -> str:
         days = int(args[0])
         result = self.a_book.congrats_in_days(days)
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_birthday(self, *args) -> str:
         user = args[0]
         result = str(self.a_book.get_record(user).birthday)
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_email(self, *args) -> str:
         user = args[0]
         result = str(self.a_book.get_record(user).email)
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_address(self, *args) -> str:
         user = args[0]
         result = str(self.a_book.get_record(user).address)
@@ -518,16 +494,16 @@ class Commands:
         return Commands.handler_undefined
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_search_address_book(self, *args) -> str:
         pattern = args[0]
         result = self.a_book.search(pattern)
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_backup(self, *args) -> bool:
         version = None
         result = None
@@ -539,8 +515,8 @@ class Commands:
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_restore(self, *args) -> bool:
         version = None
         result = None
@@ -551,7 +527,7 @@ class Commands:
         #     result = self._callback("restore_data", version = version, restore = True)
         return result
 
-    # @output_operation_describe
+    # @Commands_Handler.output_operation_describe
 
 
     def handler_list_versions(self, *args) -> str:
@@ -562,58 +538,58 @@ class Commands:
         return result
 
 
-    @output_operation_describe
+    @Commands_Handler.output_operation_describe
     def handler_list_csv(self, *args) -> str:
         result = self.a_book.list_csv()
         return result
 
 
     @backup_data_note
-    @input_error
+    @Commands_Handler.input_error
     def handler_add_note(self, *args) -> str:
         return self.notes_storage.add_note(*args)
 
 
     @backup_data_note
-    @input_error
+    @Commands_Handler.input_error
     def handler_change_notes(self, *args):
         return self.notes_storage.change_note(*args)
 
 
     @backup_data_note
-    @input_error
+    @Commands_Handler.input_error
     def handler_delete_notes(self, *args):
         return self.notes_storage.delete_note(*args)
 
 
     @backup_data_note
-    @input_error
+    @Commands_Handler.input_error
     def handler_clear_notes(self, *args):
         return self.notes_storage.clear_notes(*args)
 
 
-    @input_error
+    @Commands_Handler.input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
 
 
-    @input_error
+    @Commands_Handler.input_error
     def handler_search_notes(self, *args):
         return self.notes_storage.search_notes(*args)
 
 
-    @input_error
+    @Commands_Handler.input_error
     def handler_sort_notes(self, *args):
         return self.notes_storage.sort_notes(*args)
 
 
-    @input_error
+    @Commands_Handler.input_error
     def handler_show_notes(self, *args) -> str:
         return self.notes_storage.show_notes()
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_app_version(self, *args) -> str:
         try:
             version_str = version(__package__)
@@ -622,7 +598,7 @@ class Commands:
         return f"Version: '{ version_str }', package: {__package__}"
 
 
-    @input_error
+    @Commands_Handler.input_error
     def api(self, command: str, *args: list[str], verbose: bool = True) -> None:
         """API for run commands in batch mode
 
