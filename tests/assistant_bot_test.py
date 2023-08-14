@@ -34,7 +34,10 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
             Birthday(testcase)
         the_exception = cm.exception
         self.assertEqual(str(the_exception), 'month must be in 1..12')
-
+        
+    def test_birthday_data_format_wrong_02(self):
+        testcase = "33.11.1111"
+        self.assertRaises(ValueError, Birthday, testcase)
 
 class Test_Assistant_bot_Email(unittest.TestCase):
 
