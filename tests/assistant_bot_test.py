@@ -4,9 +4,11 @@ import unittest
 try:
     sys.path.append("./")  
     from assistant_bot.class_fields import Birthday
+    from assistant_bot.class_fields import Email
 except ImportError :
     sys.path.append("../")  
     from assistant_bot.class_fields import Birthday
+    from assistant_bot.class_fields import Email
 
 
 class Test_Assistant_bot_BirthDay(unittest.TestCase):
@@ -32,6 +34,31 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
             Birthday(testcase)
         the_exception = cm.exception
         self.assertEqual(str(the_exception), 'month must be in 1..12')
+
+
+class Test_Assistant_bot_Email(unittest.TestCase):
+
+    def test_email_ok(self):
+        testcase = "some@some.com"
+        expected = "some@some.com"
+        self.assertEqual(str(Email(testcase)), expected)
+
+
+    def test_email_wrong_01(self):
+        testcase = "some.some.com"
+        with self.assertRaises(ValueError) as cm:
+            Email(testcase)
+        the_exception = cm.exception
+        self.assertEqual(str(the_exception), 'wrong email format')
+
+
+    def test_email_wrong_02(self):
+        testcase = "some@somecom"
+        with self.assertRaises(ValueError) as cm:
+            Email(testcase)
+        the_exception = cm.exception
+        self.assertEqual(str(the_exception), 'wrong email format')
+        
 
 
 
