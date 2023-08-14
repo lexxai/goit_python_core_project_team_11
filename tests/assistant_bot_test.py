@@ -3,14 +3,10 @@ import unittest
 
 try:
     sys.path.append("./")  
-    #from assistant_bot.class_assistant_bot import Assistant_bot
     from assistant_bot.class_fields import Birthday
-    #from assistant_bot.main import cli      
 except ImportError :
     sys.path.append("../")  
-    #from assistant_bot.class_assistant_bot import Assistant_bot
     from assistant_bot.class_fields import Birthday
-    #from assistant_bot.main import cli
 
 
 class Test_Assistant_bot(unittest.TestCase):
