@@ -31,7 +31,7 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             Birthday(testcase)
         the_exception = cm.exception
-        self.assertNotEqual(the_exception, "ValueError('month must be in 1..12')")
+        self.assertEqual(str(the_exception), 'month must be in 1..12')
 
 
 
