@@ -12,6 +12,7 @@ except ImportError :
 
 
 class Test_Assistant_bot_BirthDay(unittest.TestCase):
+    
     def test_birthday_data_format_EU(self):
         testcase = "12.03.2023"
         expected = "2023-03-12"
@@ -25,7 +26,15 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
         expected = "2023-03-12"
         self.assertEqual(
             str(Birthday(testcase)), expected
-        )     
+        )    
+
+
+    def test_birthday_data_format_ISO_SL(self):
+        testcase = "12/03/2023"
+        expected = "2023-03-12"
+        self.assertEqual(
+            str(Birthday(testcase)), expected
+        )   
 
 
     def test_birthday_data_format_wrong_01(self):
@@ -34,14 +43,22 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
             Birthday(testcase)
         the_exception = cm.exception
         self.assertEqual(str(the_exception), 'month must be in 1..12')
+
         
     def test_birthday_data_format_wrong_02(self):
         testcase = "33.11.1111"
         self.assertRaises(ValueError, Birthday, testcase)
 
+
     def test_birthday_data_format_wrong_03(self):
         testcase = ""
         self.assertRaises(ValueError, Birthday, testcase)
+
+
+    def test_birthday_data_format_wrong_04(self):
+        testcase = "2020/11/11"
+        self.assertRaises(ValueError, Birthday, testcase)
+
 
 class Test_Assistant_bot_Email(unittest.TestCase):
 
