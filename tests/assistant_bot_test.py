@@ -39,6 +39,10 @@ class Test_Assistant_bot_BirthDay(unittest.TestCase):
         testcase = "33.11.1111"
         self.assertRaises(ValueError, Birthday, testcase)
 
+    def test_birthday_data_format_wrong_03(self):
+        testcase = ""
+        self.assertRaises(ValueError, Birthday, testcase)
+
 class Test_Assistant_bot_Email(unittest.TestCase):
 
     def test_email_ok(self):
