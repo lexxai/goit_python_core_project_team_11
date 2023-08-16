@@ -2,17 +2,15 @@ from prompt_toolkit.completion import Completion, Completer
 from .class_commands import Commands
 import re
 
+
 class CommandCompleter(Completer, Commands):
-
-
     def clear_rich(self, test_str: str) -> str:
         regex = r"\[/?\w+\]"
         return re.sub(regex, "", test_str, 0, re.MULTILINE)
 
-
     def __init__(self, parent: object = None):
-        #self.parent = parent
-        # generate COMMANDS_AUTOCOMPLETE 
+        # self.parent = parent
+        # generate COMMANDS_AUTOCOMPLETE
         self.COMMANDS_AUTOCOMPLETE = {}
         for handler, commands in Commands.COMMANDS.items():
             command = commands[0]
@@ -22,16 +20,15 @@ class CommandCompleter(Completer, Commands):
             if parent and "{" in command_help:
                 command_help = command_help.format(
                     per_page=parent.a_book.max_records_per_page,
-                    id_session=parent.a_book.id
+                    id_session=parent.a_book.id,
                 )
             self.COMMANDS_AUTOCOMPLETE[command] = command_help
-        #super().__init__()
-    
+        # super().__init__()
 
     def get_completions(self, document, complete_event):
-        #word = document.get_word_before_cursor()
+        # word = document.get_word_before_cursor()
         word = document.current_line
-        #print(word)
+        # print(word)
         for command in self.COMMANDS_AUTOCOMPLETE.keys():
             if command.startswith(word):
                 display = command

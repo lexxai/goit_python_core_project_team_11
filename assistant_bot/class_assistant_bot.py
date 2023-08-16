@@ -1,5 +1,6 @@
 from .class_commands import Commands
 from .class_address_book import AddressBook
+
 # from .class_notes import Notes
 from .class_notes_ext import Notes_Storage
 from prompt_toolkit import PromptSession
@@ -12,14 +13,13 @@ from .class_command_completer import CommandCompleter
 
 
 class Assistant_bot(Commands):
-
-    def __init__(self,
-                 id: str = None,
-                 auto_backup: bool = True,
-                 auto_restore: bool = True,
-                 default_filename: str = "assistant_bot"
-                 ):
-
+    def __init__(
+        self,
+        id: str = None,
+        auto_backup: bool = True,
+        auto_restore: bool = True,
+        default_filename: str = "assistant_bot",
+    ):
         self.id: str = id
         self.auto_backup: bool = auto_backup
         self.auto_restore: bool = auto_restore
@@ -28,7 +28,6 @@ class Assistant_bot(Commands):
         self.default_filename: str = default_filename
         self.restore_data()
         self._console = Console(no_color=False, force_terminal=True)
-
 
         # super().__init__(child = self)
 
@@ -71,29 +70,32 @@ class Assistant_bot(Commands):
 
     def list_versions(self):
         filename = f"{self.default_filename}_*.bin"
-        list_files = Path('.').glob(self._gen_filename(filename))
+        list_files = Path(".").glob(self._gen_filename(filename))
         result_version = []
         for found_file in list_files:
-            result_version.append("version: {}".format(
-                found_file.stem.split("_")[-1]))
+            result_version.append("version: {}".format(found_file.stem.split("_")[-1]))
         return "\n".join(result_version) if any(result_version) else True
 
     def main(self):
         history = PromptSession()
         while True:
-            category = input(
-                'Use interactive help "y" or "n" (default "y"): ').lower() or 'y'
+            category = (
+                input('Use interactive help "y" or "n" (default "y"): ').lower() or "y"
+            )
             if category in ["y", "n"]:
                 break
         while True:
             try:
                 if category == "y":
                     user_input = history.prompt(
-                        "\nEnter your command >>> ", 
-                         completer=CommandCompleter(parent=self), 
-                         auto_suggest=AutoSuggestFromHistory() )
+                        "\nEnter your command >>> ",
+                        completer=CommandCompleter(parent=self),
+                        auto_suggest=AutoSuggestFromHistory(),
+                    )
                 elif category == "n":
-                    user_input = self._console.input("\n[bold]Enter your command >>> [/bold]")
+                    user_input = self._console.input(
+                        "\n[bold]Enter your command >>> [/bold]"
+                    )
             except KeyboardInterrupt:
                 self._console.print("\r")
                 break
@@ -116,16 +118,11 @@ class Assistant_bot(Commands):
                     break
             except Exception as e:
                 self._console.print(f"[red]COMMANDS ERROR:{e}[/red]")
-
-
         self.backup_data()
-
 
     # skip save state for rich.consol object
     def __getstate__(self):
         state = self.__dict__.copy()
         # Remove the unpicklable entries.
-        del state['_console']
+        del state["_console"]
         return state
-
-
