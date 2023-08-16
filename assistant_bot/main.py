@@ -2,6 +2,7 @@ from .class_assistant_bot import Assistant_bot
 from argparse import ArgumentParser
 import hashlib
 
+
 def argument_parse():
     default_user="user-session-100001"
     parser = ArgumentParser(

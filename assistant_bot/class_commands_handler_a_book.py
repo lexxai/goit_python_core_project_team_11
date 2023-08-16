@@ -1,4 +1,3 @@
-
 from .class_commands_handler import Commands_Handler
 from functools import wraps
 from .class_fields import Name, Phone, Birthday, Email, Address
@@ -7,8 +6,7 @@ from .class_address_book import AddressBook
 
 
 class Commands_Handler_Address_Book(Commands_Handler):
-    
-    #for declare only, instance created on class Assistant_bot 
+    # for declare only, instance created on class Assistant_bot
     a_book: AddressBook
 
     def backup_data_address_book(func):
@@ -21,8 +19,8 @@ class Commands_Handler_Address_Book(Commands_Handler):
             # if self._callback is not None:
             #     self._callback("backup_data")
             return result
-        return wrapper
 
+        return wrapper
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -39,7 +37,6 @@ class Commands_Handler_Address_Book(Commands_Handler):
             result = self.a_book.add_record(rec)
         return result
 
-
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
     @Commands_Handler.input_error
@@ -47,16 +44,15 @@ class Commands_Handler_Address_Book(Commands_Handler):
         user = args[0]
         old_phone = args[1]
         new_phone = args[2]
-        return self.a_book.get_record(user)\
-            .change_phone(Phone(old_phone), Phone(new_phone))
-
+        return self.a_book.get_record(user).change_phone(
+            Phone(old_phone), Phone(new_phone)
+        )
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
     def handler_show_phone(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).get_phones()
-
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -66,14 +62,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
         phone = args[1]
         return self.a_book.get_record(user).remove_phone(Phone(phone))
 
-
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
     @Commands_Handler.input_error
     def handler_delete_record(self, *args) -> str:
         user = args[0]
         return self.a_book.remove_record(user)
-
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -82,14 +76,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
         if args[0] == "YES":
             return self.a_book.clear()
 
-
     @Commands_Handler.output_operation_describe
     def handler_show_address_book(self, *args) -> str:
         if self.a_book.len():
             return str(self.a_book)
         else:
             return "No users found, maybe you want to add them first?"
-
 
     @Commands_Handler.input_error
     def handler_show_page(self, *args) -> str:
@@ -101,13 +93,11 @@ class Commands_Handler_Address_Book(Commands_Handler):
         except StopIteration:
             return "End list"
 
-
     def handler_show_csv(self, *args) -> str:
         if any(self.a_book.keys()):
             return self.a_book.get_csv()
         else:
             return "No users found, maybe you want to add them first?"
-
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
@@ -116,8 +106,7 @@ class Commands_Handler_Address_Book(Commands_Handler):
             filename = args[0]
         else:
             filename = None
-        return (self.a_book.export_csv(filename))
-
+        return self.a_book.export_csv(filename)
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
@@ -126,7 +115,7 @@ class Commands_Handler_Address_Book(Commands_Handler):
             filename = args[0]
         else:
             filename = None
-        return self.a_book.import_csv(filename)        
+        return self.a_book.import_csv(filename)
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -136,7 +125,6 @@ class Commands_Handler_Address_Book(Commands_Handler):
         birthday = args[1]
         return self.a_book.get_record(user).add(Birthday(birthday))
 
-
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
     @Commands_Handler.input_error
@@ -144,7 +132,6 @@ class Commands_Handler_Address_Book(Commands_Handler):
         user = args[0]
         email = args[1]
         return self.a_book.get_record(user).add(Email(email))
-
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -154,14 +141,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
         address = " ".join(args[1:])
         return self.a_book.get_record(user).add(Address(address))
 
-
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
     @Commands_Handler.input_error
     def handler_delete_birthday(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_birthday()
-
 
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
@@ -170,14 +155,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
         user = args[0]
         return self.a_book.get_record(user).delete_email()
 
-
     @Commands_Handler.output_operation_describe
     @backup_data_address_book
     @Commands_Handler.input_error
     def handler_delete_address(self, *args) -> str:
         user = args[0]
         return self.a_book.get_record(user).delete_address()
-
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
@@ -192,14 +175,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
             result = f"{result} days"
         return result
 
-
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
     def handler_congrats_in_days(self, *args) -> str:
         days = int(args[0])
         result = self.a_book.congrats_in_days(days)
         return result
-
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
@@ -208,14 +189,12 @@ class Commands_Handler_Address_Book(Commands_Handler):
         result = str(self.a_book.get_record(user).birthday)
         return result
 
-
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
     def handler_show_email(self, *args) -> str:
         user = args[0]
         result = str(self.a_book.get_record(user).email)
         return result
-
 
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
@@ -224,7 +203,6 @@ class Commands_Handler_Address_Book(Commands_Handler):
         result = str(self.a_book.get_record(user).address)
         return result
 
-
     @Commands_Handler.output_operation_describe
     @Commands_Handler.input_error
     def handler_search_address_book(self, *args) -> str:
@@ -232,9 +210,7 @@ class Commands_Handler_Address_Book(Commands_Handler):
         result = self.a_book.search(pattern)
         return result
 
-
     @Commands_Handler.output_operation_describe
     def handler_list_csv(self, *args) -> str:
         result = self.a_book.list_csv()
         return result
-
