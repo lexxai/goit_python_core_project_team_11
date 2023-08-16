@@ -134,6 +134,6 @@ class Test_Assistant_bot_Phone(unittest.TestCase):
         self.assertRaises(ValueError, Email, testcase)
 
 
-# run by pytest
+# run by pytest 1
 if "__main__" == "assistant_bot_test":
     unittest.main()
