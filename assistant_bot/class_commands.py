@@ -1,14 +1,11 @@
-from .class_fields import Name, Phone, Birthday, Email, Address
-from .class_record import Record
-from .class_address_book import AddressBook
-from .class_notes_ext import Notes_Storage
-
-from functools import wraps
-from rich.console import Console
-from rich.table import Table
-
+from .class_commands_handler import Commands_Handler
+from .class_commands_handler_notes import Commands_Handler_Notes
+from .class_commands_handler_a_book import Commands_Handler_Address_Book
 from .sorting import main as sorting
+
+from rich.table import Table
 import math
+#from functools import wraps
 
 import sys
 if sys.version_info >= (3, 8):
@@ -17,11 +14,7 @@ else:
     from importlib_metadata import version
 
 
-class Commands:
-
-    notes_storage: Notes_Storage
-    a_book: AddressBook
-    _console : Console
+class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
 
 
     def split_line_by_space(self, line: str) -> list[str]:
@@ -62,169 +55,8 @@ class Commands:
         return Commands.handler_undefined, [line], None
 
 
-    def backup_data_address_book(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if self.a_book and self.a_book.backup_data:
-                self.a_book.backup_data()
-            self.backup_data()
-            # if self._callback is not None:
-            #     self._callback("backup_data")
-            return result
-        return wrapper
-
-
-    def backup_data_note(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if self and self.backup_data:
-                self.backup_data()
-            self.backup_data()
-            # if self._callback is not None:
-            #     self._callback("backup_data")
-            return result
-        return wrapper
-
-
-    def input_error(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            try:
-                return func(self, *args, **kwargs)
-            except (KeyError, ValueError, IndexError) as e:
-                error = str(e)
-                return "[red]Sorry, there are not enough parameters "\
-                    f"or their value may be incorrect {error}. "\
-                    "Please use the help for more information. [/red]"
-            except (FileNotFoundError):
-                return "[red]Sorry, there operation with file is incorrect.[/red]"
-            except Exception as e:
-                return f"[/red]**** Exception other: {e} [/red]"
-        return wrapper
-
-
-    def output_operation_describe(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if type(result) == str:
-                return result
-            else:
-                return "[green]Done[green]" \
-                    if result else "[yellow]The operation "\
-                                    "was not successful[/yellow]"
-        return wrapper
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_add_address_book(self, *args) -> str:
-        result = None
-        user = args[0]
-        args[1]
-        phone = [Phone(p) for p in args[1:]]
-        if user in self.a_book:
-            result = self.a_book.get_record(user).add_phone(phone)
-        else:
-            rec = Record(Name(user), phone)
-            result = self.a_book.add_record(rec)
-        return result
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_change_phone(self, *args) -> str:
-        user = args[0]
-        old_phone = args[1]
-        new_phone = args[2]
-        return self.a_book.get_record(user)\
-            .change_phone(Phone(old_phone), Phone(new_phone))
-
-
-    @output_operation_describe
-    @input_error
-    def handler_show_phone(self, *args) -> str:
-        user = args[0]
-        return self.a_book.get_record(user).get_phones()
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_phone(self, *args) -> str:
-        user = args[0]
-        phone = args[1]
-        return self.a_book.get_record(user).remove_phone(Phone(phone))
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_record(self, *args) -> str:
-        user = args[0]
-        return self.a_book.remove_record(user)
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_all_records(self, *args) -> str:
-        if args[0] == "YES":
-            return self.a_book.clear()
-
-
-    @output_operation_describe
-    def handler_show_address_book(self, *args) -> str:
-        if self.a_book.len():
-            return str(self.a_book)
-        else:
-            return "No users found, maybe you want to add them first?"
-
-
-    @input_error
-    def handler_show_page(self, *args) -> str:
-        if len(args) and args[0]:
-            self.a_book.max_records_per_page = int(args[0])
-        try:
-            page = next(self.a_book)
-            return "\n".join([str(i) for i in page])
-        except StopIteration:
-            return "End list"
-
-
-    def handler_show_csv(self, *args) -> str:
-        if any(self.a_book.keys()):
-            return self.a_book.get_csv()
-        else:
-            return "No users found, maybe you want to add them first?"
-
-
-    @output_operation_describe
-    @input_error
-    def handler_export_csv(self, *args) -> str:
-        if len(args):
-            filename = args[0]
-        else:
-            filename = None
-        return (self.a_book.export_csv(filename))
-
-
-    @output_operation_describe
-    @input_error
-    def handler_import_csv(self, *args) -> str:
-        if len(args):
-            filename = args[0]
-        else:
-            filename = None
-        return self.a_book.import_csv(filename)
-
-
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_sorting(self, *args) -> str:
         path = args[0]
         return sorting(path)
@@ -315,9 +147,6 @@ class Commands:
             return table
 
 
-
-
-
     def get_list_commands_rich(self, help_filter:str=None, full:bool = True) -> str:
         #title="\nList of commands. The full command syntax "
         #        "is available on request: command ? [Example: +a ?]"
@@ -362,7 +191,6 @@ class Commands:
         return self.handler_help(*args, help_filter=help_filter, full=True)
 
 
-
     def handler_help_table_title(self, table , title: str = None):
         yield title
         yield table
@@ -402,103 +230,6 @@ class Commands:
         return command_str
 
 
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_add_birthday(self, *args) -> str:
-        user = args[0]
-        birthday = args[1]
-        return self.a_book.get_record(user).add(Birthday(birthday))
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_add_email(self, *args) -> str:
-        user = args[0]
-        email = args[1]
-        return self.a_book.get_record(user).add(Email(email))
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_add_address(self, *args) -> str:
-        user = args[0]
-        address = " ".join(args[1:])
-        return self.a_book.get_record(user).add(Address(address))
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_birthday(self, *args) -> str:
-        user = args[0]
-        return self.a_book.get_record(user).delete_birthday()
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_email(self, *args) -> str:
-        user = args[0]
-        return self.a_book.get_record(user).delete_email()
-
-
-    @output_operation_describe
-    @backup_data_address_book
-    @input_error
-    def handler_delete_address(self, *args) -> str:
-        user = args[0]
-        return self.a_book.get_record(user).delete_address()
-
-
-    @output_operation_describe
-    @input_error
-    def handler_days_to_birthday(self, *args) -> str:
-        user = args[0]
-        result = self.a_book.get_record(user).days_to_birthday()
-        if result is None:
-            result = f"No birthday is defined for user: {user} "
-        elif result == 0:
-            result = f"{result} days, Today is user {user}'s birthday !!!"
-        else:
-            result = f"{result} days"
-        return result
-
-
-    @output_operation_describe
-    @input_error
-    def handler_congrats_in_days(self, *args) -> str:
-        days = int(args[0])
-        result = self.a_book.congrats_in_days(days)
-        return result
-
-
-    @output_operation_describe
-    @input_error
-    def handler_show_birthday(self, *args) -> str:
-        user = args[0]
-        result = str(self.a_book.get_record(user).birthday)
-        return result
-
-
-    @output_operation_describe
-    @input_error
-    def handler_show_email(self, *args) -> str:
-        user = args[0]
-        result = str(self.a_book.get_record(user).email)
-        return result
-
-
-    @output_operation_describe
-    @input_error
-    def handler_show_address(self, *args) -> str:
-        user = args[0]
-        result = str(self.a_book.get_record(user).address)
-        return result
-
-
     def handler_exit(self, *args) -> str:
         return "[i]Goodbye. We are looking forward to seeing you again.[/i]"
 
@@ -518,16 +249,8 @@ class Commands:
         return Commands.handler_undefined
 
 
-    @output_operation_describe
-    @input_error
-    def handler_search_address_book(self, *args) -> str:
-        pattern = args[0]
-        result = self.a_book.search(pattern)
-        return result
-
-
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_backup(self, *args) -> bool:
         version = None
         result = None
@@ -539,8 +262,8 @@ class Commands:
         return result
 
 
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_restore(self, *args) -> bool:
         version = None
         result = None
@@ -551,7 +274,7 @@ class Commands:
         #     result = self._callback("restore_data", version = version, restore = True)
         return result
 
-    # @output_operation_describe
+    # @Commands_Handler.output_operation_describe
 
 
     def handler_list_versions(self, *args) -> str:
@@ -562,58 +285,8 @@ class Commands:
         return result
 
 
-    @output_operation_describe
-    def handler_list_csv(self, *args) -> str:
-        result = self.a_book.list_csv()
-        return result
-
-
-    @backup_data_note
-    @input_error
-    def handler_add_note(self, *args) -> str:
-        return self.notes_storage.add_note(*args)
-
-
-    @backup_data_note
-    @input_error
-    def handler_change_notes(self, *args):
-        return self.notes_storage.change_note(*args)
-
-
-    @backup_data_note
-    @input_error
-    def handler_delete_notes(self, *args):
-        return self.notes_storage.delete_note(*args)
-
-
-    @backup_data_note
-    @input_error
-    def handler_clear_notes(self, *args):
-        return self.notes_storage.clear_notes(*args)
-
-
-    @input_error
-    def handler_search_notes(self, *args):
-        return self.notes_storage.search_notes(*args)
-
-
-    @input_error
-    def handler_search_notes(self, *args):
-        return self.notes_storage.search_notes(*args)
-
-
-    @input_error
-    def handler_sort_notes(self, *args):
-        return self.notes_storage.sort_notes(*args)
-
-
-    @input_error
-    def handler_show_notes(self, *args) -> str:
-        return self.notes_storage.show_notes()
-
-
-    @output_operation_describe
-    @input_error
+    @Commands_Handler.output_operation_describe
+    @Commands_Handler.input_error
     def handler_show_app_version(self, *args) -> str:
         try:
             version_str = version(__package__)
@@ -622,7 +295,7 @@ class Commands:
         return f"Version: '{ version_str }', package: {__package__}"
 
 
-    @input_error
+    @Commands_Handler.input_error
     def api(self, command: str, *args: list[str], verbose: bool = True) -> None:
         """API for run commands in batch mode
 
@@ -647,45 +320,45 @@ class Commands:
     """
     COMMANDS = {
         handler_hello: ("hello",),
-        handler_delete_record: ("delete user", "-"),
-        handler_delete_all_records: ("delete all records", "---"),
-        handler_change_phone: ("change phone", "=p"),
-        handler_delete_phone: ("delete phone", "-p"),
-        handler_show_phone: ("show phone", "?p"),
-        handler_show_page: ("show page", "?pg"),
-        handler_show_csv: ("show csv", "?csv"),
-        handler_export_csv: ("export csv", "e csv"),
-        handler_import_csv: ("import csv", "i csv"),
+        Commands_Handler_Address_Book.handler_delete_record: ("delete user", "-"),
+        Commands_Handler_Address_Book.handler_delete_all_records: ("delete all records", "---"),
+        Commands_Handler_Address_Book.handler_change_phone: ("change phone", "=p"),
+        Commands_Handler_Address_Book.handler_delete_phone: ("delete phone", "-p"),
+        Commands_Handler_Address_Book.handler_show_phone: ("show phone", "?p"),
+        Commands_Handler_Address_Book.handler_show_page: ("show page", "?pg"),
+        Commands_Handler_Address_Book.handler_show_csv: ("show csv", "?csv"),
+        Commands_Handler_Address_Book.handler_export_csv: ("export csv", "e csv"),
+        Commands_Handler_Address_Book.handler_import_csv: ("import csv", "i csv"),
         handler_help: ("help", "?"),
         handler_help_full: ("help full", "??"),
-        handler_add_birthday: ("add birthday", "+b"),
-        handler_delete_birthday: ("delete birthday", "-b"),
-        handler_add_email: ("add email", "+e"),
-        handler_delete_email: ("delete email", "-e"),
-        handler_add_address_book: ("add address book", "+ab"),
-        handler_add_address: ("add address", "+a"),
-        handler_delete_address: ("delete address", "-a"),
-        handler_days_to_birthday:  ("to birthday", "2b"),
-        handler_show_birthday: ("show birthday", "?b"),
-        handler_show_email: ("show email", "?e"),
-        handler_show_address_book: ("show address book", "lab"),
-        handler_show_address: ("show address", "?a"),
+        Commands_Handler_Address_Book.handler_add_birthday: ("add birthday", "+b"),
+        Commands_Handler_Address_Book.handler_delete_birthday: ("delete birthday", "-b"),
+        Commands_Handler_Address_Book.handler_add_email: ("add email", "+e"),
+        Commands_Handler_Address_Book.handler_delete_email: ("delete email", "-e"),
+        Commands_Handler_Address_Book.handler_add_address_book: ("add address book", "+ab"),
+        Commands_Handler_Address_Book.handler_add_address: ("add address", "+a"),
+        Commands_Handler_Address_Book.handler_delete_address: ("delete address", "-a"),
+        Commands_Handler_Address_Book.handler_days_to_birthday:  ("to birthday", "2b"),
+        Commands_Handler_Address_Book.handler_show_birthday: ("show birthday", "?b"),
+        Commands_Handler_Address_Book.handler_show_email: ("show email", "?e"),
+        Commands_Handler_Address_Book.handler_show_address_book: ("show address book", "?ab"),
+        Commands_Handler_Address_Book.handler_show_address: ("show address", "?a"),
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
         handler_list_versions: ("show versions", "?v"),
-        handler_list_csv: ("list csv", "l csv"),
-        handler_congrats_in_days: ("next birthdays", "+nb"),
+        Commands_Handler_Address_Book.handler_list_csv: ("list csv", "l csv"),
+        Commands_Handler_Address_Book.handler_congrats_in_days: ("next birthdays", "+nb"),
 
-        handler_search_address_book: ("search address book", "?ab="),
+        Commands_Handler_Address_Book.handler_search_address_book: ("search address book", "?ab="),
         handler_exit: ("quit", "exit", "q"),
         # notes
-        handler_add_note: ("add note", "+n"),
-        handler_show_notes: ("show notes", "?n"),
-        handler_change_notes: ("change note", "=n"),
-        handler_delete_notes: ("delete note", "-n"),
-        handler_clear_notes: ("clear notes", "---n"),
-        handler_search_notes: ("search notes", "?n="),
-        handler_sort_notes: ("sort notes", "sn"),
+        Commands_Handler_Notes.handler_add_note: ("add note", "+n"),
+        Commands_Handler_Notes.handler_show_notes: ("show notes", "?n"),
+        Commands_Handler_Notes.handler_change_notes: ("change note", "=n"),
+        Commands_Handler_Notes.handler_delete_notes: ("delete note", "-n"),
+        Commands_Handler_Notes.handler_clear_notes: ("clear notes", "---n"),
+        Commands_Handler_Notes.handler_search_notes: ("search notes", "?n="),
+        Commands_Handler_Notes.handler_sort_notes: ("sort notes", "sn"),
         # sorting
         handler_sorting: ("sort folder", "sorting"),
         handler_show_app_version: ("app version", "version"),
@@ -700,38 +373,38 @@ class Commands:
     """
     COMMANDS_HELP = {
         handler_hello: ("Just hello", "SYS"),
-        handler_delete_record: ("Delete ALL records of user. Required [u]username[/u].", "A_BOOK"),
-        handler_delete_all_records: ("Delete ALL records of ALL user."
+        Commands_Handler_Address_Book.handler_delete_record: ("Delete ALL records of user. Required [u]username[/u].", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_delete_all_records: ("Delete ALL records of ALL user."
         "Required parameter [u]YES[/u]", "A_BOOK"),
-        handler_change_phone: ("Change user's phone. "
+        Commands_Handler_Address_Book.handler_change_phone: ("Change user's phone. "
         "Required [u]username[/u], old phone, new phone", "A_BOOK"),
-        handler_delete_phone: ("Delete user's phone. Required [u]username[/u], [u]phone[/u]", "A_BOOK"),
-        handler_delete_email: ("Delete user's email. Required [u]username[/u], [u]email[/u]", "A_BOOK"),
-        handler_delete_address: ("Delete user's address. "
+        Commands_Handler_Address_Book.handler_delete_phone: ("Delete user's phone. Required [u]username[/u], [u]phone[/u]", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_delete_email: ("Delete user's email. Required [u]username[/u], [u]email[/u]", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_delete_address: ("Delete user's address. "
         "Required [u]username[/u], [u]address[/u]", "A_BOOK"),
-        handler_delete_birthday: ("Delete user's birthday. Required [u]username[/u]", "A_BOOK"),
-        handler_add_birthday: ("Add or replace the user's birthday. "
+        Commands_Handler_Address_Book.handler_delete_birthday: ("Delete user's birthday. Required [u]username[/u]", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_add_birthday: ("Add or replace the user's birthday. "
         "Required [u]username[/u], [u]birthday[/u], "
         "[white]please use ISO 8601 or DD.MM.YYYY date format[/white]", "A_BOOK"),
-        handler_add_email: ("Add or replace the user's email. "
+        Commands_Handler_Address_Book.handler_add_email: ("Add or replace the user's email. "
                                 "Required [u]username[/u], [u]email[/u]", "A_BOOK"),
-        handler_add_address: ("Add or replace the user's address. "
+        Commands_Handler_Address_Book.handler_add_address: ("Add or replace the user's address. "
         "Required [u]username[/u], [u]address[/u]", "A_BOOK"),
-        handler_show_phone: ("Show user's phones. Required [u]username[/u].","A_BOOK"),
-        handler_show_birthday: ("Show user's birthday. Required [u]username[/u].", "A_BOOK"),
-        handler_show_email: ("Show user's email. Required [u]username[/u].", "A_BOOK"),
-        handler_show_address: ("Show user's address. Required [u]username[/u].", "A_BOOK"),
-        handler_show_address_book: ("Show all user records in the address book.", "A_BOOK"),
-        handler_show_page: ("Show all user's record per page. "
+        Commands_Handler_Address_Book.handler_show_phone: ("Show user's phones. Required [u]username[/u].","A_BOOK"),
+        Commands_Handler_Address_Book.handler_show_birthday: ("Show user's birthday. Required [u]username[/u].", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_show_email: ("Show user's email. Required [u]username[/u].", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_show_address: ("Show user's address. Required [u]username[/u].", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_show_address_book: ("Show all user records in the address book.", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_show_page: ("Show all user's record per page. "
                                 "Optional parameter size of page [{per_page}]", "A_BOOK"),
-        handler_show_csv: ("Show all user's record in csv format", "A_BOOK_CSV"),
-        handler_export_csv: ("Export all user's record in csv format to file. "
+        Commands_Handler_Address_Book.handler_show_csv: ("Show all user's record in csv format", "A_BOOK_CSV"),
+        Commands_Handler_Address_Book.handler_export_csv: ("Export all user's record in csv format to file. "
                                  "Optional parameter filename", "A_BOOK_CSV"),
-        handler_import_csv: ("Import all user's record in csv format to file. "
+        Commands_Handler_Address_Book.handler_import_csv: ("Import all user's record in csv format to file. "
                                  "Optional parameter filename", "A_BOOK_CSV"),
-        handler_days_to_birthday: ("Show days until the user's birthday. "
+        Commands_Handler_Address_Book.handler_days_to_birthday: ("Show days until the user's birthday. "
                                  "Required [u]username[/u].", "A_BOOK"),
-        handler_add_address_book: ("Add user's phone or "
+        Commands_Handler_Address_Book.handler_add_address_book: ("Add user's phone or "
                                   "multiple phones separated by space. "
                                 "Required [u]username[/u] and [u]phone[/u].", "A_BOOK"),
         handler_help: ("Short List of commands. "
@@ -741,28 +414,28 @@ class Commands:
                             "Also you can use '?' "
                             "for any command as parameter.", "SYS"),    # noqa: E501
         handler_exit: ("Exit of bot.", "SYS"),
-        handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
+        Commands_Handler_Address_Book.handler_search_address_book: ("Search user by pattern in name or phone", "A_BOOK"),
         handler_backup: ("Backup all records. Optional parameter is the version. "
                         "P.S. it done automatically after any changes on records", "SYS_STORE"),
         handler_restore: ("Restore all records. Optional parameter is the version.", "SYS_STORE"),
         handler_list_versions: ("List of saved backup versions", "SYS_STORE"),
-        handler_list_csv: ("List of saved cvs files", "A_BOOK_CSV"),
+        Commands_Handler_Address_Book.handler_list_csv: ("List of saved cvs files", "A_BOOK_CSV"),
         handler_undefined: ("[yellow]Help for this command is not yet available[/yellow]", "SYS"),
         # notes
-        handler_add_note: ("Add a new note record", "NOTES"),
-        handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
-        handler_change_notes: ("Change note by index.", "NOTES"),
-        handler_delete_notes: ("Delete note by index", "NOTES"),
-        handler_clear_notes: ("Clear all notes", "NOTES"),
-        handler_search_notes: ("Search notes or tags by pattern. Optional parameters "
+        Commands_Handler_Notes.handler_add_note: ("Add a new note record", "NOTES"),
+        Commands_Handler_Notes.handler_show_notes: ("Show all user's records in Notes.", "NOTES"),
+        Commands_Handler_Notes.handler_change_notes: ("Change note by index.", "NOTES"),
+        Commands_Handler_Notes.handler_delete_notes: ("Delete note by index", "NOTES"),
+        Commands_Handler_Notes.handler_clear_notes: ("Clear all notes", "NOTES"),
+        Commands_Handler_Notes.handler_search_notes: ("Search notes or tags by pattern. Optional parameters "
                               "is A and B. A is '1' to search in notes, "
                               "'2' - in #Tags. B is what to search.", "NOTES"),
-        handler_sort_notes: ("Sort notes by type that user choose. Optional parameter "
+        Commands_Handler_Notes.handler_sort_notes: ("Sort notes by type that user choose. Optional parameter "
                             " is '1' to sort by date, '2' - "
                             "to sort by index, '3' - to sort by #Tags", "NOTES"),
         handler_sorting: ("Sorting files of folder. Required path to folder.", "NOTES"),
         handler_show_app_version: ("Show version of application. ID: {id_session}", "SYS"),
-        handler_congrats_in_days: ("Show list of users with birthdays, which will "
+        Commands_Handler_Address_Book.handler_congrats_in_days: ("Show list of users with birthdays, which will "
                                   "be in certain days. Required days parameter", "A_BOOK")
     }
 

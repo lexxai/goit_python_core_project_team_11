@@ -48,7 +48,7 @@ def arg_action(assistant, args):
         return True
 
 
-def cli(pre_init: object = None):
+def cli(pre_init: object = None) -> None:
     args = argument_parse()
     username = args.username
     auto_restore= not args.disable_auto_restore
