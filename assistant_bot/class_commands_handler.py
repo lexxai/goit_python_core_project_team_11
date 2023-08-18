@@ -37,7 +37,7 @@ class Commands_Handler:
             except FileNotFoundError:
                 return "[red]Sorry, there operation with file is incorrect.[/red]"
             except Exception as e:
-                return f"[/red]**** Exception other: {e} [/red]"
+                return f"[red]**** Exception other: {e} [/red]"
 
         return wrapper
 
