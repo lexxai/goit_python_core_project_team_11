@@ -117,7 +117,7 @@ class Assistant_bot(Commands):
                 if command == Commands.handler_exit:
                     break
             except Exception as e:
-                self._console.print(f"[red]COMMANDS ERROR:{e}[/red]")
+                self._console.print(f"COMMANDS ERROR:'{e}'")
         self.backup_data()
 
     # skip save state for rich.consol object

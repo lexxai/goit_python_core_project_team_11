@@ -66,6 +66,32 @@ class Email(Field):
             raise ValueError("wrong email format")
 
 
+class PhoneCodes:
+    code_numbers_length: dict = {"380": 12, "48": 11, "38": 0, "7": 0}
+
+    @staticmethod
+    def detect_number_length(phone_number: str) -> int:
+        min_length = 10
+        max_length = 15
+        if phone_number.startswith("+"):
+            phone_number_code = phone_number[1:5]
+            for code, length in PhoneCodes.code_numbers_length.items():
+                if phone_number_code.startswith(code):
+                    first_local_number = phone_number[len(code) + 1]
+                    # print(f"***** {first_local_number=}")
+                    if first_local_number == "0":
+                        min_length, max_length = (0, 0)
+                        break
+                    if isinstance(length, tuple):
+                        min_length, max_length = length
+                    else:
+                        min_length = length
+                        max_length = length
+                    break
+        # print(f"{phone_number_code=}", min_length, max_length)
+        return min_length, max_length
+
+
 class Phone(Field):
     def phone_length(self, test_str: str) -> int:
         """Calculate length of string of digitals only chars
@@ -79,6 +105,7 @@ class Phone(Field):
         regex = r"([^\d]?)"
         subst = ""
         length = len(re.sub(regex, subst, test_str, 0))
+        # print(f"{length=}")
         return length
 
     def is_phone(self, test_str: str) -> bool:
@@ -86,13 +113,14 @@ class Phone(Field):
         # Intonational format of phone ?
         if test_str.startswith("+"):
             phone_len = self.phone_length(test_str)
-            if phone_len > 15 or phone_len < 10:
+            min_length, max_length = PhoneCodes.detect_number_length(test_str)
+            if phone_len > max_length or phone_len < min_length:
                 return False
         else:
             if self.phone_length(test_str) > 10:
                 return False
         # allow only digit, space, ( , ) , -
-        regex = r"\+?[\d\s\-\(\)]+"
+        regex = r"^\+?[\d\s\-\(\)]+$"
         matches = re.search(regex, test_str)
         return matches is not None
 
