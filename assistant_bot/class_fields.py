@@ -49,11 +49,6 @@ class Address(Field):
 
 
 class Email(Field):
-    def __init__(self, value: str) -> None:
-        self.__value = None
-        self.value = value
-        super().__init__(value)
-
     def find_all_emails(self, text):
         result = re.findall(r"[a-zA-Z][\w_.]+@\w{2,}\.\w{2,}", text)
         return result
@@ -72,11 +67,6 @@ class Email(Field):
 
 
 class Phone(Field):
-    def __init__(self, value: str) -> None:
-        self.__value = None
-        self.value = value
-        super().__init__(value)
-
     def phone_length(self, test_str: str) -> int:
         """Calculate length of string of digitals only chars
 
@@ -119,11 +109,6 @@ class Phone(Field):
 
 
 class Birthday(Field):
-    def __init__(self, value: str) -> None:
-        self.__value = None
-        self.value = value
-        super().__init__(value)
-
     @property
     def value(self):
         return self.__value
