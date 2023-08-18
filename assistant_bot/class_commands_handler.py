@@ -1,9 +1,17 @@
 from functools import wraps
 from rich.console import Console
+from .class_console_output import (
+    Terminals,
+    ConsoleOutputAbstract,
+    TerminalOutput,
+    TerminalRichOutput,
+    TelegramOutput,
+    ViberOutput,
+)
 
 
 class Commands_Handler:
-    _console: Console
+    _output_console: ConsoleOutputAbstract
 
     # decorator
     def output_operation_describe(func):
