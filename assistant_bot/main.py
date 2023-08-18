@@ -40,6 +40,22 @@ def argument_parse():
         "-dab", "--disable_auto_backup", action="store_true", help="disable auto_backup"
     )
 
+    list_output = []
+    list_output_help = []
+    for t in Terminals:
+        list_output.append(t.value)
+        list_output_help.append(f"{t.value}: {t.name}")
+    list_output_help_str = ", ".join(list_output_help)
+
+    parser.add_argument(
+        "--output_console",
+        type=int,
+        choices=list_output,
+        help=f"Output console ({list_output_help_str}), \
+              default: {Terminals.TERMINAL_RICH.value}",
+        default=Terminals.TERMINAL_RICH,
+    )
+
     args = parser.parse_args()
     if args.username:
         bin_name = bytearray(args.username, encoding="utf-8")
@@ -66,7 +82,7 @@ def cli(pre_init: object = None) -> None:
     auto_restore = not args.disable_auto_restore
     auto_backup = not args.disable_auto_backup
 
-    output_terminal = Terminals.TERMINAL_RICH
+    output_terminal = Terminals(args.output_console)
 
     assistant = Assistant_bot(
         id=username,

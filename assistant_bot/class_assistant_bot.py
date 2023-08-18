@@ -7,7 +7,8 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import pickle
 from pathlib import Path
-from rich.console import Console
+
+# from rich.console import Console
 import types
 from enum import Enum
 from .class_command_completer import CommandCompleter
@@ -44,10 +45,10 @@ class Assistant_bot(Commands):
                 no_color=False, force_terminal=True
             )
         elif output_terminal == Terminals.TERMINAL:
-            self._output_console = TelegramOutput()
+            self._output_console = TerminalOutput()
         elif output_terminal == Terminals.TELEGRAM:
             token = "88734823842346ge8934637687646746328-90903222121ab22e"
-            self._output_console = TerminalOutput(token)
+            self._output_console = TelegramOutput(token)
         elif output_terminal == Terminals.VIBER:
             token = "632676746-89437487804-48497434648364-4348948934"
             self._output_console = ViberOutput(token)
