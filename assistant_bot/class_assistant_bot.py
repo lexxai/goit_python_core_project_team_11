@@ -94,7 +94,7 @@ class Assistant_bot(Commands):
             except Exception:
                 return False
 
-    def list_versions(self):
+    def list_versions(self) -> str:
         filename = f"{self.default_filename}_*.bin"
         list_files = Path(".").glob(self._gen_filename(filename))
         result_version = []

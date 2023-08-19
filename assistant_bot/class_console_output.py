@@ -14,15 +14,15 @@ class Terminals(Enum):
 class ConsoleOutputAbstract(ABC):
     service: Enum
 
-    def output(self, text: str, *args) -> None:
+    def output(self, text: str, *args) -> str:
         ...
 
 
 class TerminalClearRichOutputConsole:
-    def __init__(self):
-        self._console = Console(
-            no_color=True, force_terminal=True, style=Style(bold=False)
-        )
+    # def __init__(self):
+    #     self._console = Console(
+    #         no_color=True, force_terminal=True, style=Style(bold=False)
+    #     )
 
     def get_clear_text(self, text: str) -> str:
         r_text = Text.from_markup(text)
