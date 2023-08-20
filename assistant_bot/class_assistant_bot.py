@@ -10,16 +10,11 @@ from pathlib import Path
 
 # from rich.console import Console
 import types
-from enum import Enum
+
+# from enum import Enum
 from .class_command_completer import CommandCompleter
 from .class_console_output import (
-    FactoryOutput,
-    Terminals,
     ConsoleOutputAbstract,
-    TerminalOutput,
-    TerminalRichOutput,
-    TelegramOutput,
-    ViberOutput,
 )
 
 
@@ -41,16 +36,7 @@ class Assistant_bot(Commands):
         self.restore_data()
 
         self._output_console: ConsoleOutputAbstract = output_terminal
-
         assert self._output_console is not None, "Output console must be defined"
-
-        # super().__init__(child = self)
-
-    # def _callback(self, method_str: str, *args, **kwargs):
-    #     #print(f"{__name__} [_callback] {method_str=}")
-    #     method = self.__getattribute__(method_str)
-    #     if method:
-    #         return method(*args, **kwargs)
 
     def _gen_filename(self, filename: str) -> str:
         if self.id:
