@@ -1,10 +1,20 @@
 from .class_assistant_bot import Assistant_bot
-from .class_console_output import Terminals
+from enum import Enum
+
+# from .class_console_output import Terminals
+from .class_console_output import (
+    FactoryOutput,
+    Terminals,
+    TerminalOutput,
+    TerminalRichOutput,
+    TelegramOutput,
+    ViberOutput,
+)
 from argparse import ArgumentParser
 import hashlib
 
 
-def argument_parse():
+def argument_parse(registered_terminals: list[Enum] = None):
     default_user = "user-session-100001"
     parser = ArgumentParser(
         prog=__package__,
@@ -42,18 +52,25 @@ def argument_parse():
 
     list_output = []
     list_output_help = []
-    for t in Terminals:
-        list_output.append(t.value)
-        list_output_help.append(f"{t.value}: {t.name}")
-    list_output_help_str = ", ".join(list_output_help)
+    def_value_output_console = None
+    if registered_terminals:
+        for t in registered_terminals:
+            list_output.append(t.value)
+            list_output_help.append(f"{t.value}: {t.name}")
+        list_output_help_str = ", ".join(list_output_help)
+        def_value_output_console = (
+            Terminals.TERMINAL_RICH
+            if Terminals.TERMINAL_RICH in registered_terminals
+            else registered_terminals[0]
+        )
 
     parser.add_argument(
         "--output_console",
         type=int,
         choices=list_output,
         help=f"Output console ({list_output_help_str}), \
-              default: {Terminals.TERMINAL_RICH.value}",
-        default=Terminals.TERMINAL_RICH,
+              default: {def_value_output_console.value}",
+        default=def_value_output_console,
     )
 
     args = parser.parse_args()
@@ -77,18 +94,34 @@ def arg_action(assistant, args):
 
 
 def cli(pre_init: object = None) -> None:
-    args = argument_parse()
+    factory_output = FactoryOutput()
+    factory_output.register_output(TerminalOutput)
+    factory_output.register_output(TerminalRichOutput)
+    factory_output.register_output(TelegramOutput)
+    factory_output.register_output(ViberOutput)
+    args = argument_parse(registered_terminals=factory_output.get_registered_services())
+
     username = args.username
     auto_restore = not args.disable_auto_restore
     auto_backup = not args.disable_auto_backup
 
     output_terminal = Terminals(args.output_console)
 
+    output_kwargs = {}
+    if output_terminal == Terminals.TERMINAL_RICH:
+        output_kwargs = {"no_color": False, "force_terminal": True}
+    elif output_terminal == Terminals.TELEGRAM:
+        output_kwargs = {
+            "token": "88734823842346ge8934637687646746328-90903222121ab22e"
+        }
+    elif output_terminal == Terminals.VIBER:
+        output_kwargs = {"token": "632676746-89437487804-48497434648364-4348948934"}
+
     assistant = Assistant_bot(
         id=username,
         auto_restore=auto_restore,
         auto_backup=auto_backup,
-        output_terminal=output_terminal,
+        output_terminal=factory_output.create_output(output_terminal, **output_kwargs),
     )
 
     if arg_action(assistant, args):

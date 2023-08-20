@@ -13,6 +13,7 @@ import types
 from enum import Enum
 from .class_command_completer import CommandCompleter
 from .class_console_output import (
+    FactoryOutput,
     Terminals,
     ConsoleOutputAbstract,
     TerminalOutput,
@@ -29,7 +30,7 @@ class Assistant_bot(Commands):
         auto_backup: bool = True,
         auto_restore: bool = True,
         default_filename: str = "assistant_bot",
-        output_terminal: Enum = Terminals.TERMINAL_RICH,
+        output_terminal: ConsoleOutputAbstract = None,
     ):
         self.id: str = id
         self.auto_backup: bool = auto_backup
@@ -39,19 +40,7 @@ class Assistant_bot(Commands):
         self.default_filename: str = default_filename
         self.restore_data()
 
-        self._output_console: ConsoleOutputAbstract = None
-        if output_terminal == Terminals.TERMINAL_RICH:
-            self._output_console = TerminalRichOutput(
-                no_color=False, force_terminal=True
-            )
-        elif output_terminal == Terminals.TERMINAL:
-            self._output_console = TerminalOutput()
-        elif output_terminal == Terminals.TELEGRAM:
-            token = "88734823842346ge8934637687646746328-90903222121ab22e"
-            self._output_console = TelegramOutput(token)
-        elif output_terminal == Terminals.VIBER:
-            token = "632676746-89437487804-48497434648364-4348948934"
-            self._output_console = ViberOutput(token)
+        self._output_console: ConsoleOutputAbstract = output_terminal
 
         assert self._output_console is not None, "Output console must be defined"
 

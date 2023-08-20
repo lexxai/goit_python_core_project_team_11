@@ -1,5 +1,5 @@
-from abc import ABC
-from rich.console import Console, Style, Text
+from abc import ABC, abstractmethod
+from rich.console import Console, Text
 import types
 from enum import Enum, auto
 
@@ -14,6 +14,7 @@ class Terminals(Enum):
 class ConsoleOutputAbstract(ABC):
     service: Enum
 
+    @abstractmethod
     def output(self, text: str, *args) -> str:
         ...
 
@@ -95,3 +96,28 @@ class ViberOutput(ConsoleOutputAbstract, TerminalClearRichOutputConsole):
     def output(self, text: str, *args) -> None:
         text = self.get_clear_text(text)
         self.viber_client.send_message(text)
+
+
+class FactoryOutput:
+    def __init__(self):
+        self._output = {}
+
+    def register_output(self, output: ConsoleOutputAbstract):
+        if output and issubclass(output, ConsoleOutputAbstract):
+            service = output.service
+            if service:
+                self._output[service] = output
+                return
+        raise ValueError("Problem registration of service")
+
+    def get_registered_services(self):
+        return list(self._output.keys())
+
+    def unregister_output(self, output: ConsoleOutputAbstract):
+        self._output.remove(output)
+
+    def create_output(self, service: Enum, *args, **kwargs):
+        if service in self._output:
+            return self._output[service](*args, **kwargs)
+        else:
+            raise ValueError(f"Invalid service of output ({service.name})")
