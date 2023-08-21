@@ -7,9 +7,15 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import pickle
 from pathlib import Path
-from rich.console import Console
+
+# from rich.console import Console
 import types
+
+# from enum import Enum
 from .class_command_completer import CommandCompleter
+from .class_console_output import (
+    ConsoleOutputAbstract,
+)
 
 
 class Assistant_bot(Commands):
@@ -19,6 +25,7 @@ class Assistant_bot(Commands):
         auto_backup: bool = True,
         auto_restore: bool = True,
         default_filename: str = "assistant_bot",
+        output_terminal: ConsoleOutputAbstract = None,
     ):
         self.id: str = id
         self.auto_backup: bool = auto_backup
@@ -27,15 +34,9 @@ class Assistant_bot(Commands):
         self.notes_storage: Notes_Storage = Notes_Storage()
         self.default_filename: str = default_filename
         self.restore_data()
-        self._console = Console(no_color=False, force_terminal=True)
 
-        # super().__init__(child = self)
-
-    # def _callback(self, method_str: str, *args, **kwargs):
-    #     #print(f"{__name__} [_callback] {method_str=}")
-    #     method = self.__getattribute__(method_str)
-    #     if method:
-    #         return method(*args, **kwargs)
+        self._output_console: ConsoleOutputAbstract = output_terminal
+        assert self._output_console is not None, "Output console must be defined"
 
     def _gen_filename(self, filename: str) -> str:
         if self.id:
@@ -68,7 +69,7 @@ class Assistant_bot(Commands):
             except Exception:
                 return False
 
-    def list_versions(self):
+    def list_versions(self) -> str:
         filename = f"{self.default_filename}_*.bin"
         list_files = Path(".").glob(self._gen_filename(filename))
         result_version = []
@@ -82,7 +83,7 @@ class Assistant_bot(Commands):
             category = (
                 input('Use interactive help "y" or "n" (default "y"): ').lower() or "y"
             )
-            if category in ["y", "n"]:
+            if category in ["y", "n", "q"]:
                 break
         while True:
             try:
@@ -92,12 +93,10 @@ class Assistant_bot(Commands):
                         completer=CommandCompleter(parent=self),
                         auto_suggest=AutoSuggestFromHistory(),
                     )
-                elif category == "n":
-                    user_input = self._console.input(
-                        "\n[bold]Enter your command >>> [/bold]"
-                    )
+                else:
+                    user_input = input("\nEnter your command >>>")
             except KeyboardInterrupt:
-                self._console.print("\r")
+                self._output_console.output("\r")
                 break
 
             command, args, command_str = self.parse_input(user_input)
@@ -110,19 +109,20 @@ class Assistant_bot(Commands):
                 if result:
                     if isinstance(result, types.GeneratorType):
                         for r in result:
-                            self._console.print(r)
+                            self._output_console.output(r)
                     else:
-                        self._console.print(result)
+                        self._output_console.output(result)
 
                 if command == Commands.handler_exit:
                     break
             except Exception as e:
-                self._console.print(f"COMMANDS ERROR:'{e}'")
+                self._output_console.output(f"COMMANDS ERROR:'{e}'")
         self.backup_data()
 
     # skip save state for rich.consol object
     def __getstate__(self):
         state = self.__dict__.copy()
         # Remove the unpicklable entries.
-        del state["_console"]
+        del state["_output_console"]
+
         return state

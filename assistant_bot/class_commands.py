@@ -5,6 +5,7 @@ from .sorting import main as sorting
 
 from rich.table import Table
 import math
+from .class_console_output import Terminals
 
 # from functools import wraps
 
@@ -188,7 +189,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
         if len(args):
             command = args[0]
         if not command:
-            if self._console.is_terminal is False:
+            if self._output_console.service != Terminals.TERMINAL_RICH:
                 # TERMINAL MODE OFF
                 command_str = self.get_list_commands(help_filter)
             else:
@@ -291,7 +292,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
         """
         result = self.get_command_handler(command)(self, *args)
         if verbose:
-            self._console.print(
+            self._output_console.output(
                 f"[green]api command '{command}'[/green]: [yellow]{result}[/yellow]"
             )
         else:
