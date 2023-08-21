@@ -37,7 +37,7 @@ class Tag:
         return str(self.value)
 
 
-class Note_Record:
+class NoteRecord:
     def __init__(self, index, note: Note, creation_date: Date, tag: list[Tag] = None):
         self.index = index
         self.note = note
@@ -52,10 +52,10 @@ class Note_Record:
 
 
 class Notes(UserDict):
-    def add_record(self, record: Note_Record):
+    def add_record(self, record: NoteRecord):
         self.data[record.index] = record
 
-    def change_note(self, record: Note_Record):
+    def change_note(self, record: NoteRecord):
         self.data[self.index] = record
 
     def delete_note(self, index):
@@ -107,7 +107,7 @@ class Iterator:
         raise StopIteration("End")
 
 
-class Notes_Storage:
+class NotesStorage:
     def __init__(self):
         self.notes = Notes()
 
@@ -134,7 +134,7 @@ class Notes_Storage:
         # self.tags = [Tag(tag) for tag in self.tags.split(' ')]
         date = Date()
         t = self.tags
-        record = Note_Record(index, note_str, date, t)
+        record = NoteRecord(index, note_str, date, t)
         self.notes.add_record(record)
         # self.notes.serialize(FILE_PATH)
         return f"{index}. {record}"
@@ -186,7 +186,7 @@ class Notes_Storage:
             # elif category == '2':
             #     tags = input(f'Current #Tags({record.tags}): ')
             #     tags = [Tag(tag) for tag in tags.split(' ')]
-            record = Note_Record(index, note, date, tags)
+            record = NoteRecord(index, note, date, tags)
             self.notes.add_record(record)
             # notes.serialize(FILE_PATH)
             return f"Edited note:\n{index}. {record}"

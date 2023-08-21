@@ -1,6 +1,6 @@
-from .class_commands_handler import Commands_Handler
-from .class_commands_handler_notes import Commands_Handler_Notes
-from .class_commands_handler_a_book import Commands_Handler_Address_Book
+from .class_commands_handler import CommandsHandler
+from .class_commands_handler_notes import CommandsHandlerNotes
+from .class_commands_handler_a_book import CommandsHandlerAddressBook
 from .sorting import main as sorting
 
 from rich.table import Table
@@ -17,7 +17,7 @@ else:
     from importlib_metadata import version
 
 
-class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
+class Commands(CommandsHandlerAddressBook, CommandsHandlerNotes):
     def split_line_by_space(self, line: str) -> list[str]:
         """split_line_by_space with quotes
 
@@ -55,8 +55,8 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
                     return command, args, command_str
         return Commands.handler_undefined, [line], None
 
-    @Commands_Handler.output_operation_describe
-    @Commands_Handler.input_error
+    @CommandsHandler.output_operation_describe
+    @CommandsHandler.input_error
     def handler_sorting(self, *args) -> str:
         path = args[0]
         return sorting(path)
@@ -238,8 +238,8 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
                     return ch
         return Commands.handler_undefined
 
-    @Commands_Handler.output_operation_describe
-    @Commands_Handler.input_error
+    @CommandsHandler.output_operation_describe
+    @CommandsHandler.input_error
     def handler_backup(self, *args) -> bool:
         version = None
         result = None
@@ -250,8 +250,8 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
         #     result = self._callback("backup_data",version = version, backup = True)
         return result
 
-    @Commands_Handler.output_operation_describe
-    @Commands_Handler.input_error
+    @CommandsHandler.output_operation_describe
+    @CommandsHandler.input_error
     def handler_restore(self, *args) -> bool:
         version = None
         result = None
@@ -269,8 +269,8 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
         #     result = self._callback("list_versions")
         return result
 
-    @Commands_Handler.output_operation_describe
-    @Commands_Handler.input_error
+    @CommandsHandler.output_operation_describe
+    @CommandsHandler.input_error
     def handler_show_app_version(self, *args) -> str:
         try:
             version_str = version(__package__)
@@ -278,7 +278,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
             version_str = "undefined"
         return f"Version: '{ version_str }', package: {__package__}"
 
-    @Commands_Handler.input_error
+    @CommandsHandler.input_error
     def api(self, command: str, *args: list[str], verbose: bool = True) -> None:
         """API for run commands in batch mode
 
@@ -305,62 +305,62 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
     """
     COMMANDS = {
         handler_hello: ("hello",),
-        Commands_Handler_Address_Book.handler_delete_record: ("delete user", "-"),
-        Commands_Handler_Address_Book.handler_delete_all_records: (
+        CommandsHandlerAddressBook.handler_delete_record: ("delete user", "-"),
+        CommandsHandlerAddressBook.handler_delete_all_records: (
             "delete all records",
             "---",
         ),
-        Commands_Handler_Address_Book.handler_change_phone: ("change phone", "=p"),
-        Commands_Handler_Address_Book.handler_delete_phone: ("delete phone", "-p"),
-        Commands_Handler_Address_Book.handler_show_phone: ("show phone", "?p"),
-        Commands_Handler_Address_Book.handler_show_page: ("show page", "?pg"),
-        Commands_Handler_Address_Book.handler_show_csv: ("show csv", "?csv"),
-        Commands_Handler_Address_Book.handler_export_csv: ("export csv", "e csv"),
-        Commands_Handler_Address_Book.handler_import_csv: ("import csv", "i csv"),
+        CommandsHandlerAddressBook.handler_change_phone: ("change phone", "=p"),
+        CommandsHandlerAddressBook.handler_delete_phone: ("delete phone", "-p"),
+        CommandsHandlerAddressBook.handler_show_phone: ("show phone", "?p"),
+        CommandsHandlerAddressBook.handler_show_page: ("show page", "?pg"),
+        CommandsHandlerAddressBook.handler_show_csv: ("show csv", "?csv"),
+        CommandsHandlerAddressBook.handler_export_csv: ("export csv", "e csv"),
+        CommandsHandlerAddressBook.handler_import_csv: ("import csv", "i csv"),
         handler_help: ("help", "?"),
         handler_help_full: ("help full", "??"),
-        Commands_Handler_Address_Book.handler_add_birthday: ("add birthday", "+b"),
-        Commands_Handler_Address_Book.handler_delete_birthday: (
+        CommandsHandlerAddressBook.handler_add_birthday: ("add birthday", "+b"),
+        CommandsHandlerAddressBook.handler_delete_birthday: (
             "delete birthday",
             "-b",
         ),
-        Commands_Handler_Address_Book.handler_add_email: ("add email", "+e"),
-        Commands_Handler_Address_Book.handler_delete_email: ("delete email", "-e"),
-        Commands_Handler_Address_Book.handler_add_address_book: (
+        CommandsHandlerAddressBook.handler_add_email: ("add email", "+e"),
+        CommandsHandlerAddressBook.handler_delete_email: ("delete email", "-e"),
+        CommandsHandlerAddressBook.handler_add_address_book: (
             "add address book",
             "+ab",
         ),
-        Commands_Handler_Address_Book.handler_add_address: ("add address", "+a"),
-        Commands_Handler_Address_Book.handler_delete_address: ("delete address", "-a"),
-        Commands_Handler_Address_Book.handler_days_to_birthday: ("to birthday", "2b"),
-        Commands_Handler_Address_Book.handler_show_birthday: ("show birthday", "?b"),
-        Commands_Handler_Address_Book.handler_show_email: ("show email", "?e"),
-        Commands_Handler_Address_Book.handler_show_address_book: (
+        CommandsHandlerAddressBook.handler_add_address: ("add address", "+a"),
+        CommandsHandlerAddressBook.handler_delete_address: ("delete address", "-a"),
+        CommandsHandlerAddressBook.handler_days_to_birthday: ("to birthday", "2b"),
+        CommandsHandlerAddressBook.handler_show_birthday: ("show birthday", "?b"),
+        CommandsHandlerAddressBook.handler_show_email: ("show email", "?e"),
+        CommandsHandlerAddressBook.handler_show_address_book: (
             "show address book",
             "?ab",
         ),
-        Commands_Handler_Address_Book.handler_show_address: ("show address", "?a"),
+        CommandsHandlerAddressBook.handler_show_address: ("show address", "?a"),
         handler_backup: ("backup", "bak"),
         handler_restore: ("restore", "res"),
         handler_list_versions: ("show versions", "?v"),
-        Commands_Handler_Address_Book.handler_list_csv: ("list csv", "l csv"),
-        Commands_Handler_Address_Book.handler_congrats_in_days: (
+        CommandsHandlerAddressBook.handler_list_csv: ("list csv", "l csv"),
+        CommandsHandlerAddressBook.handler_congrats_in_days: (
             "next birthdays",
             "+nb",
         ),
-        Commands_Handler_Address_Book.handler_search_address_book: (
+        CommandsHandlerAddressBook.handler_search_address_book: (
             "search address book",
             "?ab=",
         ),
         handler_exit: ("quit", "exit", "q"),
         # notes
-        Commands_Handler_Notes.handler_add_note: ("add note", "+n"),
-        Commands_Handler_Notes.handler_show_notes: ("show notes", "?n"),
-        Commands_Handler_Notes.handler_change_notes: ("change note", "=n"),
-        Commands_Handler_Notes.handler_delete_notes: ("delete note", "-n"),
-        Commands_Handler_Notes.handler_clear_notes: ("clear notes", "---n"),
-        Commands_Handler_Notes.handler_search_notes: ("search notes", "?n="),
-        Commands_Handler_Notes.handler_sort_notes: ("sort notes", "sn"),
+        CommandsHandlerNotes.handler_add_note: ("add note", "+n"),
+        CommandsHandlerNotes.handler_show_notes: ("show notes", "?n"),
+        CommandsHandlerNotes.handler_change_notes: ("change note", "=n"),
+        CommandsHandlerNotes.handler_delete_notes: ("delete note", "-n"),
+        CommandsHandlerNotes.handler_clear_notes: ("clear notes", "---n"),
+        CommandsHandlerNotes.handler_search_notes: ("search notes", "?n="),
+        CommandsHandlerNotes.handler_sort_notes: ("sort notes", "sn"),
         # sorting
         handler_sorting: ("sort folder", "sorting"),
         handler_show_app_version: ("app version", "version"),
@@ -375,94 +375,94 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
     """
     COMMANDS_HELP = {
         handler_hello: ("Just hello", "SYS"),
-        Commands_Handler_Address_Book.handler_delete_record: (
+        CommandsHandlerAddressBook.handler_delete_record: (
             "Delete ALL records of user. Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_delete_all_records: (
+        CommandsHandlerAddressBook.handler_delete_all_records: (
             "Delete ALL records of ALL user." "Required parameter [u]YES[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_change_phone: (
+        CommandsHandlerAddressBook.handler_change_phone: (
             "Change user's phone. " "Required [u]username[/u], old phone, new phone",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_delete_phone: (
+        CommandsHandlerAddressBook.handler_delete_phone: (
             "Delete user's phone. Required [u]username[/u], [u]phone[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_delete_email: (
+        CommandsHandlerAddressBook.handler_delete_email: (
             "Delete user's email. Required [u]username[/u], [u]email[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_delete_address: (
+        CommandsHandlerAddressBook.handler_delete_address: (
             "Delete user's address. " "Required [u]username[/u], [u]address[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_delete_birthday: (
+        CommandsHandlerAddressBook.handler_delete_birthday: (
             "Delete user's birthday. Required [u]username[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_add_birthday: (
+        CommandsHandlerAddressBook.handler_add_birthday: (
             "Add or replace the user's birthday. "
             "Required [u]username[/u], [u]birthday[/u], "
             "[white]please use ISO 8601 or DD.MM.YYYY date format[/white]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_add_email: (
+        CommandsHandlerAddressBook.handler_add_email: (
             "Add or replace the user's email. "
             "Required [u]username[/u], [u]email[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_add_address: (
+        CommandsHandlerAddressBook.handler_add_address: (
             "Add or replace the user's address. "
             "Required [u]username[/u], [u]address[/u]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_phone: (
+        CommandsHandlerAddressBook.handler_show_phone: (
             "Show user's phones. Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_birthday: (
+        CommandsHandlerAddressBook.handler_show_birthday: (
             "Show user's birthday. Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_email: (
+        CommandsHandlerAddressBook.handler_show_email: (
             "Show user's email. Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_address: (
+        CommandsHandlerAddressBook.handler_show_address: (
             "Show user's address. Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_address_book: (
+        CommandsHandlerAddressBook.handler_show_address_book: (
             "Show all user records in the address book.",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_page: (
+        CommandsHandlerAddressBook.handler_show_page: (
             "Show all user's record per page. "
             "Optional parameter size of page [{per_page}]",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_show_csv: (
+        CommandsHandlerAddressBook.handler_show_csv: (
             "Show all user's record in csv format",
             "A_BOOK_CSV",
         ),
-        Commands_Handler_Address_Book.handler_export_csv: (
+        CommandsHandlerAddressBook.handler_export_csv: (
             "Export all user's record in csv format to file. "
             "Optional parameter filename",
             "A_BOOK_CSV",
         ),
-        Commands_Handler_Address_Book.handler_import_csv: (
+        CommandsHandlerAddressBook.handler_import_csv: (
             "Import all user's record in csv format to file. "
             "Optional parameter filename",
             "A_BOOK_CSV",
         ),
-        Commands_Handler_Address_Book.handler_days_to_birthday: (
+        CommandsHandlerAddressBook.handler_days_to_birthday: (
             "Show days until the user's birthday. " "Required [u]username[/u].",
             "A_BOOK",
         ),
-        Commands_Handler_Address_Book.handler_add_address_book: (
+        CommandsHandlerAddressBook.handler_add_address_book: (
             "Add user's phone or "
             "multiple phones separated by space. "
             "Required [u]username[/u] and [u]phone[/u].",
@@ -481,7 +481,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
             "SYS",
         ),  # noqa: E501
         handler_exit: ("Exit of bot.", "SYS"),
-        Commands_Handler_Address_Book.handler_search_address_book: (
+        CommandsHandlerAddressBook.handler_search_address_book: (
             "Search user by pattern in name or phone",
             "A_BOOK",
         ),
@@ -495,7 +495,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
             "SYS_STORE",
         ),
         handler_list_versions: ("List of saved backup versions", "SYS_STORE"),
-        Commands_Handler_Address_Book.handler_list_csv: (
+        CommandsHandlerAddressBook.handler_list_csv: (
             "List of saved cvs files",
             "A_BOOK_CSV",
         ),
@@ -504,21 +504,21 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
             "SYS",
         ),
         # notes
-        Commands_Handler_Notes.handler_add_note: ("Add a new note record", "NOTES"),
-        Commands_Handler_Notes.handler_show_notes: (
+        CommandsHandlerNotes.handler_add_note: ("Add a new note record", "NOTES"),
+        CommandsHandlerNotes.handler_show_notes: (
             "Show all user's records in Notes.",
             "NOTES",
         ),
-        Commands_Handler_Notes.handler_change_notes: ("Change note by index.", "NOTES"),
-        Commands_Handler_Notes.handler_delete_notes: ("Delete note by index", "NOTES"),
-        Commands_Handler_Notes.handler_clear_notes: ("Clear all notes", "NOTES"),
-        Commands_Handler_Notes.handler_search_notes: (
+        CommandsHandlerNotes.handler_change_notes: ("Change note by index.", "NOTES"),
+        CommandsHandlerNotes.handler_delete_notes: ("Delete note by index", "NOTES"),
+        CommandsHandlerNotes.handler_clear_notes: ("Clear all notes", "NOTES"),
+        CommandsHandlerNotes.handler_search_notes: (
             "Search notes or tags by pattern. Optional parameters "
             "is A and B. A is '1' to search in notes, "
             "'2' - in #Tags. B is what to search.",
             "NOTES",
         ),
-        Commands_Handler_Notes.handler_sort_notes: (
+        CommandsHandlerNotes.handler_sort_notes: (
             "Sort notes by type that user choose. Optional parameter "
             " is '1' to sort by date, '2' - "
             "to sort by index, '3' - to sort by #Tags",
@@ -529,7 +529,7 @@ class Commands(Commands_Handler_Address_Book, Commands_Handler_Notes):
             "Show version of application. ID: {id_session}",
             "SYS",
         ),
-        Commands_Handler_Address_Book.handler_congrats_in_days: (
+        CommandsHandlerAddressBook.handler_congrats_in_days: (
             "Show list of users with birthdays, which will "
             "be in certain days. Required days parameter",
             "A_BOOK",
