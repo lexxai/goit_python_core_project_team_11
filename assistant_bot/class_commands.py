@@ -5,7 +5,7 @@ from .sorting import main as sorting
 
 from rich.table import Table
 import math
-from .class_console_output import Terminals
+from .class_console_output import Terminals, OutputResult
 
 # from functools import wraps
 
@@ -15,6 +15,18 @@ if sys.version_info >= (3, 8):
     from importlib.metadata import version
 else:
     from importlib_metadata import version
+
+
+class OutputResultHello(OutputResult):
+    def __init__(self, terminal=None, data=None):
+        self._data = data
+        super().__init__(terminal=terminal)
+
+    def result_clear(self):
+        return "How can I help you?"
+
+    def result_rich(self):
+        return "[blue]]How can I help you? RICH [/blue]"
 
 
 class Commands(CommandsHandlerAddressBook, CommandsHandlerNotes):
@@ -62,7 +74,8 @@ class Commands(CommandsHandlerAddressBook, CommandsHandlerNotes):
         return sorting(path)
 
     def handler_hello(self, *args) -> str:
-        return "How can I help you?"
+        output_result = OutputResultHello(terminal=self._output_console.service)
+        return output_result.result()
 
     def get_list_commands(self, help_filter: str = None) -> str:
         commands = []

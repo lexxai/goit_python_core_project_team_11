@@ -121,3 +121,25 @@ class FactoryOutput:
             return self._output[service](*args, **kwargs)
         else:
             raise ValueError(f"Invalid service of output ({service.name})")
+
+
+class OutputResultABS(ABC):
+    @abstractmethod
+    def result(self) -> str:
+        ...
+
+
+class OutputResult(OutputResultABS):
+    def __init__(self, terminal: Terminals = None):
+        self._terminal = terminal
+
+    def result_clear(self) -> str:
+        return self.result_rich()
+
+    def result_rich(self) -> str:
+        return self.result_clear()
+
+    def result(self) -> str:
+        if self._terminal == Terminals.TERMINAL_RICH:
+            return self.result_rich()
+        return self.result_clear()
