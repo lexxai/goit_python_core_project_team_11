@@ -79,18 +79,18 @@ class Test_Assistant_bot_Phone(unittest.TestCase):
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_OK_02(self):
-        testcase = "+380441231234123"
-        expected = "+380441231234123"
+        testcase = "+380441234123"
+        expected = "+380441234123"
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_OK_03(self):
-        testcase = "+380(44)1231234123"
-        expected = "+380(44)1231234123"
+        testcase = "+380(44)1234123"
+        expected = "+380(44)1234123"
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_OK_04(self):
-        testcase = "+380(44)123-1234-123"
-        expected = "+380(44)123-1234-123"
+        testcase = "+380(44)123-1234"
+        expected = "+380(44)123-1234"
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_OK_05(self):
@@ -109,31 +109,45 @@ class Test_Assistant_bot_Phone(unittest.TestCase):
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_OK_08(self):
-        testcase = "+48 12 123412"
-        expected = "+48 12 123412"
+        testcase = "+48 12 1234123"
+        expected = "+48 12 1234123"
         self.assertEqual(str(Phone(testcase)), expected)
 
     def test_phone_wrong_01(self):
         testcase = "48123123412"
-        self.assertRaises(ValueError, Email, testcase)
+        self.assertRaises(ValueError, Phone, testcase)
 
     def test_phone_wrong_02(self):
         testcase = "+48123123"
-        self.assertRaises(ValueError, Email, testcase)
+        self.assertRaises(ValueError, Phone, testcase)
 
     def test_phone_wrong_03(self):
         testcase = "A48123123"
-        self.assertRaises(ValueError, Email, testcase)
+        self.assertRaises(ValueError, Phone, testcase)
 
     def test_phone_wrong_04(self):
         testcase = "+380.44.123.1234.123"
-        self.assertRaises(ValueError, Email, testcase)
+        self.assertRaises(ValueError, Phone, testcase)
 
-    def test_phone_wrong_04(self):
+    def test_phone_wrong_05(self):
         testcase = ""
-        self.assertRaises(ValueError, Email, testcase)
+        self.assertRaises(ValueError, Phone, testcase)
+
+    def test_phone_wrong_06(self):
+        testcase = "+38050123412"
+        self.assertRaises(ValueError, Phone, testcase)
+
+    def test_phone_wrong_07(self):
+        testcase = "+48034567892"
+        self.assertRaises(ValueError, Phone, testcase)
+
+    def test_phone_wrong_08(self):
+        testcase = "+38991234123"
+        self.assertRaises(ValueError, Phone, testcase)
 
 
 # run by pytest 3
 if "__main__" == "assistant_bot_test":
     unittest.main()
+elif "__main__" == "__main__":
+    print("for test need run 'pytest'")
