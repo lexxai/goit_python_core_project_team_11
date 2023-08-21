@@ -1,4 +1,4 @@
-from .class_assistant_bot import Assistant_bot
+from .class_assistant_bot import AssistantBot
 from enum import Enum
 
 # from .class_console_output import Terminals
@@ -117,7 +117,7 @@ def cli(pre_init: object = None) -> None:
     elif output_terminal == Terminals.VIBER:
         output_kwargs = {"token": "632676746-89437487804-48497434648364-4348948934"}
 
-    assistant = Assistant_bot(
+    assistant = AssistantBot(
         id=username,
         auto_restore=auto_restore,
         auto_backup=auto_backup,

@@ -2,7 +2,7 @@ from .class_commands import Commands
 from .class_address_book import AddressBook
 
 # from .class_notes import Notes
-from .class_notes_ext import Notes_Storage
+from .class_notes_ext import NotesStorage
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import pickle
@@ -18,7 +18,7 @@ from .class_console_output import (
 )
 
 
-class Assistant_bot(Commands):
+class AssistantBot(Commands):
     def __init__(
         self,
         id: str = None,
@@ -31,7 +31,7 @@ class Assistant_bot(Commands):
         self.auto_backup: bool = auto_backup
         self.auto_restore: bool = auto_restore
         self.a_book: AddressBook = AddressBook(id=id)
-        self.notes_storage: Notes_Storage = Notes_Storage()
+        self.notes_storage: NotesStorage = NotesStorage()
         self.default_filename: str = default_filename
         self.restore_data()
 

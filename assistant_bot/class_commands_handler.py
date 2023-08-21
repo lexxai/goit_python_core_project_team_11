@@ -1,16 +1,10 @@
 from functools import wraps
-from rich.console import Console
 from .class_console_output import (
-    Terminals,
     ConsoleOutputAbstract,
-    TerminalOutput,
-    TerminalRichOutput,
-    TelegramOutput,
-    ViberOutput,
 )
 
 
-class Commands_Handler:
+class CommandsHandler:
     _output_console: ConsoleOutputAbstract
 
     # decorator
@@ -24,7 +18,7 @@ class Commands_Handler:
                 return (
                     "[green]Done[green]"
                     if result
-                    else "[yellow]The operation " "was not successful[/yellow]"
+                    else "[yellow]The operation was not successful[/yellow]"
                 )
 
         return wrapper
