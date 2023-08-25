@@ -254,38 +254,49 @@ Docker version 24.0.2, build cb74dfc
 
 ### building image lexxai/assistant-bot
 
+1. Відновимо файл 'pyproject' з версії для 'poetry' на версію для 'setuptools'
+
 ```
+cp pyproject-setuptools.toml pyproject.toml
+
+```
+
+2. Docker tasks:
+
 docker build . -t lexxai/assistant-bot
- => [internal] load build definition from Dockerfile                                                                                0.3s
- => => transferring dockerfile: 1.24kB                                                                                              0.0s
- => [internal] load .dockerignore                                                                                                   0.4s
- => => transferring context: 80B                                                                                                    0.0s
- => [internal] load metadata for docker.io/library/python:3.11-slim                                                                 4.1s
- => [auth] library/python:pull token for registry-1.docker.io                                                                       0.0s
- => [ 1/10] FROM docker.io/library/python:3.11-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901         0.0s
- => [internal] load build context                                                                                                   0.5s
- => => transferring context: 30.53kB                                                                                                0.2s
- => CACHED [ 2/10] WORKDIR /app                                                                                                     0.0s
- => [ 3/10] COPY . .                                                                                                                2.2s
- => [ 4/10] RUN python -m venv /app/venv                                                                                           12.0s
- => [ 5/10] RUN pip install --upgrade pip                                                                                          11.0s
- => [ 6/10] RUN pip install -r requirements.txt                                                                                    13.8s
- => [ 7/10] RUN pip install .                                                                                                      12.2s
- => [ 8/10] RUN mkdir /app/user_data                                                                                                2.4s
- => [ 9/10] RUN cd /app/user_data                                                                                                   1.9s
- => [10/10] WORKDIR /app/user_data                                                                                                  1.3s
- => exporting to image                                                                                                              3.5s
- => => exporting layers                                                                                                             3.3s
- => => writing image sha256:c0f0f30b200159521eb4419342f08f29ed3c9d6bb15d71e4cbe05adba62c20e9                                        0.1s
- => => naming to docker.io/lexxai/assistant-bot                                                                                     0.1s
+=> [internal] load build definition from Dockerfile 0.3s
+=> => transferring dockerfile: 1.24kB 0.0s
+=> [internal] load .dockerignore 0.4s
+=> => transferring context: 80B 0.0s
+=> [internal] load metadata for docker.io/library/python:3.11-slim 4.1s
+=> [auth] library/python:pull token for registry-1.docker.io 0.0s
+=> [ 1/10] FROM docker.io/library/python:3.11-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901 0.0s
+=> [internal] load build context 0.5s
+=> => transferring context: 30.53kB 0.2s
+=> CACHED [ 2/10] WORKDIR /app 0.0s
+=> [ 3/10] COPY . . 2.2s
+=> [ 4/10] RUN python -m venv /app/venv 12.0s
+=> [ 5/10] RUN pip install --upgrade pip 11.0s
+=> [ 6/10] RUN pip install -r requirements.txt 13.8s
+=> [ 7/10] RUN pip install . 12.2s
+=> [ 8/10] RUN mkdir /app/user_data 2.4s
+=> [ 9/10] RUN cd /app/user_data 1.9s
+=> [10/10] WORKDIR /app/user_data 1.3s
+=> exporting to image 3.5s
+=> => exporting layers 3.3s
+=> => writing image sha256:c0f0f30b200159521eb4419342f08f29ed3c9d6bb15d71e4cbe05adba62c20e9 0.1s
+=> => naming to docker.io/lexxai/assistant-bot 0.1s
+
 ```
 
 ### docker images list
 
 ```
+
 docker images
-REPOSITORY             TAG       IMAGE ID       CREATED          SIZE
-lexxai/assistant-bot   latest    c0f0f30b2001   23 minutes ago   220MB
+REPOSITORY TAG IMAGE ID CREATED SIZE
+lexxai/assistant-bot latest c0f0f30b2001 23 minutes ago 220MB
+
 ```
 
 ### docker run
@@ -302,6 +313,7 @@ docker run -it --rm -v user_data:/app/user_data --name assistant-bot_volume lexx
 docker run -it --entrypoint /bin/bash lexxai/assistant-bot
 
 ```
+
 root@1a35d3bb4776:/app#
 root@1a35d3bb4776:/app# apt update
 root@1a35d3bb4776:/app# apt install tree
@@ -314,26 +326,26 @@ root@1a35d3bb4776:/app# tree
 ├── Pipfile.lock
 ├── README.md
 ├── assistant_bot
-│   ├── __init__.py
-│   ├── class_address_book.py
-│   ├── class_assistant_bot.py
-│   ├── class_command_completer.py
-│   ├── class_commands.py
-│   ├── class_commands_handler.py
-│   ├── class_commands_handler_a_book.py
-│   ├── class_commands_handler_notes.py
-│   ├── class_console_output.py
-│   ├── class_fields.py
-│   ├── class_notes.py
-│   ├── class_notes_ext.py
-│   ├── class_record.py
-│   ├── main.py
-│   ├── normalize.py
-│   └── sorting.py
+│ ├── **init**.py
+│ ├── class_address_book.py
+│ ├── class_assistant_bot.py
+│ ├── class_command_completer.py
+│ ├── class_commands.py
+│ ├── class_commands_handler.py
+│ ├── class_commands_handler_a_book.py
+│ ├── class_commands_handler_notes.py
+│ ├── class_console_output.py
+│ ├── class_fields.py
+│ ├── class_notes.py
+│ ├── class_notes_ext.py
+│ ├── class_record.py
+│ ├── main.py
+│ ├── normalize.py
+│ └── sorting.py
 ├── doc
-│   ├── assistant_bot_fabric_uml.drawio.png
-│   ├── assistant_bot_uml.drawio.png
-│   └── docker-run-example-01.png
+│ ├── assistant_bot_fabric_uml.drawio.png
+│ ├── assistant_bot_uml.drawio.png
+│ └── docker-run-example-01.png
 ├── image.png
 ├── poetry.lock
 ├── pyproject-setuptools.toml
@@ -341,54 +353,58 @@ root@1a35d3bb4776:/app# tree
 ├── requirements.txt
 ├── setup.cfg
 └── tests
-    ├── Test_folder
-    │   ├── Subf1
-    │   │   ├── Subf3
-    │   │   │   ├── file.docx
-    │   │   │   └── file.svg
-    │   │   ├── Subf4
-    │   │   │   ├── file.doc
-    │   │   │   └── file.pdf
-    │   │   ├── file.jpg
-    │   │   └── file.txt
-    │   ├── Subf2
-    │   │   ├── file.amr
-    │   │   ├── file.jpeg
-    │   │   ├── file.mkv
-    │   │   └── file.png
-    │   ├── Subf5
-    │   │   ├── Subf6
-    │   │   │   ├── Subf7
-    │   │   │   │   ├── file.mp3
-    │   │   │   │   ├── file.wav
-    │   │   │   │   ├── file.xlsx
-    │   │   │   │   └── list2.targz
-    │   │   │   ├── file.mov
-    │   │   │   ├── file.mp4
-    │   │   │   └── list1.zip
-    │   │   ├── file.avi
-    │   │   ├── file.ogg
-    │   │   ├── file.pptx
-    │   │   └── list.ar
-    │   ├── file0.jpg
-    │   ├── file0.pdf
-    │   └── файл0.txt
-    ├── Test_folder.rar
-    ├── Test_folder.zip
-    ├── a58057bdc0c5f1b7c3c964a707d14a07ff069a1f_assistant_bot.bin
-    ├── assistant_bot_test.py
-    ├── ex01.py
-    ├── test_a_bot.py
-    └── tmp
-        └── appmap
-            └── unittest
-            .....
+├── Test_folder
+│ ├── Subf1
+│ │ ├── Subf3
+│ │ │ ├── file.docx
+│ │ │ └── file.svg
+│ │ ├── Subf4
+│ │ │ ├── file.doc
+│ │ │ └── file.pdf
+│ │ ├── file.jpg
+│ │ └── file.txt
+│ ├── Subf2
+│ │ ├── file.amr
+│ │ ├── file.jpeg
+│ │ ├── file.mkv
+│ │ └── file.png
+│ ├── Subf5
+│ │ ├── Subf6
+│ │ │ ├── Subf7
+│ │ │ │ ├── file.mp3
+│ │ │ │ ├── file.wav
+│ │ │ │ ├── file.xlsx
+│ │ │ │ └── list2.targz
+│ │ │ ├── file.mov
+│ │ │ ├── file.mp4
+│ │ │ └── list1.zip
+│ │ ├── file.avi
+│ │ ├── file.ogg
+│ │ ├── file.pptx
+│ │ └── list.ar
+│ ├── file0.jpg
+│ ├── file0.pdf
+│ └── файл0.txt
+├── Test_folder.rar
+├── Test_folder.zip
+├── a58057bdc0c5f1b7c3c964a707d14a07ff069a1f_assistant_bot.bin
+├── assistant_bot_test.py
+├── ex01.py
+├── test_a_bot.py
+└── tmp
+└── appmap
+└── unittest
+.....
 
 ```
 
 ### docker run on same containers for save data
 
 ```
+
 docker create -it --name assistant-bot lexxai/assistant-bot
 docker start -i assistant-bot
+
+```
+
 ```
