@@ -215,7 +215,7 @@ wheel          0.41.1
 Dockerfile
 
 ```
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim
 
 ENV APP_HOME /app
 
