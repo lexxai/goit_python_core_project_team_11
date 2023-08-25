@@ -100,3 +100,59 @@ List of commands:
 add address ('+a'), add address book ('+ab'), add birthday ('+b'), add email ('+e'), add note ('+n'), app version ('version'), backup ('bak'), change note ('=n'), change phone ('=p'), clear notes ('---n'), delete address ('-a'), delete all records ('---'), delete birthday ('-b'), delete email ('-e'), delete note ('-n'), delete phone ('-p'), delete user ('-'), export csv ('e csv'), hello, help ('?'), help full ('??'), import csv ('i csv'), list csv ('l csv'), next birthdays ('+nb'), quit ('exit','q'), restore ('res'), search address book ('?ab='), search notes ('?n='), show address ('?a'), show address book ('?ab'), show birthday ('?b'), show csv ('?csv'), show email ('?e'), show notes ('?n'), show page ('?pg'), show phone ('?p'), show versions ('?v'), sort folder ('sorting'), sort notes ('sn'), to birthday ('2b') to Viber
 ```
 
+# PYTHON WEB 15 - HOME WORK 01
+
+## UML with ABS and Fabric pattern
+
+![image](doc\assistant_bot_fabric_uml.drawio.png)
+
+# PYTHON WEB 15 - HOME WORK 02
+
+## pipenv
+
+pipfile
+
+```
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+importlib-metadata = ">=1.0"
+prompt-toolkit = ">=3.0.0"
+rich = ">=13.5.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
+```
+
+## poetry
+
+pyproject.toml
+
+```
+[tool.poetry]
+name = "assistant-bot"
+version = "0.8.0"
+description = "assistant_bot"
+authors = ["team11"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+rich = ">=13.5.0"
+prompt-toolkit = "^3.0.39"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+```
