@@ -25,7 +25,13 @@
 
 - [README розробнику ](https://github.com/lexxai/goit_python_core_project_team_11/wiki/README-%D1%80%D0%BE%D0%B7%D1%80%D0%BE%D0%B1%D0%BD%D0%B8%D0%BA%D1%83)
 
-# ABS Home Work 1
+# Python WEB 15 - Home Work 01
+
+## UML Diagram
+
+![image](doc/assistant_bot_fabric_uml.drawio.png)
+
+## ABS Class, Fabrica pattern
 
 ```
 usage: assistant_bot [-h] [-u USERNAME] [-sort PATH] [-V] [-dar] [-dab] [--output_console {1,2,3,4}]
@@ -100,3 +106,34 @@ List of commands:
 add address ('+a'), add address book ('+ab'), add birthday ('+b'), add email ('+e'), add note ('+n'), app version ('version'), backup ('bak'), change note ('=n'), change phone ('=p'), clear notes ('---n'), delete address ('-a'), delete all records ('---'), delete birthday ('-b'), delete email ('-e'), delete note ('-n'), delete phone ('-p'), delete user ('-'), export csv ('e csv'), hello, help ('?'), help full ('??'), import csv ('i csv'), list csv ('l csv'), next birthdays ('+nb'), quit ('exit','q'), restore ('res'), search address book ('?ab='), search notes ('?n='), show address ('?a'), show address book ('?ab'), show birthday ('?b'), show csv ('?csv'), show email ('?e'), show notes ('?n'), show page ('?pg'), show phone ('?p'), show versions ('?v'), sort folder ('sorting'), sort notes ('sn'), to birthday ('2b') to Viber
 ```
 
+# Python WEB 15 - Home Work 02
+
+## pipenv
+
+```
+# pipenv import requirements.txt
+pipenv install
+# pipenv add dev package
+pipenv install pytest --dev
+```
+
+pipfile
+
+```
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+importlib-metadata = ">=1.0"
+prompt-toolkit = ">=3.0.0"
+rich = ">=13.5.0"
+
+[dev-packages]
+pytest = "\*"
+
+[requires]
+python_version = "3.11"
+
+```
