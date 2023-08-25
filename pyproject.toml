@@ -1,20 +1,3 @@
-[tool.poetry]
-name = "assistant-bot"
-version = "0.8.0"
-description = "assistant_bot"
-authors = ["team11"]
-license = "MIT"
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.11"
-rich = ">=13.5.0"
-prompt-toolkit = "^3.0.39"
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.0"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools >= 65.0.0"]
+build-backend = "setuptools.build_meta"
