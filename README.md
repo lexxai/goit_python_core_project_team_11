@@ -263,29 +263,31 @@ cp pyproject-setuptools.toml pyproject.toml
 2. Docker tasks:
 
 ```
+
+2. Docker tasks:
 docker build . -t lexxai/assistant-bot
-=> [internal] load build definition from Dockerfile 0.3s
-=> => transferring dockerfile: 1.24kB 0.0s
-=> [internal] load .dockerignore 0.4s
-=> => transferring context: 80B 0.0s
-=> [internal] load metadata for docker.io/library/python:3.11-slim 4.1s
-=> [auth] library/python:pull token for registry-1.docker.io 0.0s
-=> [ 1/10] FROM docker.io/library/python:3.11-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901 0.0s
-=> [internal] load build context 0.5s
-=> => transferring context: 30.53kB 0.2s
-=> CACHED [ 2/10] WORKDIR /app 0.0s
-=> [ 3/10] COPY . . 2.2s
-=> [ 4/10] RUN python -m venv /app/venv 12.0s
-=> [ 5/10] RUN pip install --upgrade pip 11.0s
-=> [ 6/10] RUN pip install -r requirements.txt 13.8s
-=> [ 7/10] RUN pip install . 12.2s
-=> [ 8/10] RUN mkdir /app/user_data 2.4s
-=> [ 9/10] RUN cd /app/user_data 1.9s
-=> [10/10] WORKDIR /app/user_data 1.3s
-=> exporting to image 3.5s
-=> => exporting layers 3.3s
-=> => writing image sha256:c0f0f30b200159521eb4419342f08f29ed3c9d6bb15d71e4cbe05adba62c20e9 0.1s
-=> => naming to docker.io/lexxai/assistant-bot 0.1s
+ => [internal] load build definition from Dockerfile                                                                                0.3s
+ => => transferring dockerfile: 1.24kB                                                                                              0.0s
+ => [internal] load .dockerignore                                                                                                   0.4s
+ => => transferring context: 80B                                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                                 4.1s
+ => [auth] library/python:pull token for registry-1.docker.io                                                                       0.0s
+ => [ 1/10] FROM docker.io/library/python:3.11-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901         0.0s
+ => [internal] load build context                                                                                                   0.5s
+ => => transferring context: 30.53kB                                                                                                0.2s
+ => CACHED [ 2/10] WORKDIR /app                                                                                                     0.0s
+ => [ 3/10] COPY . .                                                                                                                2.2s
+ => [ 4/10] RUN python -m venv /app/venv                                                                                           12.0s
+ => [ 5/10] RUN pip install --upgrade pip                                                                                          11.0s
+ => [ 6/10] RUN pip install -r requirements.txt                                                                                    13.8s
+ => [ 7/10] RUN pip install .                                                                                                      12.2s
+ => [ 8/10] RUN mkdir /app/user_data                                                                                                2.4s
+ => [ 9/10] RUN cd /app/user_data                                                                                                   1.9s
+ => [10/10] WORKDIR /app/user_data                                                                                                  1.3s
+ => exporting to image                                                                                                              3.5s
+ => => exporting layers                                                                                                             3.3s
+ => => writing image sha256:c0f0f30b200159521eb4419342f08f29ed3c9d6bb15d71e4cbe05adba62c20e9                                        0.1s
+ => => naming to docker.io/lexxai/assistant-bot                                                                                     0.1s
 ```
 
 ### docker images list
@@ -403,9 +405,4 @@ root@1a35d3bb4776:/app# tree
 
 docker create -it --name assistant-bot lexxai/assistant-bot
 docker start -i assistant-bot
-
-```
-
-```
-
 ```
