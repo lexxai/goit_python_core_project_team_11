@@ -284,8 +284,8 @@ docker build . -t lexxai/assistant-bot
 
 ```
 docker images
-REPOSITORY             TAG       IMAGE ID       CREATED         SIZE
-lexxai/assistant-bot   latest    db561027c11f   5 minutes ago   1.11GB
+REPOSITORY             TAG       IMAGE ID       CREATED          SIZE
+lexxai/assistant-bot   latest    c0f0f30b2001   23 minutes ago   220MB
 ```
 
 ### docker run
