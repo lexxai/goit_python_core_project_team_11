@@ -293,6 +293,10 @@ lexxai/assistant-bot   latest    db561027c11f   5 minutes ago   1.11GB
 docker run -it --rm lexxai/assistant-bot
 ![image](doc/docker-run-example-01.png)
 
+### docker run with save user data on volume
+
+docker run -it --rm -v user_data:/app/user_data --name assistant-bot_volume lexxai/assistant-bot
+
 ### docker run bash with override entrypoint
 
 docker run -it --entrypoint /bin/bash lexxai/assistant-bot
