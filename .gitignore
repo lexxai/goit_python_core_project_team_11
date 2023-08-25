@@ -162,5 +162,7 @@ cython_debug/
 *.csv
 tests/*/
 *.bin
+.*/
+
 
 .vscode/settings.json

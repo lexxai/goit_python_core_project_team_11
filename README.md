@@ -111,6 +111,7 @@ add address ('+a'), add address book ('+ab'), add birthday ('+b'), add email ('+
 ## pipenv
 
 ```
+pip insatall pipenv
 # pipenv import requirements.txt
 pipenv install
 # pipenv add dev package
@@ -136,4 +137,75 @@ pytest = "\*"
 [requires]
 python_version = "3.11"
 
+```
+
+```
+pipenv update
+pipenv run pip list
+
+Package            Version
+------------------ -------
+importlib-metadata 6.8.0
+markdown-it-py     3.0.0
+mdurl              0.1.2
+pip                23.2.1
+prompt-toolkit     3.0.39
+Pygments           2.16.1
+rich               13.5.2
+setuptools         68.0.0
+wcwidth            0.2.6
+wheel              0.41.1
+zipp               3.16.2
+```
+
+## poetry
+
+```
+pip install poetry
+poetry init
+```
+
+pyproject.toml
+
+```
+[tool.poetry]
+name = "assistant-bot"
+version = "0.8.0"
+description = "assistant_bot_test"
+authors = ["team11"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+prompt-toolkit = "^3.0.39"
+rich = "^13.5.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+```
+
+```
+poetry run pip list
+
+Package        Version
+-------------- -------
+colorama       0.4.6
+iniconfig      2.0.0
+markdown-it-py 3.0.0
+mdurl          0.1.2
+packaging      23.1
+pip            23.2.1
+pluggy         1.2.0
+prompt-toolkit 3.0.39
+Pygments       2.16.1
+pytest         7.4.0
+rich           13.5.2
+setuptools     68.0.0
+wcwidth        0.2.6
+wheel          0.41.1
 ```
