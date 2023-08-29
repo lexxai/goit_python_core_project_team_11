@@ -2,4 +2,12 @@
 dist/
 scripts/
 */__pycache__/
+*.bin
+*/*.bin
+tests/
+doc/
+scripts/
+
+
+
 

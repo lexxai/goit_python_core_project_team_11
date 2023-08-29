@@ -49,8 +49,13 @@ class AssistantBot(Commands):
                 filename = f"{self.default_filename}_{version}.bin"
             else:
                 filename = f"{self.default_filename}.bin"
-            with open(self._gen_filename(filename), "wb") as file:
-                pickle.dump(self, file)
+            full_name = self._gen_filename(filename)
+            try:
+                with open(full_name, "wb") as file:
+                    pickle.dump(self, file)
+            except: 
+                self._output_console.output(f"[red]ERROR SAVE FILE[/red]: '{full_name}'")
+                return False
             return True
 
     def restore_data(self, version: str = None, restore: bool = None) -> bool:
@@ -116,7 +121,7 @@ class AssistantBot(Commands):
                 if command == Commands.handler_exit:
                     break
             except Exception as e:
-                self._output_console.output(f"COMMANDS ERROR:'{e}'")
+                self._output_console.output(f"[red]COMMANDS ERROR:[/red] '{e}'")
         self.backup_data()
 
     # skip save state for rich.consol object
